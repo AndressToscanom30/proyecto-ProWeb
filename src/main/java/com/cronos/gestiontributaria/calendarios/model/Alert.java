@@ -1,19 +1,15 @@
 package com.cronos.gestiontributaria.calendarios.model;
 
-import com.cronos.gestiontributaria.common.AlertChannel;
 import java.time.LocalDateTime;
 
 public class Alert {
     private int daysInAdvance;
-    private AlertChannel channel;
     private boolean sent;
     private LocalDateTime scheduledFor;
     private LocalDateTime sentAt;
 
-    public Alert(int daysInAdvance, AlertChannel channel, boolean sent,
-                 LocalDateTime scheduledFor, LocalDateTime sentAt) {
+    public Alert(int daysInAdvance, boolean sent, LocalDateTime scheduledFor, LocalDateTime sentAt) {
         this.daysInAdvance = daysInAdvance;
-        this.channel = channel;
         this.sent = sent;
         this.scheduledFor = scheduledFor;
         this.sentAt = sentAt;
@@ -39,14 +35,6 @@ public class Alert {
 
     public void setDaysInAdvance(int daysInAdvance) {
         this.daysInAdvance = daysInAdvance;
-    }
-
-    public AlertChannel getChannel() {
-        return channel;
-    }
-
-    public void setChannel(AlertChannel channel) {
-        this.channel = channel;
     }
 
     public boolean isSent() {

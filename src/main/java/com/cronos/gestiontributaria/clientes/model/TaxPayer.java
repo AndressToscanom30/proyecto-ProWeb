@@ -23,9 +23,9 @@ public class TaxPayer {
     private List<History> history;
 
     public TaxPayer(String businessName, TaxpayerType type, String email, String phone,
-                    String address, boolean active, LocalDate registrationDate,
-                    List<TaxObligation> obligations, List<BankAccount> bankAccounts,
-                    List<Notification> notifications, List<History> history) {
+            String address, boolean active, LocalDate registrationDate,
+            List<TaxObligation> obligations, List<BankAccount> bankAccounts,
+            List<Notification> notifications, List<History> history) {
         this.businessName = businessName;
         this.type = type;
         this.email = email;
