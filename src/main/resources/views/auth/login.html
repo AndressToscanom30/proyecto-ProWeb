@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Iniciar sesión | Cronos</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}" />
+</head>
+<body class="auth-page">
+<main class="auth-shell">
+    <section class="auth-hero">
+        <div class="brand-badge">CR</div>
+        <p class="eyebrow">Seguridad Web · Unidad 9</p>
+        <h1>Acceso seguro para la gestión tributaria</h1>
+        <p class="hero-copy">
+            Autenticación con Spring Security 6, contraseñas cifradas con BCrypt y datos persistidos en Mongo Atlas.
+        </p>
+
+        <div class="feature-stack">
+            <article>
+                <span>01</span>
+                <div>
+                    <h2>Login personalizado</h2>
+                    <p>Formulario propio con mensajes claros y redirección segura.</p>
+                </div>
+            </article>
+            <article>
+                <span>02</span>
+                <div>
+                    <h2>Roles protegidos</h2>
+                    <p>Rutas diferenciadas para ADMIN y USER con acceso denegado 403.</p>
+                </div>
+            </article>
+            <article>
+                <span>03</span>
+                <div>
+                    <h2>Mongo Atlas</h2>
+                    <p>Registro y autenticación consultando la colección de usuarios.</p>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section class="auth-card">
+        <div class="card-copy">
+            <p class="eyebrow">Bienvenido de nuevo</p>
+            <h2>Iniciar sesión</h2>
+            <p>Ingrese con su correo y contraseña para acceder al panel.</p>
+        </div>
+
+        <div class="alert alert-error" th:if="${param.error}">
+            Correo o contraseña incorrectos.
+        </div>
+        <div class="alert alert-success" th:if="${param.logout}">
+            Sesión cerrada correctamente.
+        </div>
+        <div class="alert alert-success" th:if="${param.registrado}">
+            Registro exitoso. Ahora puede ingresar.
+        </div>
+
+        <form class="form-stack" th:action="@{/login}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+            <label class="field">
+                <span>Correo</span>
+                <input type="email" name="username" placeholder="usuario@correo.com" autocomplete="username" required />
+            </label>
+
+            <label class="field">
+                <span>Contraseña</span>
+                <input type="password" name="password" placeholder="••••••••" autocomplete="current-password" required />
+            </label>
+
+            <button class="primary-btn" type="submit">Ingresar</button>
+        </form>
+
+        <p class="card-footer">
+            ¿No tiene cuenta?
+            <a th:href="@{/registro}">Crear usuario</a>
+        </p>
+    </section>
+</main>
+</body>
+</html>

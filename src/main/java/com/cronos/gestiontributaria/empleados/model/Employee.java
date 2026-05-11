@@ -10,6 +10,12 @@ import com.cronos.gestiontributaria.common.TaskStatus;
 import com.cronos.gestiontributaria.notification.model.Notification;
 import com.cronos.gestiontributaria.obligaciones.model.TaxObligation;
 
+/**
+ * Modelo de empleado que extiende la información base de un usuario.
+ *
+ * <p>Agrega atributos operativos como cargo, teléfono, fecha de ingreso,
+ * tareas asignadas y obligaciones tributarias.</p>
+ */
 public class Employee extends User {
     private String position;
     private String phone;
@@ -17,11 +23,25 @@ public class Employee extends User {
     private List<Task> tasks;
     private List<TaxObligation> obligations;
 
-
+    /**
+     * Crea un empleado con sus datos base, contacto y colecciones operativas.
+     *
+     * @param name nombre del empleado
+     * @param email correo del empleado
+     * @param passwordHash contraseña cifrada
+     * @param active estado de la cuenta
+     * @param role rol asociado
+     * @param notifications notificaciones del usuario
+     * @param position cargo o puesto
+     * @param phone teléfono de contacto
+     * @param hireDate fecha de ingreso
+     * @param tasks tareas asignadas
+     * @param obligations obligaciones tributarias asociadas
+     */
     public Employee(String name, String email, String passwordHash, boolean active, Role role,
-                    List<Notification> notifications,
-                    String position, String phone, LocalDate hireDate,
-                    List<Task> tasks, List<TaxObligation> obligations) {
+            List<Notification> notifications,
+            String position, String phone, LocalDate hireDate,
+            List<Task> tasks, List<TaxObligation> obligations) {
         super(name, email, passwordHash, active, role, notifications);
         this.position = position;
         this.phone = phone;
@@ -38,6 +58,11 @@ public class Employee extends User {
         return obligations;
     }
 
+    /**
+     * Calcula el porcentaje de tareas completadas sobre el total asignado.
+     *
+     * @return valor entre 0.0 y 1.0 con el rendimiento del empleado
+     */
     public double calculatePerformance() {
         if (tasks == null || tasks.isEmpty()) {
             return 0.0;
