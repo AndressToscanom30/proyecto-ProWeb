@@ -9,6 +9,10 @@ public class History {
     private String sourceIp;
     private String userAgent;
 
+    public History(){
+        
+    }
+
     public History(String module, String action, String affectedEntity, String previousValue,
                    String newValue, String sourceIp, String userAgent) {
         this.module = module;

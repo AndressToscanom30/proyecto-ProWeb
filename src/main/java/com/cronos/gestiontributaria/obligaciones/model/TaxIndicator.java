@@ -8,6 +8,10 @@ public class TaxIndicator {
     private int effectiveYear;
     private boolean active;
 
+    public TaxIndicator(){
+        
+    }
+
     public TaxIndicator(String name, String code, double value, String unit, int effectiveYear, boolean active) {
         this.name = name;
         this.code = code;

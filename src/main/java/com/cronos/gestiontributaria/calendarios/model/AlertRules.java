@@ -1,16 +1,21 @@
 package com.cronos.gestiontributaria.calendarios.model;
 
-import com.cronos.gestiontributaria.obligaciones.model.TaxObligation;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.cronos.gestiontributaria.obligaciones.model.TaxObligation;
+
 public class AlertRules {
     private List<Integer> daysInAdvance;
     private boolean active;
     private List<TaxObligation> obligations;
+
+     public AlertRules(){
+        
+     }
 
     public AlertRules(List<Integer> daysInAdvance, boolean active, List<TaxObligation> obligations) {
         this.daysInAdvance = daysInAdvance != null ? daysInAdvance : new ArrayList<>();

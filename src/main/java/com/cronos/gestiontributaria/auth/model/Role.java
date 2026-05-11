@@ -8,6 +8,10 @@ public class Role {
     private String description;
     private List<String> permissions;
 
+    public Role(){
+        
+    }
+
     public Role(String name, String description, List<String> permissions) {
         this.name = name;
         this.description = description;

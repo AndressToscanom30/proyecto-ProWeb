@@ -1,13 +1,13 @@
 package com.cronos.gestiontributaria.clientes.model;
 
-import com.cronos.gestiontributaria.common.History;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.cronos.gestiontributaria.common.TaxpayerType;
 import com.cronos.gestiontributaria.notification.model.Notification;
 import com.cronos.gestiontributaria.obligaciones.model.Document;
 import com.cronos.gestiontributaria.obligaciones.model.TaxObligation;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 public class TaxPayer {
     private String businessName;
@@ -20,12 +20,15 @@ public class TaxPayer {
     private List<TaxObligation> obligations;
     private List<BankAccount> bankAccounts;
     private List<Notification> notifications;
-    private List<History> history;
+
+    public TaxPayer(){
+        
+    }
 
     public TaxPayer(String businessName, TaxpayerType type, String email, String phone,
             String address, boolean active, LocalDate registrationDate,
             List<TaxObligation> obligations, List<BankAccount> bankAccounts,
-            List<Notification> notifications, List<History> history) {
+            List<Notification> notifications) {
         this.businessName = businessName;
         this.type = type;
         this.email = email;
@@ -36,7 +39,6 @@ public class TaxPayer {
         this.obligations = obligations != null ? obligations : new ArrayList<>();
         this.bankAccounts = bankAccounts != null ? bankAccounts : new ArrayList<>();
         this.notifications = notifications != null ? notifications : new ArrayList<>();
-        this.history = history != null ? history : new ArrayList<>();
     }
 
     public void activate() {
@@ -133,14 +135,6 @@ public class TaxPayer {
 
     public void setNotifications(List<Notification> notifications) {
         this.notifications = notifications != null ? notifications : new ArrayList<>();
-    }
-
-    public List<History> getHistory() {
-        return history;
-    }
-
-    public void setHistory(List<History> history) {
-        this.history = history != null ? history : new ArrayList<>();
     }
 
     public void setObligations(List<TaxObligation> obligations) {

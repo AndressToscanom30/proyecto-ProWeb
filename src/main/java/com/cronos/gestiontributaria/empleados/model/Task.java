@@ -1,8 +1,9 @@
 package com.cronos.gestiontributaria.empleados.model;
 
+import java.time.LocalDate;
+
 import com.cronos.gestiontributaria.common.Priority;
 import com.cronos.gestiontributaria.common.TaskStatus;
-import java.time.LocalDate;
 
 public class Task {
     private String title;
@@ -10,6 +11,10 @@ public class Task {
     private Priority priority;
     private TaskStatus status;
     private LocalDate dueDate;
+
+    public Task(){
+        
+    }
 
     public Task(String title, String description, Priority priority, TaskStatus status, LocalDate dueDate) {
         this.title = title;

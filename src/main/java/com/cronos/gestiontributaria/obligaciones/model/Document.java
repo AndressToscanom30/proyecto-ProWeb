@@ -7,6 +7,10 @@ public class Document {
     private String format;
     private long sizeBytes;
 
+    public Document(){
+        
+    }
+
     public Document(String name, String description, String storagePath, String format, long sizeBytes) {
         this.name = name;
         this.description = description;

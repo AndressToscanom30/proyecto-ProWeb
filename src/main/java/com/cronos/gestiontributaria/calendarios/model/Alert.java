@@ -8,6 +8,10 @@ public class Alert {
     private LocalDateTime scheduledFor;
     private LocalDateTime sentAt;
 
+    public Alert(){
+        
+    }
+
     public Alert(int daysInAdvance, boolean sent, LocalDateTime scheduledFor, LocalDateTime sentAt) {
         this.daysInAdvance = daysInAdvance;
         this.sent = sent;

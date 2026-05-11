@@ -1,14 +1,14 @@
 package com.cronos.gestiontributaria.empleados.model;
 
-import com.cronos.gestiontributaria.auth.model.Role;
-import com.cronos.gestiontributaria.auth.model.User;
-import com.cronos.gestiontributaria.common.History;
-import com.cronos.gestiontributaria.common.TaskStatus;
-import com.cronos.gestiontributaria.notification.model.Notification;
-import com.cronos.gestiontributaria.obligaciones.model.TaxObligation;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.cronos.gestiontributaria.auth.model.Role;
+import com.cronos.gestiontributaria.auth.model.User;
+import com.cronos.gestiontributaria.common.TaskStatus;
+import com.cronos.gestiontributaria.notification.model.Notification;
+import com.cronos.gestiontributaria.obligaciones.model.TaxObligation;
 
 public class Employee extends User {
     private String position;
@@ -17,11 +17,12 @@ public class Employee extends User {
     private List<Task> tasks;
     private List<TaxObligation> obligations;
 
+
     public Employee(String name, String email, String passwordHash, boolean active, Role role,
-                    List<Notification> notifications, List<History> history,
+                    List<Notification> notifications,
                     String position, String phone, LocalDate hireDate,
                     List<Task> tasks, List<TaxObligation> obligations) {
-        super(name, email, passwordHash, active, role, notifications, history);
+        super(name, email, passwordHash, active, role, notifications);
         this.position = position;
         this.phone = phone;
         this.hireDate = hireDate;

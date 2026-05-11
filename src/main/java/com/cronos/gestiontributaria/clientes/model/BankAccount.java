@@ -8,6 +8,10 @@ public class BankAccount {
     private AccountType type;
     private boolean active;
 
+    public BankAccount(){
+        
+    }
+
     public BankAccount(String bank, String accountNumber, AccountType type, boolean active) {
         this.bank = bank;
         this.accountNumber = accountNumber;

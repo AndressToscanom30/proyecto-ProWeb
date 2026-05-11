@@ -5,6 +5,10 @@ public class Notification {
     private String type;
     private boolean read;
 
+    public Notification(){
+        
+    }
+
     public Notification(String message, String type, boolean read) {
         this.message = message;
         this.type = type;

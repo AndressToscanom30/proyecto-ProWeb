@@ -1,9 +1,9 @@
 package com.cronos.gestiontributaria.auth.model;
 
-import com.cronos.gestiontributaria.common.History;
-import com.cronos.gestiontributaria.notification.model.Notification;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.cronos.gestiontributaria.notification.model.Notification;
 
 public class User {
     private String name;
@@ -12,17 +12,19 @@ public class User {
     private boolean active;
     private Role role;
     private List<Notification> notifications;
-    private List<History> history;
+
+    public User(){
+
+    }
 
     public User(String name, String email, String passwordHash, boolean active, Role role,
-                List<Notification> notifications, List<History> history) {
+                List<Notification> notifications) {
         this.name = name;
         this.email = email;
         this.passwordHash = passwordHash;
         this.active = active;
         this.role = role;
         this.notifications = notifications != null ? notifications : new ArrayList<>();
-        this.history = history != null ? history : new ArrayList<>();
     }
 
     public void changePassword(String newPassword) {
@@ -85,11 +87,4 @@ public class User {
         this.notifications = notifications != null ? notifications : new ArrayList<>();
     }
 
-    public List<History> getHistory() {
-        return history;
-    }
-
-    public void setHistory(List<History> history) {
-        this.history = history != null ? history : new ArrayList<>();
-    }
 }

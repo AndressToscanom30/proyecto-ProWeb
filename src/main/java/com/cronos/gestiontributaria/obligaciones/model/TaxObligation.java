@@ -1,12 +1,13 @@
 package com.cronos.gestiontributaria.obligaciones.model;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.cronos.gestiontributaria.calendarios.model.Alert;
 import com.cronos.gestiontributaria.common.TaxObligationStatus;
 import com.cronos.gestiontributaria.common.TaxObligationType;
 import com.cronos.gestiontributaria.empleados.model.Task;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 public class TaxObligation {
     private TaxObligationType type;
@@ -20,10 +21,14 @@ public class TaxObligation {
     private List<TaxIndicator> indicators;
     private List<Task> tasks;
 
+    public TaxObligation(){
+
+    }
+    
     public TaxObligation(TaxObligationType type, String fiscalPeriod, int taxYear, LocalDate dueDate,
-                         TaxObligationStatus status, String notes,
-                         List<Document> documents, List<Alert> alerts,
-                         List<TaxIndicator> indicators, List<Task> tasks) {
+                        TaxObligationStatus status, String notes,
+                        List<Document> documents, List<Alert> alerts,
+                        List<TaxIndicator> indicators, List<Task> tasks) {
         this.type = type;
         this.fiscalPeriod = fiscalPeriod;
         this.taxYear = taxYear;
