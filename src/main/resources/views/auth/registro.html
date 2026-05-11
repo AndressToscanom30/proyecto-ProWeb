@@ -1,75 +1,49 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Registro | Cronos</title>
     <link rel="stylesheet" th:href="@{/css/app.css}" />
 </head>
-<body class="auth-page auth-page-alt">
-<main class="auth-shell">
-    <section class="auth-hero auth-hero-alt">
-        <div class="brand-badge">CR</div>
-        <p class="eyebrow">Nuevo acceso</p>
-        <h1>Cree su cuenta y entre al panel seguro</h1>
-        <p class="hero-copy">
-            El registro guarda la contraseña con BCrypt y asigna automáticamente el rol USER.
+<body class="auth-minimal-page">
+<main class="auth-minimal-shell">
+    <section class="auth-minimal-card">
+        <div class="auth-brand">CT</div>
+
+        <p class="auth-kicker">Calendario tributario</p>
+        <h1>Crear cuenta</h1>
+        <p class="auth-lead">
+            Regístrate para ingresar al sistema y administrar tus accesos de forma segura.
         </p>
 
-        <div class="mini-cards">
-            <article>
-                <strong>BCrypt</strong>
-                <span>Hash seguro en base de datos</span>
-            </article>
-            <article>
-                <strong>Mongo Atlas</strong>
-                <span>Usuarios almacenados en la nube</span>
-            </article>
-            <article>
-                <strong>Spring Security</strong>
-                <span>Formulario y rutas protegidas</span>
-            </article>
-        </div>
-    </section>
-
-    <section class="auth-card">
-        <div class="card-copy">
-            <p class="eyebrow">Registro de usuario</p>
-            <h2>Crear cuenta</h2>
-            <p>Complete los datos para habilitar el acceso con rol USER.</p>
-        </div>
-
-        <div class="alert alert-error" th:if="${#fields.hasGlobalErrors()}">
-            Revise la información ingresada.
-        </div>
-
-        <form class="form-stack" th:action="@{/registro}" th:object="${usuario}" method="post">
+        <form class="auth-form" th:action="@{/registro}" th:object="${usuario}" method="post">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
-            <label class="field">
-                <span>Nombre</span>
-                <input type="text" th:field="*{name}" placeholder="Su nombre completo" autocomplete="name" />
+            <label class="field-group">
+                <span class="field-label">Nombre</span>
+                <input class="text-input" type="text" th:field="*{name}" placeholder="Tu nombre completo" autocomplete="name" />
                 <small class="field-error" th:errors="*{name}"></small>
             </label>
 
-            <label class="field">
-                <span>Correo</span>
-                <input type="email" th:field="*{email}" placeholder="usuario@correo.com" autocomplete="email" />
+            <label class="field-group">
+                <span class="field-label">Correo</span>
+                <input class="text-input" type="email" th:field="*{email}" placeholder="usuario@correo.com" autocomplete="email" />
                 <small class="field-error" th:errors="*{email}"></small>
             </label>
 
-            <label class="field">
-                <span>Contraseña</span>
-                <input type="password" th:field="*{password}" placeholder="Mínimo 8 caracteres" autocomplete="new-password" />
+            <label class="field-group">
+                <span class="field-label">Contraseña</span>
+                <input class="text-input" type="password" th:field="*{password}" placeholder="Mínimo 8 caracteres" autocomplete="new-password" />
                 <small class="field-error" th:errors="*{password}"></small>
             </label>
 
-            <button class="primary-btn" type="submit">Registrar usuario</button>
+            <button class="primary-action" type="submit">Registrar</button>
         </form>
 
-        <p class="card-footer">
-            ¿Ya tiene cuenta?
-            <a th:href="@{/login}">Volver al inicio de sesión</a>
+        <p class="auth-footer">
+            ¿Ya tienes cuenta?
+            <a class="secondary-action" th:href="@{/login}">Volver al login</a>
         </p>
     </section>
 </main>
