@@ -19,10 +19,10 @@ public class Employee extends User {
 
 
     public Employee(String name, String email, String passwordHash, boolean active, Role role,
-                    List<Notification> notifications,
+                    List<Notification> notifications, List<History> history,
                     String position, String phone, LocalDate hireDate,
                     List<Task> tasks, List<TaxObligation> obligations) {
-        super(name, email, passwordHash, active, role, notifications);
+        super(name, email, passwordHash, active, role, notifications, history);
         this.position = position;
         this.phone = phone;
         this.hireDate = hireDate;
