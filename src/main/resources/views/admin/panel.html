@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panel de administración | Cronos</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}" />
+</head>
+<body class="app-page">
+<main class="app-shell">
+    <header class="topbar">
+        <div class="brand-row">
+            <div class="brand-badge brand-badge-small">CR</div>
+            <div>
+                <p class="eyebrow">Panel administrador</p>
+                <h1>Usuarios registrados</h1>
+            </div>
+        </div>
+
+        <div class="topbar-actions">
+            <span class="pill pill-accent" th:text="|${totalUsuarios} usuarios|">0 usuarios</span>
+            <form th:action="@{/logout}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <button class="secondary-btn" type="submit">Cerrar sesión</button>
+            </form>
+        </div>
+    </header>
+
+    <section class="hero-panel hero-panel-admin">
+        <div>
+            <p class="eyebrow">Acceso exclusivo</p>
+            <h2>Control total sobre la base de usuarios</h2>
+            <p class="hero-copy">
+                Vista protegida para ADMIN con acceso diferenciado respecto al usuario estándar.
+            </p>
+        </div>
+
+        <div class="status-grid status-grid-admin">
+            <article class="status-card">
+                <span>Total</span>
+                <strong th:text="${totalUsuarios}">0</strong>
+            </article>
+            <article class="status-card">
+                <span>Acceso</span>
+                <strong>ROLE_ADMIN</strong>
+            </article>
+            <article class="status-card">
+                <span>Sección</span>
+                <strong>Protegida</strong>
+            </article>
+        </div>
+    </section>
+
+    <section class="panel-card table-card">
+        <div class="panel-head">
+            <div>
+                <p class="eyebrow">Listado</p>
+                <h3>Usuarios en Mongo Atlas</h3>
+            </div>
+        </div>
+
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Rol</th>
+                    <th>Estado</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="usuario : ${usuarios}">
+                    <td th:text="${usuario.name}">Nombre</td>
+                    <td th:text="${usuario.email}">Correo</td>
+                    <td>
+                        <span class="chip" th:text="${usuario.role != null ? usuario.role.name : 'ROLE_USER'}">ROLE_USER</span>
+                    </td>
+                    <td>
+                        <span class="pill pill-success" th:if="${usuario.active}">Activo</span>
+                        <span class="pill pill-danger" th:if="${!usuario.active}">Inactivo</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+</body>
+</html>
