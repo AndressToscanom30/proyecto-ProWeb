@@ -7,15 +7,15 @@
     <link rel="stylesheet" th:href="@{/css/app.css}" />
 </head>
 <body class="error-page">
-<main class="error-card">
-    <span class="error-code">403</span>
-    <h1>Acceso denegado</h1>
-    <p>No tiene permisos para ver esta sección con el rol actual.</p>
+    <div class="error-card">
+        <div class="error-code">403</div>
+        <h1>Acceso denegado</h1>
+        <p>No tienes permisos para ver esta seccion con el rol actual.</p>
 
-    <div class="error-actions">
-        <a class="primary-btn" th:href="@{/dashboard}">Volver al dashboard</a>
-        <a class="secondary-btn" th:href="@{/login}">Ir al login</a>
+        <div class="error-actions">
+            <a class="primary-btn" th:href="@{/dashboard}">Volver al dashboard</a>
+            <a class="secondary-btn" th:href="@{/login}">Ir al login</a>
+        </div>
     </div>
-</main>
 </body>
 </html>
