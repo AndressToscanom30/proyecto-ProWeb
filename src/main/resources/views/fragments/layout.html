@@ -1,6 +1,21 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <body th:fragment="shell(pageTitle, pageSubtitle, activeSection, content)" class="app-page">
+    <script>
+        (function() {
+            var theme = 'light';
+
+            try {
+                var storedTheme = localStorage.getItem('cronos-theme');
+                var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                theme = storedTheme || (prefersDark ? 'dark' : 'light');
+            } catch (error) {
+                theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+
+            document.documentElement.dataset.theme = theme;
+        })();
+    </script>
     <div class="app-frame">
         <aside class="app-sidebar">
             <div class="sidebar-brand">
@@ -86,8 +101,10 @@
                         <input id="tableSearch" type="search" placeholder="Buscar cliente, tarea o obligación" />
                     </label>
 
-                    <button class="theme-toggle" type="button" data-theme-toggle aria-label="Alternar modo oscuro">
-                        <svg viewBox="0 0 24 24"><path d="M12 3.5a8.5 8.5 0 1 0 8.5 8.5A7 7 0 0 1 12 3.5z"/></svg>
+                    <button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false" aria-label="Cambiar a tema oscuro">
+                        <svg class="theme-toggle-icon theme-toggle-icon-dark" viewBox="0 0 24 24"><path d="M21 12.8A8.8 8.8 0 1 1 11.2 3 7.2 7.2 0 0 0 21 12.8z"/></svg>
+                        <svg class="theme-toggle-icon theme-toggle-icon-light" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5"/><path d="M12 3.5v2.2M12 18.3v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M3.5 12h2.2M18.3 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"/></svg>
+                        <span class="theme-toggle-label" data-theme-label>Oscuro</span>
                     </button>
 
                     <button class="icon-button" type="button" aria-label="Notificaciones">

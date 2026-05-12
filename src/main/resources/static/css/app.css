@@ -1464,6 +1464,17 @@ textarea {
   transition: transform 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
+.theme-toggle {
+  width: auto;
+  min-width: 124px;
+  padding: 0 14px 0 12px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
 .icon-button svg,
 .theme-toggle svg {
   width: 18px;
@@ -1471,6 +1482,29 @@ textarea {
   stroke: currentColor;
   fill: none;
   stroke-width: 1.8;
+}
+
+.theme-toggle-icon {
+  flex: 0 0 auto;
+}
+
+.theme-toggle-icon-light {
+  display: none;
+}
+
+.theme-toggle-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--text);
+}
+
+:root[data-theme='dark'] .theme-toggle-icon-dark {
+  display: none;
+}
+
+:root[data-theme='dark'] .theme-toggle-icon-light {
+  display: block;
 }
 
 .user-chip {

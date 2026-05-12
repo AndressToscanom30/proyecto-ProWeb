@@ -33,10 +33,15 @@
         var button = document.querySelector('[data-theme-toggle]');
         if (!button) return;
 
+        var label = button.querySelector('[data-theme-label]');
+        var root = document.documentElement;
+
+        syncThemeToggleState(button, label, root.dataset.theme || 'light');
+
         button.addEventListener('click', function() {
-            var root = document.documentElement;
             var nextTheme = root.dataset.theme === 'dark' ? 'light' : 'dark';
             root.dataset.theme = nextTheme;
+            syncThemeToggleState(button, label, nextTheme);
 
             try {
                 localStorage.setItem('cronos-theme', nextTheme);
@@ -44,6 +49,18 @@
                 // No persistence available.
             }
         });
+    }
+
+    function syncThemeToggleState(button, label, theme) {
+        var isDark = theme === 'dark';
+        var nextLabel = isDark ? 'Claro' : 'Oscuro';
+
+        button.setAttribute('aria-pressed', String(isDark));
+        button.setAttribute('aria-label', isDark ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro');
+
+        if (label) {
+            label.textContent = nextLabel;
+        }
     }
 
     function initSidebarState() {
