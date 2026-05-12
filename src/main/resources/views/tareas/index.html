@@ -7,32 +7,55 @@
                 <p class="eyebrow">Tareas y seguimiento</p>
                 <h2>Prioriza el trabajo activo sin perder contexto</h2>
                 <p>
-                    Revisa tareas recientes, identifica clientes en riesgo y abre rápidamente la obligación o ficha que necesita intervención.
+                    Listado completo de obligaciones activas ordenadas por prioridad. Usa los indicadores de estado para filtrar visualmente y abre cada registro desde la misma fila.
                 </p>
             </div>
             <div class="hero-meta">
                 <a class="primary-action" th:href="@{/obligaciones}" style="width:max-content">Abrir obligaciones</a>
                 <a class="secondary-action" th:href="@{/clientes}" style="width:max-content">Ir a clientes</a>
-                <span class="pill tone-warning" th:text="${dashboard.metricCards[0].value}">124 pendientes</span>
+                <span class="pill tone-warning" th:text="|${tasksData.pendingCount} pendientes|">124 pendientes</span>
             </div>
         </section>
 
-        <section class="metric-grid">
-            <article class="metric-card" th:each="card : ${dashboard.metricCards}">
-                <div class="metric-icon" th:classappend="| tone-${card.tone}|">
-                    <svg th:switch="${card.variant}" viewBox="0 0 24 24">
-                        <path th:case="'pending'" d="M7 6.5h10M7 10.5h10M7 14.5h6"/>
-                        <path th:case="'overdue'" d="M12 4.5 4.8 18h14.4L12 4.5z"/><path th:case="'overdue'" d="M12 9v4.2M12 15.8h.01"/>
-                        <path th:case="'calendar'" d="M7 4.5v3M17 4.5v3M4.5 8.5h15M6 6.5h12a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2z"/>
-                        <path th:case="'clients'" d="M15.5 20v-1.2a4.3 4.3 0 0 0-4.3-4.3H7a4.3 4.3 0 0 0-4.3 4.3V20"/><circle th:case="'clients'" cx="9" cy="7" r="3.5"/><path th:case="'clients'" d="M19.5 20v-1.2a3.8 3.8 0 0 0-2.4-3.5"/>
-                        <path th:case="'compliance'" d="M4.5 18.5 9 14l3 3 7.5-8.5"/><path th:case="'compliance'" d="M15.5 8.5h4v4"/>
-                        <path th:case="*" d="M7 6.5h10M7 10.5h10M7 14.5h6"/>
-                    </svg>
+        <section class="metric-grid" style="grid-template-columns:repeat(4,1fr)">
+            <article class="metric-card">
+                <div class="metric-icon tone-warning">
+                    <svg viewBox="0 0 24 24"><path d="M7 6.5h10M7 10.5h10M7 14.5h6"/></svg>
                 </div>
                 <div class="metric-copy">
-                    <span th:text="${card.label}">Tareas pendientes</span>
-                    <strong th:text="${card.value}">124</strong>
-                    <small th:text="${card.detail}">En seguimiento operativo</small>
+                    <span>Pendientes</span>
+                    <strong th:text="${tasksData.pendingCount}">0</strong>
+                    <small>Esperando inicio</small>
+                </div>
+            </article>
+            <article class="metric-card">
+                <div class="metric-icon tone-primary">
+                    <svg viewBox="0 0 24 24"><path d="M5 7h8M5 12h14M5 17h10"/><path d="M17 7l1.5 1.5L21 6"/></svg>
+                </div>
+                <div class="metric-copy">
+                    <span>En proceso</span>
+                    <strong th:text="${tasksData.inProgressCount}">0</strong>
+                    <small>Trabajo activo</small>
+                </div>
+            </article>
+            <article class="metric-card">
+                <div class="metric-icon tone-success">
+                    <svg viewBox="0 0 24 24"><path d="M4.5 18.5 9 14l3 3 7.5-8.5"/><path d="M15.5 8.5h4v4"/></svg>
+                </div>
+                <div class="metric-copy">
+                    <span>Completadas</span>
+                    <strong th:text="${tasksData.completedCount}">0</strong>
+                    <small>Ciclo cerrado</small>
+                </div>
+            </article>
+            <article class="metric-card">
+                <div class="metric-icon tone-danger">
+                    <svg viewBox="0 0 24 24"><path d="M12 4.5 4.8 18h14.4L12 4.5z"/><path d="M12 9v4.2M12 15.8h.01"/></svg>
+                </div>
+                <div class="metric-copy">
+                    <span>Vencidas</span>
+                    <strong th:text="${tasksData.overdueCount}">0</strong>
+                    <small>Requieren atención</small>
                 </div>
             </article>
         </section>
@@ -41,14 +64,14 @@
             <article class="panel-card table-panel">
                 <div class="panel-header">
                     <div>
-                        <p class="eyebrow">Trabajo activo</p>
-                        <h3>Últimas tareas relevantes</h3>
-                        <small>El historial más reciente del equipo operativo</small>
+                        <p class="eyebrow">Todas las obligaciones</p>
+                        <h3>Listado completo ordenado por prioridad</h3>
+                        <small th:text="|${tasksData.allTasks.size()} registros activos|">0 registros</small>
                     </div>
                     <a class="secondary-action" th:href="@{/reportes}" style="min-height:32px;padding:0 0.8rem">Abrir reportes</a>
                 </div>
 
-                <div class="table-wrap" th:if="${not #lists.isEmpty(dashboard.recentTasks)}">
+                <div class="table-wrap">
                     <table class="data-table dashboard-table">
                         <thead>
                             <tr>
@@ -62,11 +85,11 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="task : ${dashboard.recentTasks}">
+                            <tr th:each="task : ${tasksData.allTasks}">
                                 <td>
-                                    <a class="table-link" th:href="@{/obligaciones(taxPayerId=${task.clientId})}" th:text="${task.client}">Cliente</a>
+                                    <a class="table-link" th:href="@{/obligaciones(taxPayerId=${task.clientId})}" th:text="${task.clientName}">Cliente</a>
                                 </td>
-                                <td th:text="${task.task}">Declaración</td>
+                                <td th:text="${task.taskDesc}">Declaración</td>
                                 <td th:text="${task.responsible}">Contador</td>
                                 <td>
                                     <span class="priority-pill" th:classappend="| tone-${task.priorityTone}|" th:text="${task.priority}">Alta</span>
@@ -82,15 +105,11 @@
                                     </div>
                                 </td>
                             </tr>
+                            <tr th:if="${#lists.isEmpty(tasksData.allTasks)}">
+                                <td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted)">No hay obligaciones registradas.</td>
+                            </tr>
                         </tbody>
                     </table>
-                </div>
-
-                <div class="empty-state compact" th:if="${#lists.isEmpty(dashboard.recentTasks)}">
-                    <div class="empty-icon">
-                        <svg viewBox="0 0 24 24"><path d="M7 6.5h10M7 10.5h10M7 14.5h6"/><rect x="4" y="4.5" width="16" height="15" rx="3"/></svg>
-                    </div>
-                    <p>No hay tareas recientes para mostrar.</p>
                 </div>
             </article>
 
@@ -103,8 +122,8 @@
                     <a class="secondary-action" th:href="@{/calendario-fiscal}" style="min-height:32px;padding:0 0.8rem">Ver calendario</a>
                 </div>
 
-                <div class="critical-grid" th:if="${not #lists.isEmpty(dashboard.criticalClients)}">
-                    <article class="critical-card" th:each="client : ${dashboard.criticalClients}">
+                <div class="critical-grid" th:if="${not #lists.isEmpty(tasksData.criticalClients)}">
+                    <article class="critical-card" th:each="client : ${tasksData.criticalClients}">
                         <div class="critical-card-head">
                             <div>
                                 <strong th:text="${client.name}">Cliente crítico</strong>
@@ -117,7 +136,7 @@
                     </article>
                 </div>
 
-                <div class="empty-state compact" th:if="${#lists.isEmpty(dashboard.criticalClients)}">
+                <div class="empty-state compact" th:if="${#lists.isEmpty(tasksData.criticalClients)}">
                     <div class="empty-icon">
                         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 8v4M12 15.5h.01"/></svg>
                     </div>

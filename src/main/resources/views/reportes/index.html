@@ -13,26 +13,29 @@
             <div class="hero-meta">
                 <a class="primary-action" th:href="@{/calendario-fiscal}" style="width:max-content">Ver calendario</a>
                 <a class="secondary-action" th:href="@{/tareas}" style="width:max-content">Ir a tareas</a>
-                <span class="pill tone-success" th:text="${dashboard.metricCards[4].value}">97.8%</span>
+                <span class="pill tone-success" th:text="${reportsData.compliancePercent}">97.8%</span>
             </div>
         </section>
 
-        <section class="metric-grid">
-            <article class="metric-card" th:each="card : ${dashboard.metricCards}">
-                <div class="metric-icon" th:classappend="| tone-${card.tone}|">
-                    <svg th:switch="${card.variant}" viewBox="0 0 24 24">
-                        <path th:case="'pending'" d="M7 6.5h10M7 10.5h10M7 14.5h6"/>
-                        <path th:case="'overdue'" d="M12 4.5 4.8 18h14.4L12 4.5z"/><path th:case="'overdue'" d="M12 9v4.2M12 15.8h.01"/>
-                        <path th:case="'calendar'" d="M7 4.5v3M17 4.5v3M4.5 8.5h15M6 6.5h12a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2z"/>
-                        <path th:case="'clients'" d="M15.5 20v-1.2a4.3 4.3 0 0 0-4.3-4.3H7a4.3 4.3 0 0 0-4.3 4.3V20"/><circle th:case="'clients'" cx="9" cy="7" r="3.5"/><path th:case="'clients'" d="M19.5 20v-1.2a3.8 3.8 0 0 0-2.4-3.5"/>
-                        <path th:case="'compliance'" d="M4.5 18.5 9 14l3 3 7.5-8.5"/><path th:case="'compliance'" d="M15.5 8.5h4v4"/>
-                        <path th:case="*" d="M7 6.5h10M7 10.5h10M7 14.5h6"/>
-                    </svg>
+        <section class="metric-grid" style="grid-template-columns:repeat(2,1fr)">
+            <article class="metric-card">
+                <div class="metric-icon tone-primary">
+                    <svg viewBox="0 0 24 24"><path d="M7 6.5h10M7 10.5h10M7 14.5h6"/><rect x="4" y="4.5" width="16" height="15" rx="3"/></svg>
                 </div>
                 <div class="metric-copy">
-                    <span th:text="${card.label}">Tareas pendientes</span>
-                    <strong th:text="${card.value}">124</strong>
-                    <small th:text="${card.detail}">En seguimiento operativo</small>
+                    <span>Obligaciones totales</span>
+                    <strong th:text="${reportsData.totalObligations}">0</strong>
+                    <small>Registros activos en el sistema</small>
+                </div>
+            </article>
+            <article class="metric-card">
+                <div class="metric-icon tone-success">
+                    <svg viewBox="0 0 24 24"><path d="M4.5 18.5 9 14l3 3 7.5-8.5"/><path d="M15.5 8.5h4v4"/></svg>
+                </div>
+                <div class="metric-copy">
+                    <span>Completadas</span>
+                    <strong th:text="${reportsData.completedObligations}">0</strong>
+                    <small th:text="|${reportsData.compliancePercent} de cumplimiento|">97.8% cumplimiento</small>
                 </div>
             </article>
         </section>
@@ -48,7 +51,7 @@
                 </div>
 
                 <div class="bar-chart">
-                    <article class="bar-column" th:each="bar : ${dashboard.weeklyWorkload}">
+                    <article class="bar-column" th:each="bar : ${reportsData.weeklyWorkload}">
                         <div class="bar-track">
                             <span class="bar-fill" th:style="|height: ${bar.percent}%|"></span>
                         </div>
@@ -64,16 +67,16 @@
                         <p class="eyebrow">Cumplimiento mensual</p>
                         <h3>Avance de cierre</h3>
                     </div>
-                    <span class="pill tone-success" th:text="${dashboard.metricCards[4].value}">97.8%</span>
+                    <span class="pill tone-success" th:text="${reportsData.compliancePercent}">97.8%</span>
                 </div>
 
                 <div class="line-chart-shell">
                     <svg class="line-chart" viewBox="0 0 100 40" preserveAspectRatio="none">
-                        <path th:attr="d=${dashboard.monthlyLinePath}"/>
-                        <circle th:each="point : ${dashboard.monthlyCompliance}" th:attr="cx=${point.x},cy=${point.y},r=2.4"/>
+                        <path th:attr="d=${reportsData.monthlyLinePath}"/>
+                        <circle th:each="point : ${reportsData.monthlyCompliance}" th:attr="cx=${point.x},cy=${point.y},r=2.4"/>
                     </svg>
                     <div class="line-legend">
-                        <span class="legend-item" th:each="point : ${dashboard.monthlyCompliance}">
+                        <span class="legend-item" th:each="point : ${reportsData.monthlyCompliance}">
                             <span class="legend-swatch tone-primary"></span>
                             <strong th:text="${point.label}">Ene</strong>
                             <small th:text="${point.valueLabel}">72.0%</small>
@@ -88,28 +91,62 @@
                         <p class="eyebrow">Distribución</p>
                         <h3>Tipos de obligaciones</h3>
                     </div>
-                    <span class="pill tone-warning">5 categorías</span>
+                    <span class="pill tone-warning" th:text="|${reportsData.typeBreakdown.size()} categorías|">5 categorías</span>
                 </div>
 
                 <div class="donut-wrap">
-                    <div class="donut-chart" th:style="|--distribution: ${dashboard.distributionStyle}|"></div>
+                    <div class="donut-chart" th:style="|--distribution: ${reportsData.distributionStyle}|"></div>
                     <div class="donut-center">
-                        <strong th:text="${dashboard.metricCards[2].value}">42</strong>
-                        <small th:text="${dashboard.metricCards[2].label}">Obligaciones</small>
+                        <strong th:text="${reportsData.totalObligations}">42</strong>
+                        <small>Obligaciones</small>
                     </div>
                 </div>
 
                 <div class="legend-list">
-                    <span class="legend-item" th:each="slice : ${dashboard.distributionSlices}">
+                    <span class="legend-item" th:each="slice : ${reportsData.distributionSlices}">
                         <span class="legend-swatch" th:classappend="| tone-${slice.tone}|"></span>
                         <strong th:text="${slice.label}">IVA</strong>
-                        <small th:text="${slice.summary}">12 obligaciones • 28.6%</small>
+                        <small th:text="${slice.summary}">12 obligaciones · 28.6%</small>
                     </span>
                 </div>
             </article>
         </section>
 
         <section class="grid-2">
+            <article class="panel-card">
+                <div class="panel-header">
+                    <div>
+                        <p class="eyebrow">Desglose por tipo</p>
+                        <h3>Concentración de la cartera</h3>
+                    </div>
+                    <span class="pill tone-info">Detalle</span>
+                </div>
+                <div class="table-wrap">
+                    <table class="data-table dashboard-table">
+                        <thead>
+                            <tr>
+                                <th>Tipo</th>
+                                <th>Cantidad</th>
+                                <th>Participación</th>
+                                <th>Indicador</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="row : ${reportsData.typeBreakdown}">
+                                <td th:text="${row.label}">IVA</td>
+                                <td th:text="${row.count}">0</td>
+                                <td th:text="${#numbers.formatPercent(row.percent / 100, 1, 1)}">28.6%</td>
+                                <td>
+                                    <div style="height:6px;border-radius:4px;background:var(--surface-2);overflow:hidden;min-width:80px">
+                                        <div th:style="|width:${row.percent}%;height:100%;background:var(--${row.tone})|"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+
             <article class="panel-card">
                 <div class="panel-header">
                     <div>
@@ -122,24 +159,11 @@
                     La vista combina tres señales: carga semanal para ordenar el trabajo, cumplimiento mensual para medir avance real y distribución por tipo para equilibrar prioridades.
                 </p>
                 <div class="hero-meta">
-                    <span class="pill tone-warning">Pendientes <strong th:text="${dashboard.metricCards[0].value}">124</strong></span>
-                    <span class="pill tone-danger">Vencidas <strong th:text="${dashboard.metricCards[1].value}">8</strong></span>
-                    <span class="pill tone-success">Cumplimiento <strong th:text="${dashboard.metricCards[4].value}">97.8%</strong></span>
+                    <span class="pill tone-warning">Pendientes <strong th:text="${tasksData != null ? tasksData.pendingCount : dashboard.metricCards[0].value}">124</strong></span>
+                    <span class="pill tone-danger">Vencidas <strong th:text="${tasksData != null ? tasksData.overdueCount : dashboard.metricCards[1].value}">8</strong></span>
+                    <span class="pill tone-success">Cumplimiento <strong th:text="${reportsData.compliancePercent}">97.8%</strong></span>
                 </div>
-            </article>
-
-            <article class="panel-card">
-                <div class="panel-header">
-                    <div>
-                        <p class="eyebrow">Acciones</p>
-                        <h3>Atajos hacia la operación</h3>
-                    </div>
-                    <a class="secondary-action" th:href="@{/notificaciones}" style="min-height:32px;padding:0 0.8rem">Correo</a>
-                </div>
-                <p>
-                    Si algo cambia en el tablero, la mejor siguiente acción suele ser abrir tareas, revisar el calendario o notificar al cliente correcto.
-                </p>
-                <div class="hero-meta">
+                <div class="hero-meta" style="margin-top:0.75rem">
                     <a class="primary-action" th:href="@{/tareas}" style="width:max-content">Ver tareas</a>
                     <a class="secondary-action" th:href="@{/calendario-fiscal}" style="width:max-content">Calendario</a>
                     <a class="secondary-action" th:href="@{/configuracion}" style="width:max-content">Configuración</a>

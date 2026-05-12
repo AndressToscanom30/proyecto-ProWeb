@@ -14,10 +14,28 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.cronos.gestiontributaria.auth.model.User;
 import com.cronos.gestiontributaria.auth.service.UserService;
+import com.cronos.gestiontributaria.clientes.model.TaxPayer;
 import com.cronos.gestiontributaria.clientes.service.TaxPayerService;
 import com.cronos.gestiontributaria.common.view.DashboardSummary;
+import com.cronos.gestiontributaria.common.view.PageViewModels;
+import com.cronos.gestiontributaria.common.view.PageViewModels.CalendarDayDetail;
+import com.cronos.gestiontributaria.common.view.PageViewModels.MonthNav;
+import com.cronos.gestiontributaria.common.view.PageViewModels.TasksPageData;
+import com.cronos.gestiontributaria.common.view.PageViewModels.ReportsPageData;
 import com.cronos.gestiontributaria.empleados.service.EmployeeService;
+import com.cronos.gestiontributaria.obligaciones.model.TaxObligation;
 import com.cronos.gestiontributaria.obligaciones.repository.TaxObligationRepository;
+
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
 
@@ -118,30 +136,57 @@ public class AuthController {
     @GetMapping("/calendario-fiscal")
     public String calendarPage(Model model, Authentication authentication) {
         populateWorkspaceModel(model, authentication);
+
+        List<TaxObligation> obligations = obligationRepository.findAll();
+        List<TaxPayer> payers = taxPayerService.findAll();
+        Map<String, TaxPayer> clientsById = payers.stream()
+            .filter(p -> p != null && p.getId() != null)
+            .collect(Collectors.toMap(TaxPayer::getId, Function.identity(), (a, b) -> a, LinkedHashMap::new));
+        LocalDate today = LocalDate.now();
+        YearMonth currentMonth = YearMonth.from(today);
+
+        List<CalendarDayDetail> dayDetails = PageViewModels.buildCalendarDayDetails(obligations, clientsById, today, currentMonth);
+        MonthNav prevMonth = new MonthNav(formatMonthLabel(currentMonth.minusMonths(1)), currentMonth.minusMonths(1).getYear(), currentMonth.minusMonths(1).getMonthValue());
+        MonthNav nextMonth = new MonthNav(formatMonthLabel(currentMonth.plusMonths(1)), currentMonth.plusMonths(1).getYear(), currentMonth.plusMonths(1).getMonthValue());
+
+        model.addAttribute("calendarDays", dayDetails);
+        model.addAttribute("prevMonth", prevMonth);
+        model.addAttribute("nextMonth", nextMonth);
+        model.addAttribute("currentMonthLabel", formatMonthLabel(currentMonth));
+
         return "calendario/index";
     }
 
-    /**
-     * Muestra la vista dedicada de tareas y seguimiento.
-     */
     @GetMapping("/tareas")
     public String tasksPage(Model model, Authentication authentication) {
         populateWorkspaceModel(model, authentication);
+
+        List<TaxObligation> obligations = obligationRepository.findAll();
+        List<TaxPayer> payers = taxPayerService.findAll();
+        Map<String, TaxPayer> clientsById = payers.stream()
+            .filter(p -> p != null && p.getId() != null)
+            .collect(Collectors.toMap(TaxPayer::getId, Function.identity(), (a, b) -> a, LinkedHashMap::new));
+        LocalDate today = LocalDate.now();
+
+        TasksPageData tasksData = PageViewModels.buildTasksPageData(obligations, clientsById, today);
+        model.addAttribute("tasksData", tasksData);
+
         return "tareas/index";
     }
 
-    /**
-     * Muestra la vista dedicada de reportes.
-     */
     @GetMapping("/reportes")
     public String reportsPage(Model model, Authentication authentication) {
         populateWorkspaceModel(model, authentication);
+
+        List<TaxObligation> obligations = obligationRepository.findAll();
+        LocalDate today = LocalDate.now();
+
+        ReportsPageData reportsData = PageViewModels.buildReportsPageData(obligations, today);
+        model.addAttribute("reportsData", reportsData);
+
         return "reportes/index";
     }
 
-    /**
-     * Muestra la vista dedicada de configuración general.
-     */
     @GetMapping("/configuracion")
     public String configurationPage(Model model, Authentication authentication) {
         populateWorkspaceModel(model, authentication);
@@ -187,5 +232,11 @@ public class AuthController {
     private User loadCurrentUser(Authentication authentication) {
         return userService.findByEmail(authentication.getName())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario autenticado no encontrado"));
+    }
+
+    private String formatMonthLabel(YearMonth month) {
+        Locale locale = Locale.forLanguageTag("es-CO");
+        String name = month.getMonth().getDisplayName(TextStyle.FULL, locale);
+        return Character.toUpperCase(name.charAt(0)) + name.substring(1) + " " + month.getYear();
     }
 }

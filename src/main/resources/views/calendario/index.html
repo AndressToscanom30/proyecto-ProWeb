@@ -7,7 +7,8 @@
                 <p class="eyebrow">Calendario fiscal</p>
                 <h2>Agenda mensual con lectura operativa real</h2>
                 <p>
-                    Revisa el mes actual, abre obligaciones por vencer y separa el trabajo de mayor presión sin salir de la vista.
+                    Cada día del mes muestra las obligaciones con vencimiento, su estado y el cliente asociado.
+                    Navega entre meses para planificar la carga del equipo.
                 </p>
             </div>
             <div class="hero-meta">
@@ -17,25 +18,11 @@
             </div>
         </section>
 
-        <section class="metric-grid">
-            <article class="metric-card" th:each="card : ${dashboard.metricCards}">
-                <div class="metric-icon" th:classappend="| tone-${card.tone}|">
-                    <svg th:switch="${card.variant}" viewBox="0 0 24 24">
-                        <path th:case="'pending'" d="M7 6.5h10M7 10.5h10M7 14.5h6"/>
-                        <path th:case="'overdue'" d="M12 4.5 4.8 18h14.4L12 4.5z"/><path th:case="'overdue'" d="M12 9v4.2M12 15.8h.01"/>
-                        <path th:case="'calendar'" d="M7 4.5v3M17 4.5v3M4.5 8.5h15M6 6.5h12a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2z"/>
-                        <path th:case="'clients'" d="M15.5 20v-1.2a4.3 4.3 0 0 0-4.3-4.3H7a4.3 4.3 0 0 0-4.3 4.3V20"/><circle th:case="'clients'" cx="9" cy="7" r="3.5"/><path th:case="'clients'" d="M19.5 20v-1.2a3.8 3.8 0 0 0-2.4-3.5"/>
-                        <path th:case="'compliance'" d="M4.5 18.5 9 14l3 3 7.5-8.5"/><path th:case="'compliance'" d="M15.5 8.5h4v4"/>
-                        <path th:case="*" d="M7 6.5h10M7 10.5h10M7 14.5h6"/>
-                    </svg>
-                </div>
-                <div class="metric-copy">
-                    <span th:text="${card.label}">Tareas pendientes</span>
-                    <strong th:text="${card.value}">124</strong>
-                    <small th:text="${card.detail}">En seguimiento operativo</small>
-                </div>
-            </article>
-        </section>
+        <nav class="month-nav" style="display:flex;gap:0.5rem;align-items:center;margin-bottom:1rem">
+            <a class="secondary-action" th:href="@{/calendario-fiscal(year=${prevMonth.year}, month=${prevMonth.month})}" th:text="|← ${prevMonth.label}|" style="min-height:32px;padding:0 0.8rem">← Mes anterior</a>
+            <strong style="flex:1;text-align:center;font-family:var(--font-heading);font-size:1.15rem" th:text="${currentMonthLabel}">Mayo 2026</strong>
+            <a class="secondary-action" th:href="@{/calendario-fiscal(year=${nextMonth.year}, month=${nextMonth.month})}" th:text="|${nextMonth.label} →|" style="min-height:32px;padding:0 0.8rem">Mes siguiente →</a>
+        </nav>
 
         <section class="dashboard-grid">
             <article class="panel-card calendar-panel">
@@ -43,7 +30,7 @@
                     <div>
                         <p class="eyebrow">Calendario mensual</p>
                         <h3 th:text="${dashboard.monthLabel}">Mayo 2026</h3>
-                        <small>Vista mensual de vencimientos y carga operativa</small>
+                        <small>Vencimientos registrados en el sistema</small>
                     </div>
                     <span class="pill tone-primary" th:text="${dashboard.metricCards[2].value}">42 obligaciones</span>
                 </div>
@@ -56,22 +43,24 @@
                 </div>
 
                 <div class="calendar-headings" aria-hidden="true">
-                    <span>Lun</span>
-                    <span>Mar</span>
-                    <span>Mié</span>
-                    <span>Jue</span>
-                    <span>Vie</span>
-                    <span>Sáb</span>
-                    <span>Dom</span>
+                    <span>Lun</span> <span>Mar</span> <span>Mié</span> <span>Jue</span> <span>Vie</span> <span>Sáb</span> <span>Dom</span>
                 </div>
 
                 <div class="calendar-grid">
-                    <article class="calendar-day" th:each="day : ${dashboard.calendarDays}"
+                    <article class="calendar-day" th:each="day : ${calendarDays}"
                              th:classappend="| tone-${day.tone}|"
                              th:style="${!day.currentMonth} ? 'opacity: 0.42;' : ''">
                         <span class="calendar-number" th:text="${day.dayNumber}">1</span>
                         <span class="calendar-count" th:if="${day.taskCount > 0}" th:text="${day.taskCount}">2</span>
                         <span class="pill tone-info" th:if="${day.today}">Hoy</span>
+
+                        <div class="day-obligations" th:if="${not #lists.isEmpty(day.obligations)}" style="margin-top:0.35rem;display:flex;flex-direction:column;gap:0.2rem;width:100%">
+                            <small th:each="obl : ${day.obligations}"
+                                   th:classappend="|pill tone-${obl.statusTone}|"
+                                   th:attr="title=${obl.clientName + ' — ' + obl.obligationType}"
+                                   style="font-size:0.55rem;padding:0.1rem 0.25rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;cursor:default"
+                                   th:text="${obl.obligationType}">IVA</small>
+                        </div>
                     </article>
                 </div>
             </article>
@@ -141,7 +130,7 @@
                     <span class="pill tone-success">Operativo</span>
                 </div>
                 <p>
-                    Esta vista concentra los vencimientos y enlaza directamente con la gestión de obligaciones, el centro de notificaciones y el análisis de reportes.
+                    Cada celda del calendario enlaza con las obligaciones del día. Pasa el mouse sobre las etiquetas para ver el cliente y el tipo de obligación sin salir de la vista.
                 </p>
                 <div class="hero-meta">
                     <a class="primary-action" th:href="@{/tareas}" style="width:max-content">Ir a tareas</a>
