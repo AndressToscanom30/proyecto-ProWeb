@@ -1,5 +1,11 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reportes | TaxControl</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}" />
+</head>
 <body th:replace="~{fragments/layout :: shell('Reportes', 'Lectura visual del cumplimiento, la carga semanal y la distribución de obligaciones', 'reportes', ~{::content})}">
     <section th:fragment="content" class="page-stack">
         <section class="page-hero">
