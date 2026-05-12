@@ -52,7 +52,7 @@
                         <h3 th:text="${dashboard.monthLabel}">Mayo 2026</h3>
                         <small>Vista mensual de vencimientos y carga operativa</small>
                     </div>
-                    <span class="pill tone-primary" th:text="${dashboard.metricCards[2].value}">42 obligaciones</span>
+                    <a class="secondary-action" th:href="@{/calendario-fiscal}" style="min-height:32px;padding:0 0.8rem">Abrir calendario</a>
                 </div>
 
                 <div class="calendar-legend">
@@ -125,7 +125,7 @@
                         <p class="eyebrow">Carga semanal</p>
                         <h3>Volumen de trabajo</h3>
                     </div>
-                    <span class="pill tone-primary">Barras</span>
+                    <a class="secondary-action" th:href="@{/reportes}" style="min-height:32px;padding:0 0.8rem">Ver reportes</a>
                 </div>
 
                 <div class="bar-chart">
@@ -145,7 +145,7 @@
                         <p class="eyebrow">Cumplimiento mensual</p>
                         <h3>Avance de cierre</h3>
                     </div>
-                    <span class="pill tone-success" th:text="${dashboard.metricCards[4].value}">97.8%</span>
+                    <a class="secondary-action" th:href="@{/reportes}" style="min-height:32px;padding:0 0.8rem">Abrir análisis</a>
                 </div>
 
                 <div class="line-chart-shell">
@@ -169,7 +169,7 @@
                         <p class="eyebrow">Distribución</p>
                         <h3>Tipos de tareas</h3>
                     </div>
-                    <span class="pill tone-warning">5 categorías</span>
+                    <a class="secondary-action" th:href="@{/reportes}" style="min-height:32px;padding:0 0.8rem">Ver detalle</a>
                 </div>
 
                 <div class="donut-wrap">
@@ -196,7 +196,7 @@
                     <p class="eyebrow">Tareas recientes</p>
                     <h3>Trabajo activo y próximos hitos</h3>
                 </div>
-                <span class="pill tone-primary" th:text="|${dashboard.recentTasks.size()} registros|">8 registros</span>
+                    <a class="secondary-action" th:href="@{/tareas}" style="min-height:32px;padding:0 0.8rem">Ver tareas</a>
             </div>
 
             <div class="table-wrap" th:if="${not #lists.isEmpty(dashboard.recentTasks)}">
@@ -251,6 +251,7 @@
                     <p class="eyebrow">Clientes críticos</p>
                     <h3>Riesgo operativo y próximos vencimientos</h3>
                 </div>
+                <a class="secondary-action" th:href="@{/tareas}" style="min-height:32px;padding:0 0.8rem">Abrir seguimiento</a>
             </div>
 
             <div class="critical-grid" th:if="${not #lists.isEmpty(dashboard.criticalClients)}">
@@ -300,13 +301,14 @@
                         <p class="eyebrow">Configuración</p>
                         <h3>Ajustes y administración</h3>
                     </div>
-                    <span class="pill tone-primary">Sistema</span>
+                    <a class="secondary-action" th:href="@{/configuracion}" style="min-height:32px;padding:0 0.8rem">Abrir configuración</a>
                 </div>
                 <p>
                     Administra usuarios, accesos y parámetros del sistema desde un panel más claro y directo.
                 </p>
                 <div class="hero-meta">
                     <a sec:authorize="hasRole('ADMIN')" class="primary-action" th:href="@{/admin}" style="width:max-content">Ir al panel</a>
+                    <a class="secondary-action" th:href="@{/configuracion}" style="width:max-content">Ver ajustes</a>
                     <span class="pill tone-neutral">Seguridad</span>
                 </div>
             </article>

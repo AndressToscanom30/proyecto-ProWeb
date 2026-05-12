@@ -1,6 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
 
 :root {
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: 'Space Grotesk', 'Inter', sans-serif;
   --bg: #0b0b0e;
   --bg-soft: #101014;
   --surface: #18181d;
@@ -46,9 +48,10 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 0.9375rem;
-  line-height: 1.6;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.55;
+  letter-spacing: -0.01em;
   color: var(--text);
   background: linear-gradient(160deg, var(--bg) 0%, var(--bg-soft) 100%);
 }
@@ -73,9 +76,14 @@ button, input, select, textarea {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Space Grotesk', sans-serif;
-  letter-spacing: -0.03em;
+  font-family: var(--font-heading);
+  letter-spacing: -0.025em;
   line-height: 1.15;
+  text-wrap: balance;
+}
+
+p {
+  line-height: 1.65;
 }
 
 .eyebrow {
@@ -83,7 +91,7 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 0.7rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.14em;
   color: var(--text-muted);
 }
 
@@ -162,7 +170,7 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: var(--radius-md);
   background: linear-gradient(135deg, var(--accent), #818cf8);
   color: #fff;
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-heading);
   font-size: 1.1rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
@@ -361,7 +369,7 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: var(--radius-sm);
   background: linear-gradient(135deg, var(--accent), #818cf8);
   color: #fff;
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-heading);
   font-size: 0.95rem;
   font-weight: 700;
 }
@@ -480,7 +488,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .info-card .card-value {
   display: block;
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-heading);
   font-size: 1.1rem;
   font-weight: 600;
   color: var(--text);
@@ -526,11 +534,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .panel-header h3 small {
-  font-family: 'Inter', sans-serif;
+  display: block;
+  margin-top: 0.2rem;
+  font-family: var(--font-body);
   font-size: 0.8rem;
   font-weight: 500;
   color: var(--text-muted);
   letter-spacing: 0;
+  line-height: 1.45;
 }
 
 .table-wrap {
@@ -604,7 +615,7 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--danger-soft);
   border: 1px solid var(--danger-border);
   color: var(--danger);
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-heading);
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 1.25rem;
@@ -958,7 +969,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .due-date {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: var(--font-heading);
   font-size: 0.85rem;
   font-weight: 500;
   color: var(--text);
@@ -1054,7 +1065,7 @@ body {
   position: relative;
   margin: 0;
   min-height: 100vh;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: var(--font-body);
   font-size: 0.9375rem;
   line-height: 1.6;
   color: var(--text);
@@ -1098,7 +1109,7 @@ h5,
 h6 {
   margin-top: 0;
   margin-bottom: 0;
-  font-family: 'Poppins', 'Inter', sans-serif;
+  font-family: var(--font-heading);
   line-height: 1.15;
   letter-spacing: -0.03em;
 }

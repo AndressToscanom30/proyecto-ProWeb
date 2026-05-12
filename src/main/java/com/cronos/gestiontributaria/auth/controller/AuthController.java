@@ -108,15 +108,44 @@ public class AuthController {
      */
     @GetMapping("/dashboard")
     public String dashboard(Model model, Authentication authentication) {
-        User user = userService.findByEmail(authentication.getName())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario autenticado no encontrado"));
-        model.addAttribute("usuario", user);
-        model.addAttribute("roles", authentication.getAuthorities());
-        model.addAttribute("dashboard", DashboardSummary.build(taxPayerService.findAll(), obligationRepository.findAll()));
-        model.addAttribute("totalContribuyentes", taxPayerService.count());
-        model.addAttribute("totalObligaciones", obligationRepository.count());
-        model.addAttribute("totalEmpleados", employeeService.count());
+        populateWorkspaceModel(model, authentication);
         return "dashboard";
+    }
+
+    /**
+     * Muestra una vista dedicada del calendario fiscal.
+     */
+    @GetMapping("/calendario-fiscal")
+    public String calendarPage(Model model, Authentication authentication) {
+        populateWorkspaceModel(model, authentication);
+        return "calendario/index";
+    }
+
+    /**
+     * Muestra la vista dedicada de tareas y seguimiento.
+     */
+    @GetMapping("/tareas")
+    public String tasksPage(Model model, Authentication authentication) {
+        populateWorkspaceModel(model, authentication);
+        return "tareas/index";
+    }
+
+    /**
+     * Muestra la vista dedicada de reportes.
+     */
+    @GetMapping("/reportes")
+    public String reportsPage(Model model, Authentication authentication) {
+        populateWorkspaceModel(model, authentication);
+        return "reportes/index";
+    }
+
+    /**
+     * Muestra la vista dedicada de configuración general.
+     */
+    @GetMapping("/configuracion")
+    public String configurationPage(Model model, Authentication authentication) {
+        populateWorkspaceModel(model, authentication);
+        return "configuracion/index";
     }
 
     /**
@@ -128,11 +157,8 @@ public class AuthController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/admin")
     public String adminPanel(Model model, Authentication authentication) {
-        User user = userService.findByEmail(authentication.getName())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
-        model.addAttribute("usuario", user);
+        populateWorkspaceModel(model, authentication);
         model.addAttribute("usuarios", userService.findAll());
-        model.addAttribute("totalUsuarios", userService.findAll().size());
         return "admin/panel";
     }
 
@@ -144,5 +170,22 @@ public class AuthController {
     @RequestMapping("/403")
     public String accessDenied() {
         return "error/403";
+    }
+
+    private User populateWorkspaceModel(Model model, Authentication authentication) {
+        User user = loadCurrentUser(authentication);
+        model.addAttribute("usuario", user);
+        model.addAttribute("roles", authentication.getAuthorities());
+        model.addAttribute("dashboard", DashboardSummary.build(taxPayerService.findAll(), obligationRepository.findAll()));
+        model.addAttribute("totalContribuyentes", taxPayerService.count());
+        model.addAttribute("totalObligaciones", obligationRepository.count());
+        model.addAttribute("totalEmpleados", employeeService.count());
+        model.addAttribute("totalUsuarios", userService.findAll().size());
+        return user;
+    }
+
+    private User loadCurrentUser(Authentication authentication) {
+        return userService.findByEmail(authentication.getName())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario autenticado no encontrado"));
     }
 }

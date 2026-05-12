@@ -44,11 +44,11 @@
                     <svg viewBox="0 0 24 24"><path d="M15 17.5H9"/><path d="M17 17.5H7a2 2 0 0 0 1.7-2l.3-4.2A3.9 3.9 0 0 1 13 7.8v-.8a1 1 0 1 1 2 0v.8a3.9 3.9 0 0 1 4 3.5l.3 4.2a2 2 0 0 0 1.7 2z"/></svg>
                     <span>Notificaciones</span>
                 </a>
-                <a th:href="@{/dashboard#calendario-fiscal}" class="sidebar-link">
+                <a th:href="@{/calendario-fiscal}" class="sidebar-link" th:classappend="${activeSection} == 'calendario' ? ' is-active' : ''">
                     <svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M8 3.5v4M16 3.5v4M3.5 10.5h17"/></svg>
                     <span>Calendario Fiscal</span>
                 </a>
-                <a th:href="@{/dashboard#tareas-recientes}" class="sidebar-link">
+                <a th:href="@{/tareas}" class="sidebar-link" th:classappend="${activeSection} == 'tareas' ? ' is-active' : ''">
                     <svg viewBox="0 0 24 24"><path d="M5 7h8M5 12h14M5 17h10"/><path d="M17 7l1.5 1.5L21 6"/></svg>
                     <span>Tareas</span>
                 </a>
@@ -64,7 +64,7 @@
                     <svg viewBox="0 0 24 24"><path d="M7 4.5h6l4.5 4.5V19a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 19V6A1.5 1.5 0 0 1 7 4.5z"/><path d="M13 4.5V9h4.5"/></svg>
                     <span>Documentos</span>
                 </a>
-                <a th:href="@{/dashboard#reportes}" class="sidebar-link">
+                <a th:href="@{/reportes}" class="sidebar-link" th:classappend="${activeSection} == 'reportes' ? ' is-active' : ''">
                     <svg viewBox="0 0 24 24"><path d="M5 19.5h14"/><path d="M7 15V9"/><path d="M12 15V6.5"/><path d="M17 15v-4.5"/></svg>
                     <span>Reportes</span>
                 </a>
@@ -72,7 +72,7 @@
                     <svg viewBox="0 0 24 24"><path d="M4.5 19.5v-1.2a4.3 4.3 0 0 1 4.3-4.3h6.4a4.3 4.3 0 0 1 4.3 4.3v1.2"/><circle cx="12" cy="8" r="3.5"/></svg>
                     <span>Equipo</span>
                 </a>
-                <a th:href="@{/dashboard#configuracion}" class="sidebar-link" th:classappend="${activeSection} == 'configuracion' ? ' is-active' : ''">
+                <a th:href="@{/configuracion}" class="sidebar-link" th:classappend="${activeSection} == 'configuracion' ? ' is-active' : ''">
                     <svg viewBox="0 0 24 24"><path d="M9.4 4.8h5.2l.7 2.3 2.2 1.3-.6 2.4.6 2.4-2.2 1.3-.7 2.3H9.4l-.7-2.3-2.2-1.3.6-2.4-.6-2.4 2.2-1.3z"/><circle cx="12" cy="12" r="2.3"/></svg>
                     <span>Configuración</span>
                 </a>
@@ -115,7 +115,7 @@
                         <svg viewBox="0 0 24 24"><path d="M15 17.5H9"/><path d="M17 17.5H7a2 2 0 0 0 1.7-2l.3-4.2A3.9 3.9 0 0 1 13 7.8v-.8a1 1 0 1 1 2 0v.8a3.9 3.9 0 0 1 4 3.5l.3 4.2a2 2 0 0 0 1.7 2z"/></svg>
                     </a>
 
-                    <a class="icon-button" th:href="@{/dashboard#configuracion}" aria-label="Configuración rápida">
+                    <a class="icon-button" th:href="@{/configuracion}" aria-label="Configuración rápida">
                         <svg viewBox="0 0 24 24"><path d="M9.4 4.8h5.2l.7 2.3 2.2 1.3-.6 2.4.6 2.4-2.2 1.3-.7 2.3H9.4l-.7-2.3-2.2-1.3.6-2.4-.6-2.4 2.2-1.3z"/><circle cx="12" cy="12" r="2.3"/></svg>
                     </a>
 
