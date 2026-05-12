@@ -190,6 +190,7 @@ public class AuthController {
     @GetMapping("/configuracion")
     public String configurationPage(Model model, Authentication authentication) {
         populateWorkspaceModel(model, authentication);
+        model.addAttribute("usuarios", userService.findAll());
         return "configuracion/index";
     }
 

@@ -24,7 +24,7 @@
             </div>
         </section>
 
-        <section class="metric-grid">
+        <section class="metric-grid cols-5">
             <article class="metric-card" th:each="card : ${dashboard.metricCards}">
                 <div class="metric-icon" th:classappend="| tone-${card.tone}|">
                     <svg th:switch="${card.variant}" viewBox="0 0 24 24">
