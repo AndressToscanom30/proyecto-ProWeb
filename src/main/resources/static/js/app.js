@@ -3,11 +3,80 @@
 
     document.addEventListener('DOMContentLoaded', function() {
 
+        initThemeMode();
+        initThemeToggle();
+        initSidebarState();
+        initSidebarToggle();
         initStatusForms();
         initOverrideDateToggle();
         initConfirmDialogs();
         initTableSearch();
     });
+
+    function initThemeMode() {
+        var root = document.documentElement;
+        var storedTheme = null;
+
+        try {
+            storedTheme = localStorage.getItem('cronos-theme');
+        } catch (error) {
+            storedTheme = null;
+        }
+
+        var preferredTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+            ? 'dark'
+            : 'light';
+        root.dataset.theme = storedTheme || preferredTheme;
+    }
+
+    function initThemeToggle() {
+        var button = document.querySelector('[data-theme-toggle]');
+        if (!button) return;
+
+        button.addEventListener('click', function() {
+            var root = document.documentElement;
+            var nextTheme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+            root.dataset.theme = nextTheme;
+
+            try {
+                localStorage.setItem('cronos-theme', nextTheme);
+            } catch (error) {
+                // No persistence available.
+            }
+        });
+    }
+
+    function initSidebarState() {
+        var frame = document.querySelector('.app-frame');
+        if (!frame) return;
+
+        var collapsed = false;
+
+        try {
+            collapsed = localStorage.getItem('cronos-sidebar-collapsed') === 'true';
+        } catch (error) {
+            collapsed = false;
+        }
+
+        frame.classList.toggle('sidebar-collapsed', collapsed);
+    }
+
+    function initSidebarToggle() {
+        var button = document.querySelector('[data-sidebar-toggle]');
+        var frame = document.querySelector('.app-frame');
+        if (!button || !frame) return;
+
+        button.addEventListener('click', function() {
+            var collapsed = !frame.classList.contains('sidebar-collapsed');
+            frame.classList.toggle('sidebar-collapsed', collapsed);
+
+            try {
+                localStorage.setItem('cronos-sidebar-collapsed', String(collapsed));
+            } catch (error) {
+                // No persistence available.
+            }
+        });
+    }
 
     function initStatusForms() {
         document.querySelectorAll('.status-form select').forEach(function(select) {

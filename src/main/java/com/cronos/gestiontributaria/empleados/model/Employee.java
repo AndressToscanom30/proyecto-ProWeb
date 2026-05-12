@@ -13,8 +13,10 @@ import com.cronos.gestiontributaria.obligaciones.model.TaxObligation;
 /**
  * Modelo de empleado que extiende la información base de un usuario.
  *
- * <p>Agrega atributos operativos como cargo, teléfono, fecha de ingreso,
- * tareas asignadas y obligaciones tributarias.</p>
+ * <p>
+ * Agrega atributos operativos como cargo, teléfono, fecha de ingreso,
+ * tareas asignadas y obligaciones tributarias.
+ * </p>
  */
 public class Employee extends User {
     private String position;
@@ -26,17 +28,17 @@ public class Employee extends User {
     /**
      * Crea un empleado con sus datos base, contacto y colecciones operativas.
      *
-     * @param name nombre del empleado
-     * @param email correo del empleado
-     * @param passwordHash contraseña cifrada
-     * @param active estado de la cuenta
-     * @param role rol asociado
+     * @param name          nombre del empleado
+     * @param email         correo del empleado
+     * @param passwordHash  contraseña cifrada
+     * @param active        estado de la cuenta
+     * @param role          rol asociado
      * @param notifications notificaciones del usuario
-     * @param position cargo o puesto
-     * @param phone teléfono de contacto
-     * @param hireDate fecha de ingreso
-     * @param tasks tareas asignadas
-     * @param obligations obligaciones tributarias asociadas
+     * @param position      cargo o puesto
+     * @param phone         teléfono de contacto
+     * @param hireDate      fecha de ingreso
+     * @param tasks         tareas asignadas
+     * @param obligations   obligaciones tributarias asociadas
      */
     public Employee(String name, String email, String passwordHash, boolean active, Role role,
             List<Notification> notifications,

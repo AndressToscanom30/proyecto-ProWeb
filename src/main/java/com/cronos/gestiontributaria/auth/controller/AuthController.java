@@ -15,6 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.cronos.gestiontributaria.auth.model.User;
 import com.cronos.gestiontributaria.auth.service.UserService;
 import com.cronos.gestiontributaria.clientes.service.TaxPayerService;
+import com.cronos.gestiontributaria.common.view.DashboardSummary;
 import com.cronos.gestiontributaria.empleados.service.EmployeeService;
 import com.cronos.gestiontributaria.obligaciones.repository.TaxObligationRepository;
 
@@ -111,6 +112,7 @@ public class AuthController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario autenticado no encontrado"));
         model.addAttribute("usuario", user);
         model.addAttribute("roles", authentication.getAuthorities());
+        model.addAttribute("dashboard", DashboardSummary.build(taxPayerService.findAll(), obligationRepository.findAll()));
         model.addAttribute("totalContribuyentes", taxPayerService.count());
         model.addAttribute("totalObligaciones", obligationRepository.count());
         model.addAttribute("totalEmpleados", employeeService.count());
