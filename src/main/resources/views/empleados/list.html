@@ -33,7 +33,7 @@
                             <th>Email</th>
                             <th>Cargo</th>
                             <th>Rol</th>
-                            <th>Telefono</th>
+                            <th>Teléfono</th>
                             <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
@@ -46,7 +46,7 @@
                             <td>
                                 <span class="chip" th:text="${e.role != null ? e.role.description : 'Sin rol'}">Rol</span>
                             </td>
-                            <td th:text="${e.phone}">Telefono</td>
+                            <td th:text="${e.phone}">Teléfono</td>
                             <td>
                                 <span class="pill tone-success" th:if="${e.active}">Activo</span>
                                 <span class="pill tone-danger" th:if="${!e.active}">Inactivo</span>

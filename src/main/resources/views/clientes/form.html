@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title th:text="${contribuyente.id != null ? 'Editar cliente | TaxControl' : 'Nuevo cliente | TaxControl'}">Cliente | TaxControl</title>
+    <title th:text="${contribuyente != null and contribuyente.id != null ? 'Editar cliente | TaxControl' : 'Nuevo cliente | TaxControl'}">Cliente | TaxControl</title>
     <link rel="stylesheet" th:href="@{/css/app.css}" />
 </head>
-<body th:replace="~{fragments/layout :: shell(${contribuyente.id != null ? 'Editar cliente' : 'Nuevo cliente'}, 'Formulario de alta y actualización de contribuyentes', 'clientes', ~{::content})}">
+<body th:replace="~{fragments/layout :: shell(${contribuyente != null and contribuyente.id != null ? 'Editar cliente' : 'Nuevo cliente'}, 'Formulario de alta y actualización de contribuyentes', 'clientes', ~{::content})}">
     <section th:fragment="content" class="page-stack">
         <section class="panel-card">
             <div class="panel-header">
                 <div>
                     <p class="eyebrow">Clientes</p>
-                    <h3 th:text="${contribuyente.id != null ? 'Editar contribuyente' : 'Nuevo contribuyente'}">Formulario</h3>
+                    <h3 th:text="${contribuyente != null and contribuyente.id != null ? 'Editar contribuyente' : 'Nuevo contribuyente'}">Formulario</h3>
                 </div>
                 <a th:href="@{/clientes}" class="secondary-action">&larr; Volver</a>
             </div>
@@ -22,14 +22,14 @@
                 <input type="hidden" th:field="*{id}" />
 
                 <label class="field-group">
-                    <span class="field-label">Razon social / Nombre</span>
-                    <input class="text-input" type="text" th:field="*{businessName}" placeholder="Nombre o razon social" />
+                    <span class="field-label">Razón social / Nombre</span>
+                    <input class="text-input" type="text" th:field="*{businessName}" placeholder="Nombre o razón social" />
                     <small class="field-error" th:errors="*{businessName}"></small>
                 </label>
 
                 <label class="field-group">
-                    <span class="field-label">Identificacion (NIT / CC)</span>
-                    <input class="text-input" type="text" th:field="*{identificacion}" placeholder="NIT o cedula" />
+                    <span class="field-label">Identificación (NIT / CC)</span>
+                    <input class="text-input" type="text" th:field="*{identificacion}" placeholder="NIT o cédula" />
                     <small class="field-error" th:errors="*{identificacion}"></small>
                 </label>
 
@@ -38,7 +38,7 @@
                         <span class="field-label">Tipo de persona</span>
                         <select class="text-input" th:field="*{type}">
                             <option th:value="NATURAL_PERSON">Persona natural</option>
-                            <option th:value="LEGAL_ENTITY">Persona juridica</option>
+                            <option th:value="LEGAL_ENTITY">Persona jurídica</option>
                         </select>
                     </label>
 
@@ -51,8 +51,8 @@
 
                 <div class="form-row">
                     <label class="field-group">
-                        <span class="field-label">Telefono</span>
-                        <input class="text-input" type="text" th:field="*{phone}" placeholder="Telefono" />
+                        <span class="field-label">Teléfono</span>
+                        <input class="text-input" type="text" th:field="*{phone}" placeholder="Teléfono" />
                     </label>
 
                     <label class="field-group">
@@ -65,8 +65,8 @@
                 </div>
 
                 <label class="field-group">
-                    <span class="field-label">Direccion</span>
-                    <input class="text-input" type="text" th:field="*{address}" placeholder="Direccion" />
+                    <span class="field-label">Dirección</span>
+                    <input class="text-input" type="text" th:field="*{address}" placeholder="Dirección" />
                 </label>
 
                 <label class="field-group">
@@ -80,7 +80,7 @@
                 <input type="hidden" th:field="*{registrationDate}" />
 
                 <div class="form-actions">
-                    <button class="primary-action" type="submit" th:text="${contribuyente.id != null ? 'Actualizar' : 'Guardar'}">Guardar</button>
+                    <button class="primary-action" type="submit" th:text="${contribuyente != null and contribuyente.id != null ? 'Actualizar' : 'Guardar'}">Guardar</button>
                     <a th:href="@{/clientes}" class="secondary-action">Cancelar</a>
                 </div>
             </form>

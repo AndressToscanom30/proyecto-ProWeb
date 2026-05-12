@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Iniciar sesion | TaxControl</title>
+    <title>Iniciar sesión | TaxControl</title>
     <link rel="stylesheet" th:href="@{/css/app.css}" />
 </head>
 <body class="auth-page">
@@ -11,16 +11,16 @@
         <div class="auth-brand">TC</div>
 
         <div class="auth-header">
-            <h1>Iniciar sesion</h1>
+            <h1>Iniciar sesión</h1>
             <p>Accede a tu cuenta para revisar vencimientos, obligaciones y recordatorios.</p>
         </div>
 
         <div class="auth-card">
             <div class="alert-line alert-error" th:if="${param.error}">
-                Correo o contrasena incorrectos.
+                Correo o contraseña incorrectos.
             </div>
             <div class="alert-line alert-success" th:if="${param.logout}">
-                Sesion cerrada correctamente.
+                Sesión cerrada correctamente.
             </div>
             <div class="alert-line alert-success" th:if="${param.registrado}">
                 Registro exitoso. Ahora puedes ingresar.
@@ -35,8 +35,8 @@
                 </label>
 
                 <label class="field-group">
-                    <span class="field-label">Contrasena</span>
-                    <input class="text-input" type="password" name="password" placeholder="Ingresa tu contrasena" autocomplete="current-password" required />
+                    <span class="field-label">Contraseña</span>
+                    <input class="text-input" type="password" name="password" placeholder="Ingresa tu contraseña" autocomplete="current-password" required />
                 </label>
 
                 <button class="primary-action" type="submit">Entrar</button>
@@ -44,7 +44,7 @@
         </div>
 
         <p class="auth-footer">
-            No tienes cuenta?
+            ¿No tienes cuenta?
             <a th:href="@{/registro}">Crear cuenta</a>
         </p>
     </div>

@@ -40,14 +40,21 @@ public class TaxObligationViewController {
     }
 
     @GetMapping
-    public String list(@RequestParam String taxPayerId, Model model, Authentication authentication) {
+    public String list(@RequestParam(required = false) String taxPayerId, Model model, Authentication authentication) {
         User user = userService.findByEmail(authentication.getName())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
-        TaxPayer taxPayer = taxPayerService.findById(taxPayerId);
-        List<TaxObligationResponseDTO> obligations = obligationService.findByTaxPayerId(taxPayerId);
         model.addAttribute("usuario", user);
-        model.addAttribute("contribuyente", taxPayer);
-        model.addAttribute("obligaciones", obligations);
+        model.addAttribute("contribuyentes", taxPayerService.findAll());
+        model.addAttribute("selectedTaxPayerId", taxPayerId);
+
+        if (taxPayerId != null && !taxPayerId.isBlank()) {
+            TaxPayer taxPayer = taxPayerService.findById(taxPayerId);
+            model.addAttribute("contribuyente", taxPayer);
+            model.addAttribute("obligaciones", obligationService.findByTaxPayerId(taxPayerId));
+        } else {
+            model.addAttribute("contribuyente", null);
+            model.addAttribute("obligaciones", obligationService.findAll());
+        }
         return "obligaciones/list";
     }
 

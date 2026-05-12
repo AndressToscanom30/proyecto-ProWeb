@@ -14,6 +14,7 @@ import com.cronos.gestiontributaria.obligaciones.dto.CreateTaxObligationDTO;
 import com.cronos.gestiontributaria.obligaciones.dto.TaxObligationResponseDTO;
 import com.cronos.gestiontributaria.obligaciones.model.TaxObligation;
 import com.cronos.gestiontributaria.obligaciones.repository.TaxObligationRepository;
+import com.cronos.gestiontributaria.notification.service.NotificationMailService;
 
 import java.util.NoSuchElementException;
 
@@ -29,6 +30,7 @@ public class TaxObligationService {
     private final TaxObligationRepository repository;
     private final TaxObligationDateResolver dateResolver;
     private final TaxPayerRepository taxPayerRepository;
+    private final NotificationMailService notificationMailService;
 
     // Patrones de validación para fiscalPeriod
     private static final Pattern MONTHLY = Pattern.compile("^\\d{4}-\\d{2}$");
@@ -38,10 +40,12 @@ public class TaxObligationService {
 
     public TaxObligationService(TaxObligationRepository repository,
                                  TaxObligationDateResolver dateResolver,
-                                 TaxPayerRepository taxPayerRepository) {
+                                 TaxPayerRepository taxPayerRepository,
+                                 NotificationMailService notificationMailService) {
         this.repository = repository;
         this.dateResolver = dateResolver;
         this.taxPayerRepository = taxPayerRepository;
+        this.notificationMailService = notificationMailService;
     }
 
     /**
@@ -103,7 +107,9 @@ public class TaxObligationService {
         obligation.setNotes(dto.notes());
 
         TaxObligation saved = repository.save(obligation);
-        return toResponseDTO(saved, taxpayer);
+        TaxObligationResponseDTO response = toResponseDTO(saved, taxpayer);
+        notifyTaxpayer(() -> notificationMailService.sendObligationCreated(taxpayer, response));
+        return response;
     }
 
     /**
@@ -125,6 +131,18 @@ public class TaxObligationService {
         TaxPayer taxpayer = taxPayerRepository.findById(taxPayerId).orElse(null);
         return repository.findByTaxPayerId(taxPayerId).stream()
                 .map(o -> toResponseDTO(o, taxpayer))
+                .toList();
+    }
+
+    /**
+     * Lista todas las obligaciones registradas en el sistema.
+     */
+    public List<TaxObligationResponseDTO> findAll() {
+        return repository.findAll().stream()
+                .map(o -> {
+                    TaxPayer taxpayer = taxPayerRepository.findById(o.getTaxPayerId()).orElse(null);
+                    return toResponseDTO(o, taxpayer);
+                })
                 .toList();
     }
 
@@ -193,7 +211,9 @@ public class TaxObligationService {
         obligation.changeStatus(newStatus);
         TaxObligation saved = repository.save(obligation);
         TaxPayer taxpayer = taxPayerRepository.findById(saved.getTaxPayerId()).orElse(null);
-        return toResponseDTO(saved, taxpayer);
+        TaxObligationResponseDTO response = toResponseDTO(saved, taxpayer);
+        notifyTaxpayer(() -> notificationMailService.sendObligationStatusChanged(taxpayer, response));
+        return response;
     }
 
     // ─── Validaciones ─────────────────────────────────────────────────────
@@ -234,5 +254,12 @@ public class TaxObligationService {
                 o.getStatus(),
                 o.getNotes()
         );
+    }
+
+    private void notifyTaxpayer(Runnable notificationAction) {
+        try {
+            notificationAction.run();
+        } catch (RuntimeException exception) {
+        }
     }
 }

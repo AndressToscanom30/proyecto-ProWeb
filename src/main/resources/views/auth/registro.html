@@ -12,7 +12,7 @@
 
         <div class="auth-header">
             <h1>Crear cuenta</h1>
-            <p>Registrate para ingresar al sistema y administrar tus accesos de forma segura.</p>
+            <p>Regístrate para ingresar al sistema y administrar tus accesos de forma segura.</p>
         </div>
 
         <div class="auth-card">
@@ -32,8 +32,8 @@
                 </label>
 
                 <label class="field-group">
-                    <span class="field-label">Contrasena</span>
-                    <input class="text-input" type="password" th:field="*{password}" placeholder="Minimo 8 caracteres" autocomplete="new-password" />
+                    <span class="field-label">Contraseña</span>
+                    <input class="text-input" type="password" th:field="*{password}" placeholder="Mínimo 8 caracteres" autocomplete="new-password" />
                     <small class="field-error" th:errors="*{password}"></small>
                 </label>
 
@@ -42,7 +42,7 @@
         </div>
 
         <p class="auth-footer">
-            Ya tienes cuenta?
+            ¿Ya tienes cuenta?
             <a th:href="@{/login}">Volver al login</a>
         </p>
     </div>

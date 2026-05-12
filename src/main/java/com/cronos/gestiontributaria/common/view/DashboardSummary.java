@@ -202,7 +202,7 @@ public record DashboardSummary(
 
     private static List<WorkloadBar> buildWeeklyWorkload(List<TaxObligation> obligations, LocalDate today) {
         LocalDate weekStart = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-        String[] labels = { "Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom" };
+        String[] labels = { "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom" };
         int[] counts = new int[7];
         int max = 0;
 

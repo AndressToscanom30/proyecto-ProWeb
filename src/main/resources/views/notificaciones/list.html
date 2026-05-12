@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notificaciones | TaxControl</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}" />
+</head>
+<body th:replace="~{fragments/layout :: shell('Notificaciones', 'Alertas automáticas, recordatorios y pruebas de correo', 'notificaciones', ~{::content})}">
+    <section th:fragment="content" class="page-stack">
+        <section class="page-hero">
+            <div>
+                <p class="eyebrow">Centro de alertas</p>
+                <h2>Notificaciones por correo</h2>
+                <p>
+                    Revisa las obligaciones que están por vencer, envía recordatorios y prueba el SMTP sin salir de la aplicación.
+                </p>
+            </div>
+            <div class="hero-meta">
+                <span class="pill tone-danger">Vencidas <strong th:text="${alertasVencidas}">0</strong></span>
+                <span class="pill tone-warning">Próximas <strong th:text="${alertasProximas}">0</strong></span>
+                <span class="pill tone-primary" th:text="${correoPrueba}">correo@ejemplo.com</span>
+            </div>
+        </section>
+
+        <div class="alert-line alert-success" th:if="${successMessage != null}" th:text="${successMessage}">Correo enviado</div>
+        <div class="alert-line alert-error" th:if="${errorMessage != null}" th:text="${errorMessage}">No se pudo enviar el correo</div>
+
+        <section class="dashboard-grid">
+            <article class="panel-card">
+                <div class="panel-header">
+                    <div>
+                        <p class="eyebrow">Correo de prueba</p>
+                        <h3>Enviar mensaje manual</h3>
+                    </div>
+                    <span class="pill tone-primary">SMTP</span>
+                </div>
+
+                <form class="form-grid" th:action="@{/notificaciones/enviar}" method="post">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                    <label class="field-group">
+                        <span class="field-label">Destinatario</span>
+                        <input class="text-input" type="email" name="recipientEmail" th:value="${correoPrueba}" placeholder="correo@ejemplo.com" required />
+                    </label>
+
+                    <label class="field-group">
+                        <span class="field-label">Asunto</span>
+                        <input class="text-input" type="text" name="subject" value="Prueba de correo desde TaxControl" required />
+                    </label>
+
+                    <label class="field-group">
+                        <span class="field-label">Mensaje</span>
+                        <textarea class="text-input textarea" name="message" rows="6" required>El envío de correo funciona correctamente desde TaxControl.</textarea>
+                    </label>
+
+                    <div class="form-actions">
+                        <button class="primary-action" type="submit">Enviar correo</button>
+                        <a class="secondary-action" th:href="@{/dashboard#configuracion}">Ir a configuración</a>
+                    </div>
+                </form>
+            </article>
+
+            <article class="panel-card">
+                <div class="panel-header">
+                    <div>
+                        <p class="eyebrow">Configuración</p>
+                        <h3>Ajustes del sistema</h3>
+                    </div>
+                    <span class="pill tone-success">Activo</span>
+                </div>
+
+                <p>
+                    Desde el panel administrativo puedes revisar usuarios, roles y validaciones del sistema.
+                </p>
+                <div class="hero-meta">
+                    <a sec:authorize="hasRole('ADMIN')" class="primary-action" th:href="@{/admin}" style="width:max-content">Abrir panel admin</a>
+                    <span class="pill tone-neutral">TaxControl</span>
+                </div>
+            </article>
+        </section>
+
+        <section class="panel-card">
+            <div class="panel-header">
+                <div>
+                    <p class="eyebrow">Alertas activas</p>
+                    <h3>Obligaciones próximas a vencer</h3>
+                </div>
+                <span class="pill tone-warning" th:text="|${#lists.size(alertas)} alertas|">0 alertas</span>
+            </div>
+
+            <div class="table-wrap" th:if="${not #lists.isEmpty(alertas)}">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Correo</th>
+                            <th>Obligación</th>
+                            <th>Vencimiento</th>
+                            <th>Estado</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="alerta : ${alertas}">
+                            <td>
+                                <strong th:text="${alerta.clientName}">Cliente</strong>
+                                <small class="field-hint" th:text="${alerta.clientIdentification}">Identificación</small>
+                            </td>
+                            <td th:text="${alerta.clientEmail}">correo@ejemplo.com</td>
+                            <td th:text="${alerta.obligationLabel}">IVA · 2026-01</td>
+                            <td th:text="${alerta.dueDateLabel}">12 may 2026</td>
+                            <td><span class="status-pill" th:classappend="| tone-${alerta.tone}|" th:text="${alerta.statusLabel}">Pendiente</span></td>
+                            <td>
+                                <form th:if="${alerta.clientEmail != null and !#strings.isEmpty(alerta.clientEmail)}" th:action="@{/notificaciones/enviar}" method="post" class="status-form" style="display:inline">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                    <input type="hidden" name="recipientEmail" th:value="${alerta.clientEmail}" />
+                                    <input type="hidden" name="subject" th:value="${alerta.subject}" />
+                                    <input type="hidden" name="message" th:value="${alerta.body}" />
+                                    <button class="secondary-action" type="submit" style="min-height:32px;padding:0 0.8rem">Enviar recordatorio</button>
+                                </form>
+                                <span class="pill tone-neutral" th:unless="${alerta.clientEmail != null and !#strings.isEmpty(alerta.clientEmail)}">Sin correo</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="empty-state compact" th:if="${#lists.isEmpty(alertas)}">
+                <div class="empty-icon">
+                    <svg viewBox="0 0 24 24"><path d="M4.5 7.5h15M7 4.5h10A2.5 2.5 0 0 1 19.5 7v10A2.5 2.5 0 0 1 17 19.5H7A2.5 2.5 0 0 1 4.5 17V7A2.5 2.5 0 0 1 7 4.5z"/></svg>
+                </div>
+                <p>No hay alertas activas por el momento.</p>
+            </div>
+        </section>
+    </section>
+</body>
+</html>

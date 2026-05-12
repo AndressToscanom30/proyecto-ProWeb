@@ -29,8 +29,8 @@
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>Razon social</th>
-                            <th>Identificacion</th>
+                            <th>Razón social</th>
+                            <th>Identificación</th>
                             <th>Tipo</th>
                             <th>Email</th>
                             <th>Estado</th>
@@ -44,7 +44,7 @@
                             </td>
                             <td th:text="${c.identificacion}">NIT</td>
                             <td>
-                                <span class="chip" th:text="${c.type == 'LEGAL_ENTITY' ? 'Persona juridica' : 'Persona natural'}">Tipo</span>
+                                <span class="chip" th:text="${c.type == 'LEGAL_ENTITY' ? 'Persona jurídica' : 'Persona natural'}">Tipo</span>
                             </td>
                             <td th:text="${c.email}">email</td>
                             <td>
