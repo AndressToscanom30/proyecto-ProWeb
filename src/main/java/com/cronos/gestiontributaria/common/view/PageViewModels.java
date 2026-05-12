@@ -25,6 +25,12 @@ import com.cronos.gestiontributaria.obligaciones.model.TaxObligation;
 
 public final class PageViewModels {
 
+    /**
+
+     * Documentación de la entidad CalendarObligation.
+
+     */
+
     public record CalendarObligation(
         String id,
         String clientName,

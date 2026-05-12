@@ -25,6 +25,9 @@ import com.cronos.gestiontributaria.obligaciones.service.TaxObligationService;
 
 @Controller
 @RequestMapping("/obligaciones")
+/**
+ * Documentación de la entidad TaxObligationViewController.
+ */
 public class TaxObligationViewController {
 
     private final TaxObligationService obligationService;

@@ -32,6 +32,9 @@ import com.cronos.gestiontributaria.obligaciones.service.TaxObligationService;
 
 @Controller
 @RequestMapping("/notificaciones")
+/**
+ * Documentación de la entidad NotificationViewController.
+ */
 public class NotificationViewController {
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter

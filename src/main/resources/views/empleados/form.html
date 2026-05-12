@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Nuevo empleado | TaxControl</title>
+    <title>Nuevo empleado | Cronos</title>
     <link rel="stylesheet" th:href="@{/css/app.css}" />
 </head>
 <body th:replace="~{fragments/layout :: shell('Nuevo empleado', 'Alta de nuevos miembros del equipo operativo', 'equipo', ~{::content})}">
@@ -33,7 +33,7 @@
                 </label>
 
                 <label class="field-group">
-                    <span class="field-label">Contraseña</span>
+                    <span class="field-label">ContraseÃ±a</span>
                     <input class="text-input" type="password" name="password" placeholder="Minimo 8 caracteres" required />
                 </label>
 
@@ -47,8 +47,8 @@
                     </label>
 
                     <label class="field-group">
-                        <span class="field-label">Teléfono</span>
-                        <input class="text-input" type="text" name="phone" placeholder="Teléfono" th:value="${phone}" />
+                        <span class="field-label">TelÃ©fono</span>
+                        <input class="text-input" type="text" name="phone" placeholder="TelÃ©fono" th:value="${phone}" />
                     </label>
                 </div>
 
@@ -64,3 +64,4 @@
 </body>
 </html>
                     </label>
+

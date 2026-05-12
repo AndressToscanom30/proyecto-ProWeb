@@ -12,6 +12,9 @@ import com.cronos.gestiontributaria.common.TaxObligationType;
 import com.cronos.gestiontributaria.empleados.model.Task;
 
 @org.springframework.data.mongodb.core.mapping.Document(collection = "obligaciones")
+/**
+ * Documentación de la entidad TaxObligation.
+ */
 public class TaxObligation {
     @Id
     private String id;

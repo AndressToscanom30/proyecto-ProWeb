@@ -9,6 +9,12 @@ import com.cronos.gestiontributaria.auth.model.User;
 import com.cronos.gestiontributaria.clientes.model.TaxPayer;
 import com.cronos.gestiontributaria.obligaciones.dto.TaxObligationResponseDTO;
 
+/**
+
+ * Documentación de la entidad NotificationMailService.
+
+ */
+
 @Service
 public class NotificationMailService {
 

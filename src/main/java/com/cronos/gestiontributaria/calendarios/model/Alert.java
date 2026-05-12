@@ -2,6 +2,12 @@ package com.cronos.gestiontributaria.calendarios.model;
 
 import java.time.LocalDateTime;
 
+/**
+
+ * Documentación de la entidad Alert.
+
+ */
+
 public class Alert {
     private int daysInAdvance;
     private boolean sent;

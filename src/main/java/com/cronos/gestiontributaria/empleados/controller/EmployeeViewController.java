@@ -19,6 +19,9 @@ import com.cronos.gestiontributaria.empleados.service.EmployeeService;
 
 @Controller
 @RequestMapping("/empleados")
+/**
+ * Documentación de la entidad EmployeeViewController.
+ */
 public class EmployeeViewController {
 
     private final EmployeeService employeeService;

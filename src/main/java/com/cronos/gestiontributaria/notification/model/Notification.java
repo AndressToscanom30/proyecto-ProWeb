@@ -1,5 +1,11 @@
 package com.cronos.gestiontributaria.notification.model;
 
+/**
+
+ * Documentación de la entidad Notification.
+
+ */
+
 public class Notification {
     private String message;
     private String type;

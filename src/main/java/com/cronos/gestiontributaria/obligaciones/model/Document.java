@@ -1,5 +1,11 @@
 package com.cronos.gestiontributaria.obligaciones.model;
 
+/**
+
+ * Documentación de la entidad Document.
+
+ */
+
 public class Document {
     private String name;
     private String description;

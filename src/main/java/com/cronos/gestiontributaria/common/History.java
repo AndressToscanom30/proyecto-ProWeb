@@ -1,5 +1,11 @@
 package com.cronos.gestiontributaria.common;
 
+/**
+
+ * Documentación de la entidad History.
+
+ */
+
 public class History {
     private String module;
     private String action;

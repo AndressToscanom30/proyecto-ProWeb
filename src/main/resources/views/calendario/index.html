@@ -1,19 +1,19 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Calendario Fiscal | TaxControl</title>
+    <title>Calendario Fiscal | Cronos</title>
     <link rel="stylesheet" th:href="@{/css/app.css}" />
 </head>
-<body th:replace="~{fragments/layout :: shell('Calendario fiscal', 'Visión completa del mes, los vencimientos próximos y la carga operativa', 'calendario', ~{::content})}">
+<body th:replace="~{fragments/layout :: shell('Calendario fiscal', 'VisiÃ³n completa del mes, los vencimientos prÃ³ximos y la carga operativa', 'calendario', ~{::content})}">
     <section th:fragment="content" class="page-stack">
         <section class="page-hero">
             <div>
                 <p class="eyebrow">Calendario fiscal</p>
                 <h2>Agenda mensual con lectura operativa real</h2>
                 <p>
-                    Planificación de obligaciones tributarias, organizadas por día de vencimiento y cliente para asegurar el cumplimiento oportuno.
+                    PlanificaciÃ³n de obligaciones tributarias, organizadas por dÃ­a de vencimiento y cliente para asegurar el cumplimiento oportuno.
                 </p>
             </div>
             <div class="hero-meta">
@@ -24,16 +24,16 @@
         </section>
 
         <nav class="month-nav" style="display:flex;gap:0.5rem;align-items:center;margin-bottom:1rem">
-            <a class="secondary-action btn-sm" th:href="@{/calendario-fiscal(year=${prevMonth.year}, month=${prevMonth.month})}" th:text="|← ${prevMonth.label}|">← Mes anterior</a>
+            <a class="secondary-action btn-sm" th:href="@{/calendario-fiscal(year=${prevMonth.year}, month=${prevMonth.month})}" th:text="|â† ${prevMonth.label}|">â† Mes anterior</a>
             
             <form th:action="@{/calendario-fiscal}" method="get" style="flex:1;display:flex;justify-content:center;align-items:center;">
                 <input type="month" name="yearMonth" class="text-input w-max" style="padding: 0.2rem 0.5rem; min-height: 32px" 
-                       title="Elegir mes y año" aria-label="Elegir mes y año"
+                       title="Elegir mes y aÃ±o" aria-label="Elegir mes y aÃ±o"
                        th:value="${currentMonth.year + '-' + #numbers.formatInteger(currentMonth.monthValue, 2)}"
                        onchange="const parts = this.value.split('-'); if(parts.length===2) { window.location.href='?year='+parts[0]+'&month='+parts[1]; }">
             </form>
 
-            <a class="secondary-action btn-sm" th:href="@{/calendario-fiscal(year=${nextMonth.year}, month=${nextMonth.month})}" th:text="|${nextMonth.label} →|">Mes siguiente →</a>
+            <a class="secondary-action btn-sm" th:href="@{/calendario-fiscal(year=${nextMonth.year}, month=${nextMonth.month})}" th:text="|${nextMonth.label} â†’|">Mes siguiente â†’</a>
         </nav>
 
         <section class="dashboard-grid">
@@ -49,13 +49,13 @@
 
                 <div class="calendar-legend">
                     <span class="pill tone-success">Completado</span>
-                    <span class="pill tone-warning">Próximo</span>
+                    <span class="pill tone-warning">PrÃ³ximo</span>
                     <span class="pill tone-danger">Vencido</span>
                     <span class="pill tone-primary">En proceso</span>
                 </div>
 
                 <div class="calendar-headings" aria-hidden="true">
-                    <span>Lun</span> <span>Mar</span> <span>Mié</span> <span>Jue</span> <span>Vie</span> <span>Sáb</span> <span>Dom</span>
+                    <span>Lun</span> <span>Mar</span> <span>MiÃ©</span> <span>Jue</span> <span>Vie</span> <span>SÃ¡b</span> <span>Dom</span>
                 </div>
 
                 <div class="calendar-grid">
@@ -70,7 +70,7 @@
                             <small th:each="obl : ${day.obligations}"
                                    class="obligation-tag"
                                    th:classappend="|pill tone-${obl.statusTone}|"
-                                   th:attr="title=${obl.clientName + ' — ' + obl.obligationType}"
+                                   th:attr="title=${obl.clientName + ' â€” ' + obl.obligationType}"
                                    th:text="${obl.obligationType}">IVA</small>
                         </div>
                     </article>
@@ -80,10 +80,10 @@
             <aside class="panel-card deadline-panel">
                 <div class="panel-header">
                     <div>
-                        <p class="eyebrow">Próximos vencimientos</p>
-                        <h3>Seguimiento de la próxima quincena</h3>
+                        <p class="eyebrow">PrÃ³ximos vencimientos</p>
+                        <h3>Seguimiento de la prÃ³xima quincena</h3>
                     </div>
-                    <span class="pill tone-info">14 días</span>
+                    <span class="pill tone-info">14 dÃ­as</span>
                 </div>
 
                 <div class="deadline-list" th:if="${not #lists.isEmpty(dashboard.upcomingDeadlines)}">
@@ -91,8 +91,8 @@
                         <div class="deadline-meta">
                             <strong th:text="${item.client}">Cliente</strong>
                             <small>
-                                <span th:text="${item.obligation}">Obligación</span>
-                                <span> · </span>
+                                <span th:text="${item.obligation}">ObligaciÃ³n</span>
+                                <span> Â· </span>
                                 <span th:text="${item.dueDateLabel}">12 may 2026</span>
                             </small>
                         </div>
@@ -107,7 +107,7 @@
                     <div class="empty-icon">
                         <svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="16" rx="3"/><path d="M8 2.5v4M16 2.5v4M3.5 9.5h17"/></svg>
                     </div>
-                    <p>No hay vencimientos próximos dentro de los siguientes 14 días.</p>
+                    <p>No hay vencimientos prÃ³ximos dentro de los siguientes 14 dÃ­as.</p>
                 </div>
             </aside>
         </section>
@@ -117,7 +117,7 @@
                 <div class="panel-header">
                     <div>
                         <p class="eyebrow">Carga semanal</p>
-                        <h3>Distribución de trabajo por día</h3>
+                        <h3>DistribuciÃ³n de trabajo por dÃ­a</h3>
                     </div>
                     <a class="secondary-action" th:href="@{/reportes}" style="min-height:32px;padding:0 0.8rem">Ver reportes</a>
                 </div>
@@ -136,17 +136,17 @@
             <article class="panel-card">
                 <div class="panel-header">
                     <div>
-                        <p class="eyebrow">Ruta rápida</p>
+                        <p class="eyebrow">Ruta rÃ¡pida</p>
                         <h3>Usa el calendario para actuar, no solo consultar</h3>
                     </div>
                     <span class="pill tone-success">Operativo</span>
                 </div>
                 <p>
-                    Cada celda del calendario enlaza con las obligaciones del día. Pasa el mouse sobre las etiquetas para ver el cliente y el tipo de obligación sin salir de la vista.
+                    Cada celda del calendario enlaza con las obligaciones del dÃ­a. Pasa el mouse sobre las etiquetas para ver el cliente y el tipo de obligaciÃ³n sin salir de la vista.
                 </p>
                 <div class="hero-meta">
                     <a class="primary-action" th:href="@{/tareas}" style="width:max-content">Ir a tareas</a>
-                    <a class="secondary-action" th:href="@{/reportes}" style="width:max-content">Ver análisis</a>
+                    <a class="secondary-action" th:href="@{/reportes}" style="width:max-content">Ver anÃ¡lisis</a>
                     <a class="secondary-action" th:href="@{/configuracion}" style="width:max-content">Ajustes</a>
                 </div>
             </article>
@@ -154,3 +154,4 @@
     </section>
 </body>
 </html>
+

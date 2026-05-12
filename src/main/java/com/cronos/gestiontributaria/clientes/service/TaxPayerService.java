@@ -9,6 +9,12 @@ import org.springframework.stereotype.Service;
 import com.cronos.gestiontributaria.clientes.model.TaxPayer;
 import com.cronos.gestiontributaria.clientes.repository.TaxPayerRepository;
 
+/**
+
+ * Documentación de la entidad TaxPayerService.
+
+ */
+
 @Service
 public class TaxPayerService {
 

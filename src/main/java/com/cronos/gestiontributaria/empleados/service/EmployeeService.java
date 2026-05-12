@@ -14,6 +14,12 @@ import com.cronos.gestiontributaria.auth.repository.UserRepository;
 import com.cronos.gestiontributaria.common.EmployeeRole;
 import com.cronos.gestiontributaria.empleados.model.Employee;
 
+/**
+
+ * Documentación de la entidad EmployeeService.
+
+ */
+
 @Service
 public class EmployeeService {
 

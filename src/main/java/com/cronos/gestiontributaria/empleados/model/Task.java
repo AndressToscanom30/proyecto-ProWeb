@@ -5,6 +5,12 @@ import java.time.LocalDate;
 import com.cronos.gestiontributaria.common.Priority;
 import com.cronos.gestiontributaria.common.TaskStatus;
 
+/**
+
+ * Documentación de la entidad Task.
+
+ */
+
 public class Task {
     private String title;
     private String description;

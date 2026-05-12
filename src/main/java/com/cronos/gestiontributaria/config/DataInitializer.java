@@ -10,6 +10,12 @@ import com.cronos.gestiontributaria.auth.model.Role;
 import com.cronos.gestiontributaria.auth.model.User;
 import com.cronos.gestiontributaria.auth.repository.UserRepository;
 
+/**
+
+ * Documentación de la entidad DataInitializer.
+
+ */
+
 @Component
 public class DataInitializer implements CommandLineRunner {
 

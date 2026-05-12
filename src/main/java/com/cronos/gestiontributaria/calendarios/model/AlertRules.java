@@ -8,6 +8,12 @@ import java.util.List;
 
 import com.cronos.gestiontributaria.obligaciones.model.TaxObligation;
 
+/**
+
+ * Documentación de la entidad AlertRules.
+
+ */
+
 public class AlertRules {
     private List<Integer> daysInAdvance;
     private boolean active;

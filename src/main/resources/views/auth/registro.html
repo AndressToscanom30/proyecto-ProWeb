@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Registro | TaxControl</title>
+    <title>Registro | Cronos</title>
     <link rel="stylesheet" th:href="@{/css/app.css}" />
 </head>
 <body class="auth-page">
@@ -12,7 +12,7 @@
 
         <div class="auth-header">
             <h1>Crear cuenta</h1>
-            <p>Regístrate para ingresar al sistema y administrar tus accesos de forma segura.</p>
+            <p>RegÃ­strate para ingresar al sistema y administrar tus accesos de forma segura.</p>
         </div>
 
         <div class="auth-card">
@@ -32,8 +32,8 @@
                 </label>
 
                 <label class="field-group">
-                    <span class="field-label">Contraseña</span>
-                    <input class="text-input" type="password" th:field="*{password}" placeholder="Mínimo 8 caracteres" autocomplete="new-password" />
+                    <span class="field-label">ContraseÃ±a</span>
+                    <input class="text-input" type="password" th:field="*{password}" placeholder="MÃ­nimo 8 caracteres" autocomplete="new-password" />
                     <small class="field-error" th:errors="*{password}"></small>
                 </label>
 
@@ -42,9 +42,10 @@
         </div>
 
         <p class="auth-footer">
-            ¿Ya tienes cuenta?
+            Â¿Ya tienes cuenta?
             <a th:href="@{/login}">Volver al login</a>
         </p>
     </div>
 </body>
 </html>
+

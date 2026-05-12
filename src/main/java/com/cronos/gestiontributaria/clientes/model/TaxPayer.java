@@ -11,6 +11,12 @@ import com.cronos.gestiontributaria.common.TaxpayerType;
 import com.cronos.gestiontributaria.notification.model.Notification;
 import com.cronos.gestiontributaria.obligaciones.model.TaxObligation;
 
+/**
+
+ * Documentación de la entidad TaxPayer.
+
+ */
+
 @Document(collection = "contribuyentes")
 public class TaxPayer {
     @Id

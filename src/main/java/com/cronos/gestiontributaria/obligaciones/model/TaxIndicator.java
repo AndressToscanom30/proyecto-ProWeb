@@ -1,5 +1,11 @@
 package com.cronos.gestiontributaria.obligaciones.model;
 
+/**
+
+ * Documentación de la entidad TaxIndicator.
+
+ */
+
 public class TaxIndicator {
     private String name;
     private String code;

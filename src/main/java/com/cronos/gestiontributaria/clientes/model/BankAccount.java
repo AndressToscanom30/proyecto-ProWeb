@@ -2,6 +2,12 @@ package com.cronos.gestiontributaria.clientes.model;
 
 import com.cronos.gestiontributaria.common.AccountType;
 
+/**
+
+ * Documentación de la entidad BankAccount.
+
+ */
+
 public class BankAccount {
     private String bank;
     private String accountNumber;

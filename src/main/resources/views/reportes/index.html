@@ -1,19 +1,19 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Reportes | TaxControl</title>
+    <title>Reportes | Cronos</title>
     <link rel="stylesheet" th:href="@{/css/app.css}" />
 </head>
-<body th:replace="~{fragments/layout :: shell('Reportes', 'Lectura visual del cumplimiento, la carga semanal y la distribución de obligaciones', 'reportes', ~{::content})}">
+<body th:replace="~{fragments/layout :: shell('Reportes', 'Lectura visual del cumplimiento, la carga semanal y la distribuciÃ³n de obligaciones', 'reportes', ~{::content})}">
     <section th:fragment="content" class="page-stack">
         <section class="page-hero">
             <div>
-                <p class="eyebrow">Reportes y análisis</p>
-                <h2>Tablero visual para decisiones más rápidas</h2>
+                <p class="eyebrow">Reportes y anÃ¡lisis</p>
+                <h2>Tablero visual para decisiones mÃ¡s rÃ¡pidas</h2>
                 <p>
-                    Análisis detallado del cumplimiento tributario, distribución de carga operativa y estado de gestión de clientes a lo largo del mes.
+                    AnÃ¡lisis detallado del cumplimiento tributario, distribuciÃ³n de carga operativa y estado de gestiÃ³n de clientes a lo largo del mes.
                 </p>
             </div>
             <div class="hero-meta">
@@ -51,7 +51,7 @@
                 <div class="panel-header">
                     <div>
                         <p class="eyebrow">Carga semanal</p>
-                        <h3>Volumen de trabajo por día</h3>
+                        <h3>Volumen de trabajo por dÃ­a</h3>
                     </div>
                     <span class="pill tone-primary">Barras</span>
                 </div>
@@ -94,10 +94,10 @@
             <article class="panel-card chart-panel">
                 <div class="panel-header">
                     <div>
-                        <p class="eyebrow">Distribución</p>
+                        <p class="eyebrow">DistribuciÃ³n</p>
                         <h3>Tipos de obligaciones</h3>
                     </div>
-                    <span class="pill tone-warning" th:text="|${reportsData.typeBreakdown.size()} categorías|">5 categorías</span>
+                    <span class="pill tone-warning" th:text="|${reportsData.typeBreakdown.size()} categorÃ­as|">5 categorÃ­as</span>
                 </div>
 
                 <div class="donut-wrap">
@@ -112,7 +112,7 @@
                     <span class="legend-item" th:each="slice : ${reportsData.distributionSlices}">
                         <span class="legend-swatch" th:classappend="| tone-${slice.tone}|"></span>
                         <strong th:text="${slice.label}">IVA</strong>
-                        <small th:text="${slice.summary}">12 obligaciones · 28.6%</small>
+                        <small th:text="${slice.summary}">12 obligaciones Â· 28.6%</small>
                     </span>
                 </div>
             </article>
@@ -123,7 +123,7 @@
                 <div class="panel-header">
                     <div>
                         <p class="eyebrow">Desglose por tipo</p>
-                        <h3>Concentración de la cartera</h3>
+                        <h3>ConcentraciÃ³n de la cartera</h3>
                     </div>
                     <span class="pill tone-info">Detalle</span>
                 </div>
@@ -133,7 +133,7 @@
                             <tr>
                                 <th>Tipo</th>
                                 <th>Cantidad</th>
-                                <th>Participación</th>
+                                <th>ParticipaciÃ³n</th>
                                 <th>Indicador</th>
                             </tr>
                         </thead>
@@ -157,12 +157,12 @@
                 <div class="panel-header">
                     <div>
                         <p class="eyebrow">Lectura ejecutiva</p>
-                        <h3>Interpretación rápida de los datos</h3>
+                        <h3>InterpretaciÃ³n rÃ¡pida de los datos</h3>
                     </div>
                     <span class="pill tone-info">Resumen</span>
                 </div>
                 <p>
-                    La vista combina tres señales: carga semanal para ordenar el trabajo, cumplimiento mensual para medir avance real y distribución por tipo para equilibrar prioridades.
+                    La vista combina tres seÃ±ales: carga semanal para ordenar el trabajo, cumplimiento mensual para medir avance real y distribuciÃ³n por tipo para equilibrar prioridades.
                 </p>
                 <div class="hero-meta">
                     <span class="pill tone-warning">Pendientes <strong th:text="${tasksData != null ? tasksData.pendingCount : dashboard.metricCards[0].value}">124</strong></span>
@@ -172,10 +172,11 @@
                 <div class="hero-meta" style="margin-top:0.75rem">
                     <a class="primary-action" th:href="@{/tareas}" style="width:max-content">Ver tareas</a>
                     <a class="secondary-action" th:href="@{/calendario-fiscal}" style="width:max-content">Calendario</a>
-                    <a class="secondary-action" th:href="@{/configuracion}" style="width:max-content">Configuración</a>
+                    <a class="secondary-action" th:href="@{/configuracion}" style="width:max-content">ConfiguraciÃ³n</a>
                 </div>
             </article>
         </section>
     </section>
 </body>
 </html>
+

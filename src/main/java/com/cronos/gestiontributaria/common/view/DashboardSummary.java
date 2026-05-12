@@ -24,6 +24,12 @@ import com.cronos.gestiontributaria.common.TaxObligationStatus;
 import com.cronos.gestiontributaria.common.TaxObligationType;
 import com.cronos.gestiontributaria.obligaciones.model.TaxObligation;
 
+/**
+
+ * Documentación de la entidad DashboardSummary.
+
+ */
+
 public record DashboardSummary(
         String monthLabel,
         List<MetricCard> metricCards,

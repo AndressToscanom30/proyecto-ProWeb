@@ -1,5 +1,11 @@
 package com.cronos.gestiontributaria.notification.view;
 
+/**
+
+ * Documentación de la entidad NotificationAlert.
+
+ */
+
 public record NotificationAlert(
         String clientName,
         String clientIdentification,

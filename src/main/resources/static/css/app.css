@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
+﻿@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
 
 :root {
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -996,7 +996,7 @@ p {
   }
 }
 
-/* ===== Premium TaxControl UI ===== */
+/* ===== Premium Cronos UI ===== */
 
 :root {
   --bg: #f5f7fa;
@@ -2630,3 +2630,4 @@ textarea {
     flex: 1 1 auto;
   }
 }
+

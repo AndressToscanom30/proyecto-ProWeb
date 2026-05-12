@@ -22,6 +22,9 @@ import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/clientes")
+/**
+ * Documentación de la entidad TaxPayerViewController.
+ */
 public class TaxPayerViewController {
 
     private final TaxPayerService taxPayerService;
