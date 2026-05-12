@@ -14,6 +14,7 @@
                 <nav class="topbar-nav">
                     <a th:href="@{/dashboard}" class="nav-link active">Dashboard</a>
                     <a th:href="@{/clientes}" class="nav-link">Contribuyentes</a>
+                    <a th:href="@{/empleados}" class="nav-link">Empleados</a>
                     <a th:href="@{/admin}" class="nav-link" sec:authorize="hasRole('ADMIN')">Admin</a>
                 </nav>
             </div>
@@ -28,40 +29,48 @@
         </header>
 
         <section class="welcome-section">
-            <h1>Organiza tus obligaciones tributarias en un solo lugar.</h1>
-            <p>Accede a tu espacio personal para consultar el estado de tu cuenta y preparar tu calendario.</p>
+            <h1>Bienvenido, <span th:text="${usuario.name}">Usuario</span>.</h1>
+            <p>Panel general del sistema de gestion tributaria. Accede a contribuyentes, obligaciones y empleados.</p>
         </section>
 
-        <section class="grid-3">
-            <article class="info-card accent-border">
-                <span class="card-label">Correo</span>
-                <strong class="card-value" th:text="${usuario.email}">usuario@correo.com</strong>
-            </article>
-            <article class="info-card success-border">
-                <span class="card-label">Estado</span>
-                <strong class="card-value" th:text="${usuario.active ? 'Activo' : 'Inactivo'}">Activo</strong>
-            </article>
-            <article class="info-card">
-                <span class="card-label">Rol</span>
-                <strong class="card-value" th:text="${usuario.role != null ? usuario.role.name : 'ROLE_USER'}">ROLE_USER</strong>
-            </article>
-        </section>
-
-        <section class="grid-3">
-            <a th:href="@{/clientes}" class="info-card" style="text-decoration:none">
+        <section class="grid-4">
+            <a th:href="@{/clientes}" class="info-card accent-border" style="text-decoration:none">
                 <span class="card-label">Contribuyentes</span>
-                <strong class="card-value">Gestion de clientes</strong>
-                <p class="card-desc">Administra los contribuyentes registrados y sus datos fiscales.</p>
+                <strong class="card-value" th:text="${totalContribuyentes}">0</strong>
+                <p class="card-desc">Clientes registrados en el sistema</p>
             </a>
-            <a th:href="@{/clientes}" class="info-card" style="text-decoration:none">
+            <a th:href="@{/clientes}" class="info-card success-border" style="text-decoration:none">
                 <span class="card-label">Obligaciones</span>
-                <strong class="card-value">Seguimiento tributario</strong>
-                <p class="card-desc">Centraliza los compromisos fiscales de tus clientes o empresa.</p>
+                <strong class="card-value" th:text="${totalObligaciones}">0</strong>
+                <p class="card-desc">Obligaciones tributarias activas</p>
+            </a>
+            <a th:href="@{/empleados}" class="info-card" style="text-decoration:none">
+                <span class="card-label">Empleados</span>
+                <strong class="card-value" th:text="${totalEmpleados}">0</strong>
+                <p class="card-desc">Personal registrado en la plataforma</p>
+            </a>
+            <article class="info-card">
+                <span class="card-label">Tu rol</span>
+                <strong class="card-value" th:text="${usuario.role != null ? usuario.role.description : 'Usuario'}">Usuario</strong>
+                <p class="card-desc" th:text="${usuario.email}">correo@ejemplo.com</p>
+            </article>
+        </section>
+
+        <section class="grid-3">
+            <a th:href="@{/clientes/nuevo}" class="info-card" style="text-decoration:none">
+                <span class="card-label">Accion rapida</span>
+                <strong class="card-value">Nuevo contribuyente</strong>
+                <p class="card-desc">Registra un nuevo contribuyente en el sistema.</p>
+            </a>
+            <a th:href="@{/empleados/nuevo}" class="info-card" style="text-decoration:none">
+                <span class="card-label">Accion rapida</span>
+                <strong class="card-value">Nuevo empleado</strong>
+                <p class="card-desc">Agrega un empleado con rol especifico.</p>
             </a>
             <article class="info-card" sec:authorize="hasRole('ADMIN')">
                 <span class="card-label">Administracion</span>
-                <strong class="card-value">Acceso restringido</strong>
-                <p class="card-desc">El panel administrativo permanece disponible solo para perfiles autorizados.</p>
+                <strong class="card-value">Panel de control</strong>
+                <p class="card-desc">Gestiona usuarios y configuracion del sistema.</p>
             </article>
         </section>
     </main>

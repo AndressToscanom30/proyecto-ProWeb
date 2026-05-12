@@ -14,6 +14,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.cronos.gestiontributaria.auth.model.User;
 import com.cronos.gestiontributaria.auth.service.UserService;
+import com.cronos.gestiontributaria.clientes.service.TaxPayerService;
+import com.cronos.gestiontributaria.empleados.service.EmployeeService;
+import com.cronos.gestiontributaria.obligaciones.repository.TaxObligationRepository;
 
 import jakarta.validation.Valid;
 
@@ -26,14 +29,17 @@ import jakarta.validation.Valid;
 @Controller
 public class AuthController {
     private final UserService userService;
+    private final TaxPayerService taxPayerService;
+    private final EmployeeService employeeService;
+    private final TaxObligationRepository obligationRepository;
 
-    /**
-     * Crea el controlador con el servicio de usuarios.
-     *
-     * @param userService servicio de negocio para usuarios
-     */
-    public AuthController(UserService userService) {
+    public AuthController(UserService userService, TaxPayerService taxPayerService,
+                           EmployeeService employeeService,
+                           TaxObligationRepository obligationRepository) {
         this.userService = userService;
+        this.taxPayerService = taxPayerService;
+        this.employeeService = employeeService;
+        this.obligationRepository = obligationRepository;
     }
 
     /**
@@ -105,6 +111,9 @@ public class AuthController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario autenticado no encontrado"));
         model.addAttribute("usuario", user);
         model.addAttribute("roles", authentication.getAuthorities());
+        model.addAttribute("totalContribuyentes", taxPayerService.count());
+        model.addAttribute("totalObligaciones", obligationRepository.count());
+        model.addAttribute("totalEmpleados", employeeService.count());
         return "dashboard";
     }
 
