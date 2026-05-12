@@ -6,13 +6,13 @@
     <title>Equipo | TaxControl</title>
     <link rel="stylesheet" th:href="@{/css/app.css}" />
 </head>
-<body th:replace="~{fragments/layout :: shell('Equipo', 'Gestiona el personal operativo y sus roles asignados', 'equipo', ~{::content})}">
+<body th:replace="~{fragments/layout :: shell('Equipo', 'Administración de personal operativo, asignación de roles y control de accesos', 'equipo', ~{::content})}">
     <section th:fragment="content" class="page-stack">
         <section class="panel-card">
             <div class="panel-header">
                 <div>
                     <p class="eyebrow">Equipo</p>
-                    <h3>Personal registrado</h3>
+                    <h3>Directorio de empleados</h3>
                 </div>
                 <a sec:authorize="hasRole('GERENTE')" th:href="@{/empleados/nuevo}" class="primary-action" style="width:auto">+ Nuevo empleado</a>
             </div>
@@ -31,7 +31,6 @@
                         <tr>
                             <th>Nombre</th>
                             <th>Email</th>
-                            <th>Cargo</th>
                             <th>Rol</th>
                             <th>Teléfono</th>
                             <th>Estado</th>
@@ -42,7 +41,6 @@
                         <tr th:each="e : ${empleados}">
                             <td th:text="${e.name}">Nombre</td>
                             <td th:text="${e.email}">Email</td>
-                            <td th:text="${e.position}">Cargo</td>
                             <td>
                                 <span class="chip" th:text="${e.role != null ? e.role.description : 'Sin rol'}">Rol</span>
                             </td>
@@ -53,6 +51,7 @@
                             </td>
                             <td>
                                 <div class="action-group">
+                                    <a sec:authorize="hasRole('GERENTE')" th:href="@{/empleados/editar/{id}(id=${e.id})}" class="action-link">Editar</a>
                                     <a sec:authorize="hasRole('GERENTE')" th:href="@{/empleados/eliminar/{id}(id=${e.id})}" class="action-link action-danger"
                                        data-confirm="Eliminar este empleado?">Eliminar</a>
                                 </div>

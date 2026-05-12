@@ -6,13 +6,13 @@
     <title>Clientes | TaxControl</title>
     <link rel="stylesheet" th:href="@{/css/app.css}" />
 </head>
-<body th:replace="~{fragments/layout :: shell('Clientes', 'Gestiona contribuyentes, su estado y acceso a sus obligaciones', 'clientes', ~{::content})}">
+<body th:replace="~{fragments/layout :: shell('Clientes', 'Gestión integral de contribuyentes, configuración de estados y acceso a obligaciones', 'clientes', ~{::content})}">
     <section th:fragment="content" class="page-stack">
         <section class="panel-card">
             <div class="panel-header">
                 <div>
                     <p class="eyebrow">Contribuyentes</p>
-                    <h3>Base de clientes</h3>
+                    <h3>Base de clientes activos</h3>
                 </div>
                 <a sec:authorize="hasRole('GERENTE')" th:href="@{/clientes/nuevo}" class="primary-action" style="width:auto">+ Nuevo contribuyente</a>
             </div>
