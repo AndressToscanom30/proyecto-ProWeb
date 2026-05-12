@@ -52,7 +52,7 @@
                         <h3 th:text="${dashboard.monthLabel}">Mayo 2026</h3>
                         <small>Vista mensual de vencimientos y carga operativa</small>
                     </div>
-                    <a class="secondary-action" th:href="@{/calendario-fiscal}" style="min-height:32px;padding:0 0.8rem">Abrir calendario</a>
+                    <a class="secondary-action btn-sm" th:href="@{/calendario-fiscal}">Abrir calendario</a>
                 </div>
 
                 <div class="calendar-legend">
@@ -104,7 +104,7 @@
                         </div>
                         <div class="deadline-side">
                             <span class="status-pill" th:classappend="| tone-${item.tone}|" th:text="${item.statusLabel}">Pendiente</span>
-                            <a class="secondary-action" th:href="@{/obligaciones(taxPayerId=${item.clientId})}" style="min-height:32px;padding:0 0.8rem">Abrir</a>
+                            <a class="secondary-action btn-sm" th:href="@{/obligaciones/{id}(id=${item.id})}">Detalle</a>
                         </div>
                     </article>
                 </div>
@@ -125,7 +125,7 @@
                         <p class="eyebrow">Carga semanal</p>
                         <h3>Volumen de trabajo</h3>
                     </div>
-                    <a class="secondary-action" th:href="@{/reportes}" style="min-height:32px;padding:0 0.8rem">Ver reportes</a>
+                    <a class="secondary-action btn-sm" th:href="@{/clientes}">Ver cartera</a>
                 </div>
 
                 <div class="bar-chart">
@@ -145,7 +145,10 @@
                         <p class="eyebrow">Cumplimiento mensual</p>
                         <h3>Avance de cierre</h3>
                     </div>
-                    <a class="secondary-action" th:href="@{/reportes}" style="min-height:32px;padding:0 0.8rem">Abrir análisis</a>
+                    <form th:action="@{/logout}" method="post" class="m-0 w-max">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                        <button class="secondary-action btn-sm" type="submit">Cerrar sesión</button>
+                    </form>
                 </div>
 
                 <div class="line-chart-shell">
@@ -169,7 +172,7 @@
                         <p class="eyebrow">Distribución</p>
                         <h3>Tipos de tareas</h3>
                     </div>
-                    <a class="secondary-action" th:href="@{/reportes}" style="min-height:32px;padding:0 0.8rem">Ver detalle</a>
+                    <a class="secondary-action btn-sm" th:href="@{/reportes}">Ver detalle</a>
                 </div>
 
                 <div class="donut-wrap">
@@ -196,7 +199,7 @@
                     <p class="eyebrow">Tareas recientes</p>
                     <h3>Trabajo activo y próximos hitos</h3>
                 </div>
-                    <a class="secondary-action" th:href="@{/tareas}" style="min-height:32px;padding:0 0.8rem">Ver tareas</a>
+                    <a class="secondary-action btn-sm" th:href="@{/tareas}">Ver tareas</a>
             </div>
 
             <div class="table-wrap" th:if="${not #lists.isEmpty(dashboard.recentTasks)}">

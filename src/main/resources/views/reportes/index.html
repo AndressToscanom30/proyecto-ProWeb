@@ -17,13 +17,13 @@
                 </p>
             </div>
             <div class="hero-meta">
-                <a class="primary-action" th:href="@{/calendario-fiscal}" style="width:max-content">Ver calendario</a>
-                <a class="secondary-action" th:href="@{/tareas}" style="width:max-content">Ir a tareas</a>
+                <a class="primary-action w-max" th:href="@{/calendario-fiscal}">Ver calendario</a>
+                <a class="secondary-action w-max" th:href="@{/tareas}">Ir a tareas</a>
                 <span class="pill tone-success" th:text="${reportsData.compliancePercent}">97.8%</span>
             </div>
         </section>
 
-        <section class="metric-grid" style="grid-template-columns:repeat(2,1fr)">
+        <section class="metric-grid cols-2">
             <article class="metric-card">
                 <div class="metric-icon tone-primary">
                     <svg viewBox="0 0 24 24"><path d="M7 6.5h10M7 10.5h10M7 14.5h6"/><rect x="4" y="4.5" width="16" height="15" rx="3"/></svg>

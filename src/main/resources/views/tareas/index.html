@@ -17,8 +17,8 @@
                 </p>
             </div>
             <div class="hero-meta">
-                <a class="primary-action" th:href="@{/obligaciones}" style="width:max-content">Abrir obligaciones</a>
-                <a class="secondary-action" th:href="@{/clientes}" style="width:max-content">Ir a clientes</a>
+                <a class="primary-action w-max" th:href="@{/obligaciones}">Abrir obligaciones</a>
+                <a class="secondary-action w-max" th:href="@{/clientes}">Ir a clientes</a>
                 <span class="pill tone-warning" th:text="|${tasksData.pendingCount} pendientes|">124 pendientes</span>
             </div>
         </section>
@@ -138,7 +138,7 @@
                             <span class="risk-pill" th:classappend="| tone-${client.riskTone}|" th:text="${client.riskLabel}">Alto</span>
                         </div>
                         <p><span th:text="${client.pendingCount}">4</span> tareas activas</p>
-                        <a class="secondary-action" th:href="@{/obligaciones(taxPayerId=${client.clientId})}" style="min-height:32px;padding:0 0.8rem;width:max-content">Abrir</a>
+                        <a class="secondary-action btn-sm w-max" th:href="@{/obligaciones(taxPayerId=${client.clientId})}">Abrir</a>
                     </article>
                 </div>
 
@@ -173,7 +173,7 @@
                         </div>
                         <div class="deadline-side">
                             <span class="status-pill" th:classappend="| tone-${item.tone}|" th:text="${item.statusLabel}">Pendiente</span>
-                            <a class="secondary-action" th:href="@{/obligaciones(taxPayerId=${item.clientId})}" style="min-height:32px;padding:0 0.8rem">Abrir</a>
+                            <a class="secondary-action btn-sm" th:href="@{/obligaciones(taxPayerId=${item.clientId})}">Abrir</a>
                         </div>
                     </article>
                 </div>
@@ -198,9 +198,9 @@
                     Usa esta pantalla para entrar al cliente, abrir la obligación, pasar al calendario o revisar el estado de cumplimiento sin perder tiempo.
                 </p>
                 <div class="hero-meta">
-                    <a class="primary-action" th:href="@{/obligaciones}" style="width:max-content">Ir a obligaciones</a>
-                    <a class="secondary-action" th:href="@{/reportes}" style="width:max-content">Ver reportes</a>
-                    <a class="secondary-action" th:href="@{/notificaciones}" style="width:max-content">Notificaciones</a>
+                    <a class="primary-action w-max" th:href="@{/obligaciones}">Ir a obligaciones</a>
+                    <a class="secondary-action w-max" th:href="@{/reportes}">Ver reportes</a>
+                    <a class="secondary-action w-max" th:href="@{/notificaciones}">Notificaciones</a>
                 </div>
             </article>
         </section>

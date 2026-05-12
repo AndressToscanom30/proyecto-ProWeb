@@ -1604,6 +1604,10 @@ textarea {
   grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
+.metric-grid.cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .metric-card,
 .panel-card,
 .auth-card,
@@ -2046,6 +2050,13 @@ textarea {
   flex-wrap: wrap;
   gap: 0.5rem;
 }
+
+/* Utilities */
+.w-max { width: max-content; }
+.btn-sm { min-height: 32px !important; padding: 0 0.8rem !important; }
+.m-0 { margin: 0 !important; }
+.mb-lg { margin-bottom: 1.25rem !important; }
+.inline { display: inline !important; }
 
 .action-link {
   display: inline-flex;
