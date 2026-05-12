@@ -4,16 +4,24 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.annotation.Id;
+
 import com.cronos.gestiontributaria.calendarios.model.Alert;
 import com.cronos.gestiontributaria.common.TaxObligationStatus;
 import com.cronos.gestiontributaria.common.TaxObligationType;
 import com.cronos.gestiontributaria.empleados.model.Task;
 
+@org.springframework.data.mongodb.core.mapping.Document(collection = "obligaciones")
 public class TaxObligation {
+    @Id
+    private String id;
     private TaxObligationType type;
+    private String taxPayerId;              // referencia al contribuyente
     private String fiscalPeriod;
     private int taxYear;
     private LocalDate dueDate;
+    private boolean dueDateOverridden;      // true si la dueDate fue ingresada manualmente
+    private String dueDateOverrideReason;   // obligatorio si dueDateOverridden=true (auditoría)
     private TaxObligationStatus status;
     private String notes;
     private List<Document> documents;
@@ -24,15 +32,19 @@ public class TaxObligation {
     public TaxObligation(){
 
     }
-    
-    public TaxObligation(TaxObligationType type, String fiscalPeriod, int taxYear, LocalDate dueDate,
-                        TaxObligationStatus status, String notes,
+
+    public TaxObligation(TaxObligationType type, String taxPayerId, String fiscalPeriod,
+                        int taxYear, LocalDate dueDate, boolean dueDateOverridden,
+                        String dueDateOverrideReason, TaxObligationStatus status, String notes,
                         List<Document> documents, List<Alert> alerts,
                         List<TaxIndicator> indicators, List<Task> tasks) {
         this.type = type;
+        this.taxPayerId = taxPayerId;
         this.fiscalPeriod = fiscalPeriod;
         this.taxYear = taxYear;
         this.dueDate = dueDate;
+        this.dueDateOverridden = dueDateOverridden;
+        this.dueDateOverrideReason = dueDateOverrideReason;
         this.status = status;
         this.notes = notes;
         this.documents = documents != null ? documents : new ArrayList<>();
@@ -64,12 +76,30 @@ public class TaxObligation {
         return dueDate.isBefore(LocalDate.now());
     }
 
+    // ─── Getters y Setters ────────────────────────────────────────────────
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public TaxObligationType getType() {
         return type;
     }
 
     public void setType(TaxObligationType type) {
         this.type = type;
+    }
+
+    public String getTaxPayerId() {
+        return taxPayerId;
+    }
+
+    public void setTaxPayerId(String taxPayerId) {
+        this.taxPayerId = taxPayerId;
     }
 
     public String getFiscalPeriod() {
@@ -94,6 +124,22 @@ public class TaxObligation {
 
     public void setDueDate(LocalDate dueDate) {
         this.dueDate = dueDate;
+    }
+
+    public boolean isDueDateOverridden() {
+        return dueDateOverridden;
+    }
+
+    public void setDueDateOverridden(boolean dueDateOverridden) {
+        this.dueDateOverridden = dueDateOverridden;
+    }
+
+    public String getDueDateOverrideReason() {
+        return dueDateOverrideReason;
+    }
+
+    public void setDueDateOverrideReason(String dueDateOverrideReason) {
+        this.dueDateOverrideReason = dueDateOverrideReason;
     }
 
     public TaxObligationStatus getStatus() {

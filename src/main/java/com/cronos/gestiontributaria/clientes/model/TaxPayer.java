@@ -4,14 +4,21 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import com.cronos.gestiontributaria.common.TaxpayerType;
 import com.cronos.gestiontributaria.notification.model.Notification;
-import com.cronos.gestiontributaria.obligaciones.model.Document;
 import com.cronos.gestiontributaria.obligaciones.model.TaxObligation;
 
+@Document(collection = "contribuyentes")
 public class TaxPayer {
+    @Id
+    private String id;
     private String businessName;
+    private String identificacion;       // NIT (persona jurídica) o CC (persona natural)
     private TaxpayerType type;
+    private boolean granContribuyente;   // true si es clasificado como gran contribuyente por la DIAN
     private String email;
     private String phone;
     private String address;
@@ -25,12 +32,15 @@ public class TaxPayer {
         
     }
 
-    public TaxPayer(String businessName, TaxpayerType type, String email, String phone,
+    public TaxPayer(String businessName, String identificacion, TaxpayerType type,
+            boolean granContribuyente, String email, String phone,
             String address, boolean active, LocalDate registrationDate,
             List<TaxObligation> obligations, List<BankAccount> bankAccounts,
             List<Notification> notifications) {
         this.businessName = businessName;
+        this.identificacion = identificacion;
         this.type = type;
+        this.granContribuyente = granContribuyente;
         this.email = email;
         this.phone = phone;
         this.address = address;
@@ -49,12 +59,36 @@ public class TaxPayer {
         this.active = false;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getIdentificacion() {
+        return identificacion;
+    }
+
+    public void setIdentificacion(String identificacion) {
+        this.identificacion = identificacion;
+    }
+
+    public boolean isGranContribuyente() {
+        return granContribuyente;
+    }
+
+    public void setGranContribuyente(boolean granContribuyente) {
+        this.granContribuyente = granContribuyente;
+    }
+
     public List<TaxObligation> getObligations() {
         return obligations;
     }
 
-    public List<Document> getDocuments() {
-        List<Document> docs = new ArrayList<>();
+    public List<com.cronos.gestiontributaria.obligaciones.model.Document> getDocuments() {
+        List<com.cronos.gestiontributaria.obligaciones.model.Document> docs = new ArrayList<>();
         if (obligations != null) {
             for (TaxObligation obligation : obligations) {
                 if (obligation != null && obligation.getDocuments() != null) {
