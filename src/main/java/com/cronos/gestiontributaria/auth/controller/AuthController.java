@@ -5,10 +5,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -28,7 +25,6 @@ import com.cronos.gestiontributaria.obligaciones.repository.TaxObligationReposit
 
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -37,7 +33,6 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import jakarta.validation.Valid;
 
 /**
  * Controlador web para autenticación, registro y paneles de usuario.
@@ -82,40 +77,7 @@ public class AuthController {
     }
 
     /**
-     * Muestra el formulario de registro de usuarios.
-     *
-     * @param model modelo de vista para inyectar el formulario
-     * @return nombre de la vista de registro
-     */
-    @GetMapping("/registro")
-    public String registerForm(Model model) {
-        if (!model.containsAttribute("usuario")) {
-            model.addAttribute("usuario", new User());
-        }
-        return "auth/registro";
-    }
 
-    /**
-     * Procesa el registro de un nuevo usuario.
-     *
-     * @param user datos enviados desde el formulario
-     * @param result contenedor de errores de validación
-     * @return redirección al login o la misma vista con errores
-     */
-    @PostMapping("/registro")
-    public String register(@Valid @ModelAttribute("usuario") User user, BindingResult result) {
-        if (result.hasErrors()) {
-            return "auth/registro";
-        }
-
-        try {
-            userService.register(user);
-            return "redirect:/login?registrado";
-        } catch (IllegalArgumentException exception) {
-            result.rejectValue("email", "error.email", exception.getMessage());
-            return "auth/registro";
-        }
-    }
 
     /**
      * Muestra el dashboard del usuario autenticado.
