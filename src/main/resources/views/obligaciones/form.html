@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8" />
@@ -27,7 +27,7 @@
                     <span class="field-label">Tipo de obligación</span>
                     <select class="text-input" name="type" required>
                         <option value="">Seleccionar...</option>
-                        <option th:each="t : ${tipos}" th:value="${t}" th:text="${t}" th:selected="${dto != null && dto.type() == t}"></option>
+                        <option th:each="t : ${tipos}" th:value="${t}" th:text="${t.description}" th:selected="${dto != null && dto.type() == t}"></option>
                     </select>
                 </label>
 

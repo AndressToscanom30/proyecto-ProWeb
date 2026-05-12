@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8" />
@@ -70,7 +70,7 @@
                             <td th:text="${o.taxPayerName}">Contribuyente</td>
                             <td th:text="${o.taxPayerIdentificacion}">Identificación</td>
                             <td>
-                                <span class="type-label" th:text="${o.type}">TIPO</span>
+                                <span class="type-label" th:text="${o.type.description}">TIPO</span>
                             </td>
                             <td th:text="${o.fiscalPeriod}">2026-01</td>
                             <td th:text="${o.taxYear}">2026</td>
