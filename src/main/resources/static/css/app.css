@@ -1701,10 +1701,6 @@ textarea {
   gap: 16px;
 }
 
-.critical-grid {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-
 .panel-card,
 .info-card,
 .auth-card,
