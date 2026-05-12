@@ -6,14 +6,14 @@
     <title>Tareas | Cronos</title>
     <link rel="stylesheet" th:href="@{/css/app.css}" />
 </head>
-<body th:replace="~{fragments/layout :: shell('Tareas y seguimiento', 'Trabajo activo, prioridades crÃ­ticas y clientes que requieren atenciÃ³n inmediata', 'tareas', ~{::content})}">
+<body th:replace="~{fragments/layout :: shell('Tareas y seguimiento', 'Trabajo activo, prioridades críticas y clientes que requieren atención inmediata', 'tareas', ~{::content})}">
     <section th:fragment="content" class="page-stack">
         <section class="page-hero">
             <div>
                 <p class="eyebrow">Tareas y seguimiento</p>
                 <h2>Prioriza el trabajo activo sin perder contexto</h2>
                 <p>
-                    GestiÃ³n y seguimiento de las obligaciones tributarias en curso, organizadas por nivel de urgencia y fecha de vencimiento.
+                    Gestión y seguimiento de las obligaciones tributarias en curso, organizadas por nivel de urgencia y fecha de vencimiento.
                 </p>
             </div>
             <div class="hero-meta">
@@ -61,7 +61,7 @@
                 <div class="metric-copy">
                     <span>Vencidas</span>
                     <strong th:text="${tasksData.overdueCount}">0</strong>
-                    <small>Requieren atenciÃ³n</small>
+                    <small>Requieren atención</small>
                 </div>
             </article>
         </section>
@@ -85,7 +85,7 @@
                                 <th>Tarea</th>
                                 <th>Responsable</th>
                                 <th>Prioridad</th>
-                                <th>Fecha lÃ­mite</th>
+                                <th>Fecha límite</th>
                                 <th>Estado</th>
                                 <th>Acciones</th>
                             </tr>
@@ -95,7 +95,7 @@
                                 <td>
                                     <a class="table-link" th:href="@{/obligaciones(taxPayerId=${task.clientId})}" th:text="${task.clientName}">Cliente</a>
                                 </td>
-                                <td th:text="${task.taskDesc}">DeclaraciÃ³n</td>
+                                <td th:text="${task.taskDesc}">Declaración</td>
                                 <td th:text="${task.responsible}">Contador</td>
                                 <td>
                                     <span class="priority-pill" th:classappend="| tone-${task.priorityTone}|" th:text="${task.priority}">Alta</span>
@@ -122,8 +122,8 @@
             <aside class="panel-card critical-panel">
                 <div class="panel-header">
                     <div>
-                        <p class="eyebrow">Clientes crÃ­ticos</p>
-                        <h3>Riesgo operativo y prÃ³ximos vencimientos</h3>
+                        <p class="eyebrow">Clientes críticos</p>
+                        <h3>Riesgo operativo y próximos vencimientos</h3>
                     </div>
                     <a class="secondary-action" th:href="@{/calendario-fiscal}" style="min-height:32px;padding:0 0.8rem">Ver calendario</a>
                 </div>
@@ -132,7 +132,7 @@
                     <article class="critical-card" th:each="client : ${tasksData.criticalClients}">
                         <div class="critical-card-head">
                             <div>
-                                <strong th:text="${client.name}">Cliente crÃ­tico</strong>
+                                <strong th:text="${client.name}">Cliente crítico</strong>
                                 <small th:text="${client.nextDueDateLabel}">12 may 2026</small>
                             </div>
                             <span class="risk-pill" th:classappend="| tone-${client.riskTone}|" th:text="${client.riskLabel}">Alto</span>
@@ -146,7 +146,7 @@
                     <div class="empty-icon">
                         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 8v4M12 15.5h.01"/></svg>
                     </div>
-                    <p>No hay clientes crÃ­ticos en este momento.</p>
+                    <p>No hay clientes críticos en este momento.</p>
                 </div>
             </aside>
         </section>
@@ -155,10 +155,10 @@
             <article class="panel-card deadline-panel">
                 <div class="panel-header">
                     <div>
-                        <p class="eyebrow">PrÃ³ximos hitos</p>
+                        <p class="eyebrow">Próximos hitos</p>
                         <h3>Vencimientos que deben entrar en agenda</h3>
                     </div>
-                    <span class="pill tone-info">14 dÃ­as</span>
+                    <span class="pill tone-info">14 días</span>
                 </div>
 
                 <div class="deadline-list" th:if="${not #lists.isEmpty(dashboard.upcomingDeadlines)}">
@@ -166,7 +166,7 @@
                         <div class="deadline-meta">
                             <strong th:text="${item.client}">Cliente</strong>
                             <small>
-                                <span th:text="${item.obligation}">ObligaciÃ³n</span>
+                                <span th:text="${item.obligation}">Obligación</span>
                                 <span> Â· </span>
                                 <span th:text="${item.dueDateLabel}">12 may 2026</span>
                             </small>
@@ -182,20 +182,20 @@
                     <div class="empty-icon">
                         <svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="16" rx="3"/><path d="M8 2.5v4M16 2.5v4M3.5 9.5h17"/></svg>
                     </div>
-                    <p>No hay hitos prÃ³ximos registrados.</p>
+                    <p>No hay hitos próximos registrados.</p>
                 </div>
             </article>
 
             <article class="panel-card">
                 <div class="panel-header">
                     <div>
-                        <p class="eyebrow">Acciones rÃ¡pidas</p>
+                        <p class="eyebrow">Acciones rápidas</p>
                         <h3>Resolver sin salir de la vista</h3>
                     </div>
                     <span class="pill tone-success">Enfoque</span>
                 </div>
                 <p>
-                    Usa esta pantalla para entrar al cliente, abrir la obligaciÃ³n, pasar al calendario o revisar el estado de cumplimiento sin perder tiempo.
+                    Usa esta pantalla para entrar al cliente, abrir la obligación, pasar al calendario o revisar el estado de cumplimiento sin perder tiempo.
                 </p>
                 <div class="hero-meta">
                     <a class="primary-action w-max" th:href="@{/obligaciones}">Ir a obligaciones</a>

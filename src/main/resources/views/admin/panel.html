@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ConfiguraciÃ³n | Cronos</title>
+    <title>Configuración | Cronos</title>
     <link rel="stylesheet" th:href="@{/css/app.css}" />
 </head>
-<body th:replace="~{fragments/layout :: shell('ConfiguraciÃ³n', 'Panel administrativo y usuarios del sistema', 'configuracion', ~{::content})}">
+<body th:replace="~{fragments/layout :: shell('Configuración', 'Panel administrativo y usuarios del sistema', 'configuracion', ~{::content})}">
     <section th:fragment="content" class="page-stack">
         <section class="metric-grid">
             <article class="metric-card">
@@ -34,7 +34,7 @@
                     <svg viewBox="0 0 24 24"><path d="M12 4.5 4.8 18h14.4L12 4.5z"/><path d="M12 9v4.2M12 15.8h.01"/></svg>
                 </div>
                 <div class="metric-copy">
-                    <span>SecciÃ³n</span>
+                    <span>Sección</span>
                     <strong>Protegida</strong>
                     <small>Solo para administradores</small>
                 </div>
@@ -54,7 +54,7 @@
         <section class="panel-card">
             <div class="panel-header">
                 <div>
-                    <p class="eyebrow">AdministraciÃ³n</p>
+                    <p class="eyebrow">Administración</p>
                     <h3>Usuarios en Mongo Atlas <small th:text="|${totalUsuarios} registros|">0 registros</small></h3>
                 </div>
             </div>

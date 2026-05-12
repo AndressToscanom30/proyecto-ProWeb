@@ -6,19 +6,19 @@
     <title>Notificaciones | Cronos</title>
     <link rel="stylesheet" th:href="@{/css/app.css}" />
 </head>
-<body th:replace="~{fragments/layout :: shell('Notificaciones', 'Alertas automÃ¡ticas, recordatorios y pruebas de correo', 'notificaciones', ~{::content})}">
+<body th:replace="~{fragments/layout :: shell('Notificaciones', 'Alertas automáticas, recordatorios y pruebas de correo', 'notificaciones', ~{::content})}">
     <section th:fragment="content" class="page-stack">
         <section class="page-hero">
             <div>
                 <p class="eyebrow">Centro de alertas</p>
                 <h2>Notificaciones por correo</h2>
                 <p>
-                    GestiÃ³n de alertas automÃ¡ticas, seguimiento de vencimientos y envÃ­o de recordatorios a clientes desde un entorno centralizado.
+                    Gestión de alertas automáticas, seguimiento de vencimientos y envío de recordatorios a clientes desde un entorno centralizado.
                 </p>
             </div>
             <div class="hero-meta">
                 <span class="pill tone-danger">Vencidas <strong th:text="${alertasVencidas}">0</strong></span>
-                <span class="pill tone-warning">PrÃ³ximas <strong th:text="${alertasProximas}">0</strong></span>
+                <span class="pill tone-warning">Próximas <strong th:text="${alertasProximas}">0</strong></span>
                 <span class="pill tone-primary" th:text="${correoPrueba}">correo@ejemplo.com</span>
             </div>
         </section>
@@ -51,12 +51,12 @@
 
                     <label class="field-group">
                         <span class="field-label">Mensaje</span>
-                        <textarea class="text-input textarea" name="message" rows="6" required>El envÃ­o de correo funciona correctamente desde Cronos.</textarea>
+                        <textarea class="text-input textarea" name="message" rows="6" required>El envío de correo funciona correctamente desde Cronos.</textarea>
                     </label>
 
                     <div class="form-actions">
                         <button class="primary-action" type="submit">Enviar correo</button>
-                        <a class="secondary-action" th:href="@{/dashboard#configuracion}">Ir a configuraciÃ³n</a>
+                        <a class="secondary-action" th:href="@{/dashboard#configuracion}">Ir a configuración</a>
                     </div>
                 </form>
             </article>
@@ -64,14 +64,14 @@
             <article class="panel-card">
                 <div class="panel-header">
                     <div>
-                        <p class="eyebrow">ConfiguraciÃ³n</p>
+                        <p class="eyebrow">Configuración</p>
                         <h3>Ajustes del sistema</h3>
                     </div>
                     <span class="pill tone-success">Activo</span>
                 </div>
 
                 <p>
-                    AdministraciÃ³n de accesos, roles de usuario y parÃ¡metros generales del entorno.
+                    Administración de accesos, roles de usuario y parámetros generales del entorno.
                 </p>
                 <div class="hero-meta">
                     <a sec:authorize="hasRole('ADMIN')" class="primary-action w-max" th:href="@{/admin}">Abrir panel admin</a>
@@ -84,7 +84,7 @@
             <div class="panel-header">
                 <div>
                     <p class="eyebrow">Alertas activas</p>
-                    <h3>Obligaciones prÃ³ximas a vencer</h3>
+                    <h3>Obligaciones próximas a vencer</h3>
                 </div>
                 <span class="pill tone-warning" th:text="|${#lists.size(alertas)} alertas|">0 alertas</span>
             </div>
@@ -95,17 +95,17 @@
                         <tr>
                             <th>Cliente</th>
                             <th>Correo</th>
-                            <th>ObligaciÃ³n</th>
+                            <th>Obligación</th>
                             <th>Vencimiento</th>
                             <th>Estado</th>
-                            <th>AcciÃ³n</th>
+                            <th>Acción</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr th:each="alerta : ${alertas}">
                             <td>
                                 <strong th:text="${alerta.clientName}">Cliente</strong>
-                                <small class="field-hint" th:text="${alerta.clientIdentification}">IdentificaciÃ³n</small>
+                                <small class="field-hint" th:text="${alerta.clientIdentification}">Identificación</small>
                             </td>
                             <td th:text="${alerta.clientEmail}">correo@ejemplo.com</td>
                             <td th:text="${alerta.obligationLabel}">IVA Â· 2026-01</td>

@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Nueva obligaciÃ³n | Cronos</title>
+    <title>Nueva obligación | Cronos</title>
     <link rel="stylesheet" th:href="@{/css/app.css}" />
 </head>
-<body th:replace="~{fragments/layout :: shell('Nueva obligaciÃ³n', 'Registro de vencimientos y perÃ­odos fiscales por cliente', 'obligaciones', ~{::content})}">
+<body th:replace="~{fragments/layout :: shell('Nueva obligación', 'Registro de vencimientos y períodos fiscales por cliente', 'obligaciones', ~{::content})}">
     <section th:fragment="content" class="page-stack">
         <section class="panel-card">
             <div class="panel-header">
                 <div>
                     <p class="eyebrow">Obligaciones</p>
-                    <h3>Nueva obligaciÃ³n para <span th:text="${contribuyente.businessName}">Contribuyente</span></h3>
+                    <h3>Nueva obligación para <span th:text="${contribuyente.businessName}">Contribuyente</span></h3>
                 </div>
                 <a th:href="@{/obligaciones(taxPayerId=${contribuyente.id})}" class="secondary-action">&larr; Volver</a>
             </div>
@@ -24,7 +24,7 @@
                 <input type="hidden" name="taxPayerId" th:value="${contribuyente.id}" />
 
                 <label class="field-group">
-                    <span class="field-label">Tipo de obligaciÃ³n</span>
+                    <span class="field-label">Tipo de obligación</span>
                     <select class="text-input" name="type" required>
                         <option value="">Seleccionar...</option>
                         <option th:each="t : ${tipos}" th:value="${t}" th:text="${t}" th:selected="${dto != null && dto.type() == t}"></option>
@@ -32,14 +32,14 @@
                 </label>
 
                 <label class="field-group">
-                    <span class="field-label">PerÃ­odo fiscal</span>
+                    <span class="field-label">Período fiscal</span>
                     <input class="text-input" type="text" name="fiscalPeriod" placeholder="Ej: 2026-01, 2026-B1, 2026-Q1, 2026"
                            th:value="${dto != null ? dto.fiscalPeriod() : ''}" required />
                     <small class="field-hint">Mensual: 2026-01 | Bimestral: 2026-B1 | Cuatrimestral: 2026-Q1 | Anual: 2026</small>
                 </label>
 
                 <label class="field-group">
-                    <span class="field-label">AÃ±o gravable</span>
+                    <span class="field-label">Año gravable</span>
                     <input class="text-input" type="number" name="taxYear" th:value="${dto != null ? dto.taxYear() : 2026}" min="2020" max="2035" required />
                 </label>
 
@@ -47,12 +47,12 @@
                     <span class="field-label">Fecha de vencimiento (opcional)</span>
                     <input class="text-input" type="date" name="dueDateOverride"
                            th:value="${dto != null && dto.dueDateOverride() != null ? dto.dueDateOverride() : ''}" />
-                    <small class="field-hint">Dejar vacÃ­o para calcular automÃ¡ticamente segÃºn el calendario tributario</small>
+                    <small class="field-hint">Dejar vacío para calcular automáticamente según el calendario tributario</small>
                 </label>
 
                 <label class="field-group override-reason" style="display:none">
                     <span class="field-label">Motivo del cambio de fecha</span>
-                    <input class="text-input" type="text" name="dueDateOverrideReason" placeholder="RazÃ³n obligatoria si ingresas fecha manual" />
+                    <input class="text-input" type="text" name="dueDateOverrideReason" placeholder="Razón obligatoria si ingresas fecha manual" />
                 </label>
 
                 <label class="field-group">
@@ -62,7 +62,7 @@
                 </label>
 
                 <div class="form-actions">
-                    <button class="primary-action" type="submit">Guardar obligaciÃ³n</button>
+                    <button class="primary-action" type="submit">Guardar obligación</button>
                     <a th:href="@{/obligaciones(taxPayerId=${contribuyente.id})}" class="secondary-action">Cancelar</a>
                 </div>
             </form>

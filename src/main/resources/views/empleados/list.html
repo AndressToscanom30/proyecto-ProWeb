@@ -6,7 +6,7 @@
     <title>Equipo | Cronos</title>
     <link rel="stylesheet" th:href="@{/css/app.css}" />
 </head>
-<body th:replace="~{fragments/layout :: shell('Equipo', 'AdministraciÃ³n de personal operativo, asignaciÃ³n de roles y control de accesos', 'equipo', ~{::content})}">
+<body th:replace="~{fragments/layout :: shell('Equipo', 'Administración de personal operativo, asignación de roles y control de accesos', 'equipo', ~{::content})}">
     <section th:fragment="content" class="page-stack">
         <section class="panel-card">
             <div class="panel-header">
@@ -32,7 +32,7 @@
                             <th>Nombre</th>
                             <th>Email</th>
                             <th>Rol</th>
-                            <th>TelÃ©fono</th>
+                            <th>Teléfono</th>
                             <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
@@ -44,7 +44,7 @@
                             <td>
                                 <span class="chip" th:text="${e.role != null ? e.role.description : 'Sin rol'}">Rol</span>
                             </td>
-                            <td th:text="${e.phone}">TelÃ©fono</td>
+                            <td th:text="${e.phone}">Teléfono</td>
                             <td>
                                 <span class="pill tone-success" th:if="${e.active}">Activo</span>
                                 <span class="pill tone-danger" th:if="${!e.active}">Inactivo</span>

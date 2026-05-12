@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ConfiguraciÃ³n | Cronos</title>
+    <title>Configuración | Cronos</title>
     <link rel="stylesheet" th:href="@{/css/app.css}" />
 </head>
-<body th:replace="~{fragments/layout :: shell('ConfiguraciÃ³n', 'Ajustes visuales, accesos administrativos y atajos del sistema', 'configuracion', ~{::content})}">
+<body th:replace="~{fragments/layout :: shell('Configuración', 'Ajustes visuales, accesos administrativos y atajos del sistema', 'configuracion', ~{::content})}">
     <section th:fragment="content" class="page-stack">
         <section class="page-hero">
             <div>
-                <p class="eyebrow">ConfiguraciÃ³n</p>
-                <h2>GestiÃ³n integral de usuarios y preferencias del sistema</h2>
+                <p class="eyebrow">Configuración</p>
+                <h2>Gestión integral de usuarios y preferencias del sistema</h2>
                 <p>
-                    Administra los permisos de acceso, controla la base de empleados registrados y ajusta las preferencias globales de Cronos para asegurar una operaciÃ³n eficiente.
+                    Administra los permisos de acceso, controla la base de empleados registrados y ajusta las preferencias globales de Cronos para asegurar una operación eficiente.
                 </p>
             </div>
             <div class="hero-meta">
@@ -74,7 +74,7 @@
                 <span class="card-label">Apariencia</span>
                 <span class="card-value">Tema claro y oscuro</span>
                 <p class="card-desc">
-                    El interruptor de la barra superior controla el tema visual y la barra lateral se recuerda por sesiÃ³n para que el espacio de trabajo siempre abra igual.
+                    El interruptor de la barra superior controla el tema visual y la barra lateral se recuerda por sesión para que el espacio de trabajo siempre abra igual.
                 </p>
             </article>
 
@@ -82,7 +82,7 @@
                 <span class="card-label">Correo y alertas</span>
                 <span class="card-value">Notificaciones activas</span>
                 <p class="card-desc">
-                    Revisa el estado del envÃ­o SMTP, haz pruebas de correo y administra recordatorios desde el centro de notificaciones.
+                    Revisa el estado del envío SMTP, haz pruebas de correo y administra recordatorios desde el centro de notificaciones.
                 </p>
                 <div class="hero-meta">
                     <a class="secondary-action w-max" th:href="@{/notificaciones}">Abrir notificaciones</a>
@@ -99,7 +99,7 @@
                     <a class="secondary-action w-max" sec:authorize="hasRole('ADMIN')" th:href="@{/admin}">Ir al panel</a>
                     <form th:action="@{/logout}" method="post" class="m-0 w-max">
                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                        <button class="secondary-action btn-sm" type="submit">Cerrar sesiÃ³n</button>
+                        <button class="secondary-action btn-sm" type="submit">Cerrar sesión</button>
                     </form>
                 </div>
             </article>
@@ -109,14 +109,14 @@
             <article class="panel-card">
                 <div class="panel-header">
                     <div>
-                        <p class="eyebrow">SesiÃ³n actual</p>
+                        <p class="eyebrow">Sesión actual</p>
                         <h3 th:text="${usuario.name}">Usuario</h3>
                         <small th:text="${usuario.email}">correo@ejemplo.com</small>
                     </div>
                     <span class="pill tone-primary" th:text="${usuario.role != null ? usuario.role.description : 'Usuario'}">Usuario</span>
                 </div>
                 <p>
-                    Esta cuenta tiene acceso al panel y a las Ã¡reas operativas del sistema. Si necesitas modificar permisos o revisar el catÃ¡logo de usuarios, entra al panel administrativo.
+                    Esta cuenta tiene acceso al panel y a las áreas operativas del sistema. Si necesitas modificar permisos o revisar el catálogo de usuarios, entra al panel administrativo.
                 </p>
                 <div class="hero-meta">
                     <a class="primary-action w-max" th:href="@{/dashboard}">Volver al dashboard</a>
@@ -128,7 +128,7 @@
                 <div class="panel-header">
                     <div>
                         <p class="eyebrow">Mantenimiento</p>
-                        <h3>Atajos Ãºtiles para la administraciÃ³n diaria</h3>
+                        <h3>Atajos útiles para la administración diaria</h3>
                     </div>
                     <span class="pill tone-success">Listo</span>
                 </div>
@@ -153,13 +153,13 @@
                     </article>
                     <article class="deadline-item">
                         <div class="deadline-meta">
-                            <strong>Volver a operaciÃ³n</strong>
+                            <strong>Volver a operación</strong>
                             <small>Regresa al resumen principal cuando termines de ajustar el entorno.</small>
                         </div>
                         <div class="deadline-side">
                             <form th:action="@{/logout}" method="post" class="m-0">
                                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                                <button class="secondary-action btn-sm" type="submit">Cerrar sesiÃ³n</button>
+                                <button class="secondary-action btn-sm" type="submit">Cerrar sesión</button>
                             </form>
                         </div>
                     </article>
@@ -181,7 +181,7 @@
                     <thead>
                         <tr>
                             <th>Nombre</th>
-                            <th>Correo electrÃ³nico</th>
+                            <th>Correo electrónico</th>
                             <th>Nivel de acceso</th>
                         </tr>
                     </thead>

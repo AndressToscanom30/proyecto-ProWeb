@@ -6,7 +6,7 @@
     <title>Clientes | Cronos</title>
     <link rel="stylesheet" th:href="@{/css/app.css}" />
 </head>
-<body th:replace="~{fragments/layout :: shell('Clientes', 'GestiÃ³n integral de contribuyentes, configuraciÃ³n de estados y acceso a obligaciones', 'clientes', ~{::content})}">
+<body th:replace="~{fragments/layout :: shell('Clientes', 'Gestión integral de contribuyentes, configuración de estados y acceso a obligaciones', 'clientes', ~{::content})}">
     <section th:fragment="content" class="page-stack">
         <section class="panel-card">
             <div class="panel-header">
@@ -29,8 +29,8 @@
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>RazÃ³n social</th>
-                            <th>IdentificaciÃ³n</th>
+                            <th>Razón social</th>
+                            <th>Identificación</th>
                             <th>Tipo</th>
                             <th>Email</th>
                             <th>Estado</th>
@@ -44,7 +44,7 @@
                             </td>
                             <td th:text="${c.identificacion}">NIT</td>
                             <td>
-                                <span class="chip" th:text="${c.type == 'LEGAL_ENTITY' ? 'Persona jurÃ­dica' : 'Persona natural'}">Tipo</span>
+                                <span class="chip" th:text="${c.type == 'LEGAL_ENTITY' ? 'Persona jurídica' : 'Persona natural'}">Tipo</span>
                             </td>
                             <td th:text="${c.email}">email</td>
                             <td>
