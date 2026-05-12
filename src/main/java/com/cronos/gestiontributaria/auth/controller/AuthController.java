@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.cronos.gestiontributaria.auth.model.User;
@@ -115,7 +116,10 @@ public class AuthController {
      */
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/admin")
-    public String adminPanel(Model model) {
+    public String adminPanel(Model model, Authentication authentication) {
+        User user = userService.findByEmail(authentication.getName())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+        model.addAttribute("usuario", user);
         model.addAttribute("usuarios", userService.findAll());
         model.addAttribute("totalUsuarios", userService.findAll().size());
         return "admin/panel";
@@ -126,7 +130,7 @@ public class AuthController {
      *
      * @return nombre de la vista 403
      */
-    @GetMapping("/403")
+    @RequestMapping("/403")
     public String accessDenied() {
         return "error/403";
     }
