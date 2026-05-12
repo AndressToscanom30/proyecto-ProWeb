@@ -31,7 +31,7 @@
         <section class="panel-card">
             <div class="panel-header">
                 <h3>Empleados</h3>
-                <a th:href="@{/empleados/nuevo}" class="primary-action" style="width:auto;padding:0 1.25rem;height:38px;font-size:0.85rem;text-decoration:none">
+                <a sec:authorize="hasRole('GERENTE')" th:href="@{/empleados/nuevo}" class="primary-action" style="width:auto;padding:0 1.25rem;height:38px;font-size:0.85rem;text-decoration:none">
                     + Nuevo empleado
                 </a>
             </div>
@@ -41,7 +41,7 @@
                     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                 </div>
                 <p>No hay empleados registrados.</p>
-                <a th:href="@{/empleados/nuevo}" class="primary-action" style="width:auto;padding:0 1.5rem;text-decoration:none">Crear primer empleado</a>
+                <a sec:authorize="hasRole('GERENTE')" th:href="@{/empleados/nuevo}" class="primary-action" style="width:auto;padding:0 1.5rem;text-decoration:none">Crear primer empleado</a>
             </div>
 
             <div class="table-wrap" th:if="${not #lists.isEmpty(empleados)}">
@@ -72,7 +72,7 @@
                             </td>
                             <td>
                                 <div class="action-group">
-                                    <a th:href="@{/empleados/eliminar/{id}(id=${e.id})}" class="action-link action-danger"
+                                    <a sec:authorize="hasRole('GERENTE')" th:href="@{/empleados/eliminar/{id}(id=${e.id})}" class="action-link action-danger"
                                        onclick="return confirm('Eliminar este empleado?')">Eliminar</a>
                                 </div>
                             </td>

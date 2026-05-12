@@ -57,12 +57,12 @@
         </section>
 
         <section class="grid-3">
-            <a th:href="@{/clientes/nuevo}" class="info-card" style="text-decoration:none">
+            <a sec:authorize="hasRole('GERENTE')" th:href="@{/clientes/nuevo}" class="info-card" style="text-decoration:none">
                 <span class="card-label">Accion rapida</span>
                 <strong class="card-value">Nuevo contribuyente</strong>
                 <p class="card-desc">Registra un nuevo contribuyente en el sistema.</p>
             </a>
-            <a th:href="@{/empleados/nuevo}" class="info-card" style="text-decoration:none">
+            <a sec:authorize="hasRole('GERENTE')" th:href="@{/empleados/nuevo}" class="info-card" style="text-decoration:none">
                 <span class="card-label">Accion rapida</span>
                 <strong class="card-value">Nuevo empleado</strong>
                 <p class="card-desc">Agrega un empleado con rol especifico.</p>

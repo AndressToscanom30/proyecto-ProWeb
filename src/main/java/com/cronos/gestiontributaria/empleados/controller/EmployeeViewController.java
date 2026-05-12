@@ -1,6 +1,7 @@
 package com.cronos.gestiontributaria.empleados.controller;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,6 +38,7 @@ public class EmployeeViewController {
         return "empleados/list";
     }
 
+    @PreAuthorize("hasRole('GERENTE')")
     @GetMapping("/nuevo")
     public String createForm(Model model, Authentication authentication) {
         User user = userService.findByEmail(authentication.getName())
@@ -46,6 +48,7 @@ public class EmployeeViewController {
         return "empleados/form";
     }
 
+    @PreAuthorize("hasRole('GERENTE')")
     @PostMapping("/guardar")
     public String save(@RequestParam String name,
                         @RequestParam String email,
@@ -72,6 +75,7 @@ public class EmployeeViewController {
         }
     }
 
+    @PreAuthorize("hasRole('GERENTE')")
     @GetMapping("/eliminar/{id}")
     public String delete(@PathVariable String id) {
         employeeService.delete(id);

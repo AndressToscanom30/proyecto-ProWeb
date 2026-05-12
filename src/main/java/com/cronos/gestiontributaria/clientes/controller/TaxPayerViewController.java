@@ -1,5 +1,7 @@
 package com.cronos.gestiontributaria.clientes.controller;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,7 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.http.HttpStatus;
 
 import com.cronos.gestiontributaria.auth.model.User;
 import com.cronos.gestiontributaria.auth.service.UserService;
@@ -40,6 +41,7 @@ public class TaxPayerViewController {
         return "clientes/list";
     }
 
+    @PreAuthorize("hasRole('GERENTE')")
     @GetMapping("/nuevo")
     public String createForm(Model model, Authentication authentication) {
         User user = userService.findByEmail(authentication.getName())
@@ -49,6 +51,7 @@ public class TaxPayerViewController {
         return "clientes/form";
     }
 
+    @PreAuthorize("hasRole('GERENTE')")
     @PostMapping("/guardar")
     public String save(@Valid @ModelAttribute("contribuyente") TaxPayer taxPayer,
                         BindingResult result, Model model, Authentication authentication) {
@@ -75,6 +78,7 @@ public class TaxPayerViewController {
         }
     }
 
+    @PreAuthorize("hasRole('GERENTE')")
     @GetMapping("/editar/{id}")
     public String editForm(@PathVariable String id, Model model, Authentication authentication) {
         User user = userService.findByEmail(authentication.getName())
@@ -84,6 +88,7 @@ public class TaxPayerViewController {
         return "clientes/form";
     }
 
+    @PreAuthorize("hasRole('GERENTE')")
     @GetMapping("/eliminar/{id}")
     public String delete(@PathVariable String id) {
         taxPayerService.delete(id);
