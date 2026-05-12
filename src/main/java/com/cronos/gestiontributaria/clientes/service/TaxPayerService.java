@@ -31,6 +31,7 @@ public class TaxPayerService {
         if (taxPayer.getIdentificacion() != null && repository.existsByIdentificacion(taxPayer.getIdentificacion())) {
             throw new IllegalArgumentException("Ya existe un contribuyente con la identificación " + taxPayer.getIdentificacion());
         }
+        taxPayer.setId(null);
         taxPayer.setRegistrationDate(LocalDate.now());
         taxPayer.setActive(true);
         return repository.save(taxPayer);
