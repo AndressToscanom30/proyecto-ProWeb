@@ -29,7 +29,7 @@
                         <option value="">Ver todas las obligaciones</option>
                         <option th:each="c : ${contribuyentes}"
                                 th:value="${c.id}"
-                                th:text="${c.businessName + ' Â· ' + c.identificacion}"
+                                th:text="${c.businessName + ' · ' + c.identificacion}"
                                 th:selected="${selectedTaxPayerId == c.id}"></option>
                     </select>
                 </label>
