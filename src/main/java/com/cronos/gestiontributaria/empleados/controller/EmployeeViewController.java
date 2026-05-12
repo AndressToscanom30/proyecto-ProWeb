@@ -44,7 +44,7 @@ public class EmployeeViewController {
         User user = userService.findByEmail(authentication.getName())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
         model.addAttribute("usuario", user);
-        model.addAttribute("roles", EmployeeRole.values());
+        model.addAttribute("roles", java.util.Arrays.stream(EmployeeRole.values()).filter(r -> r != EmployeeRole.GERENTE).toList());
         return "empleados/form";
     }
 
@@ -55,10 +55,10 @@ public class EmployeeViewController {
                         @RequestParam String password,
                         @RequestParam EmployeeRole role,
                         @RequestParam(required = false) String phone,
-                        @RequestParam(required = false) String position,
                         Model model, Authentication authentication) {
         try {
-            employeeService.create(name, email, password, role, phone, position);
+            // position is removed, we can just pass null or empty string to the service
+            employeeService.create(name, email, password, role, phone, "");
             return "redirect:/empleados";
         } catch (IllegalArgumentException e) {
             User user = userService.findByEmail(authentication.getName())
@@ -70,7 +70,6 @@ public class EmployeeViewController {
             model.addAttribute("email", email);
             model.addAttribute("role", role);
             model.addAttribute("phone", phone);
-            model.addAttribute("position", position);
             return "empleados/form";
         }
     }

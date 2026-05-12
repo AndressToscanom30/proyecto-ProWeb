@@ -1004,6 +1004,7 @@ p {
   --surface: #ffffff;
   --surface-strong: #f8fafc;
   --surface-soft: #eef2ff;
+  --surface-hover: #f1f5f9;
   --sidebar-bg: rgba(255, 255, 255, 0.9);
   --border: #e5e7eb;
   --border-strong: #d1d5db;
@@ -1038,6 +1039,7 @@ p {
   --surface: #111827;
   --surface-strong: #0f172a;
   --surface-soft: rgba(79, 140, 255, 0.14);
+  --surface-hover: #1f2937;
   --sidebar-bg: rgba(15, 23, 42, 0.92);
   --border: #243244;
   --border-strong: #324056;
@@ -1687,11 +1689,16 @@ textarea {
   gap: 20px;
 }
 
-.chart-grid,
-.critical-grid {
+.chart-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 20px;
+}
+
+.critical-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
 }
 
 .critical-grid {
@@ -2057,6 +2064,24 @@ textarea {
 .m-0 { margin: 0 !important; }
 .mb-lg { margin-bottom: 1.25rem !important; }
 .inline { display: inline !important; }
+
+.day-obligations {
+  margin-top: 0.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  width: 100%;
+}
+
+.obligation-tag {
+  font-size: 0.55rem;
+  padding: 0.1rem 0.25rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+  cursor: default;
+}
 
 .action-link {
   display: inline-flex;

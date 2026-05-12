@@ -13,8 +13,7 @@
                 <p class="eyebrow">Calendario fiscal</p>
                 <h2>Agenda mensual con lectura operativa real</h2>
                 <p>
-                    Cada día del mes muestra las obligaciones con vencimiento, su estado y el cliente asociado.
-                    Navega entre meses para planificar la carga del equipo.
+                    Planificación de obligaciones tributarias, organizadas por día de vencimiento y cliente para asegurar el cumplimiento oportuno.
                 </p>
             </div>
             <div class="hero-meta">
@@ -25,9 +24,16 @@
         </section>
 
         <nav class="month-nav" style="display:flex;gap:0.5rem;align-items:center;margin-bottom:1rem">
-            <a class="secondary-action" th:href="@{/calendario-fiscal(year=${prevMonth.year}, month=${prevMonth.month})}" th:text="|← ${prevMonth.label}|" style="min-height:32px;padding:0 0.8rem">← Mes anterior</a>
-            <strong style="flex:1;text-align:center;font-family:var(--font-heading);font-size:1.15rem" th:text="${currentMonthLabel}">Mayo 2026</strong>
-            <a class="secondary-action" th:href="@{/calendario-fiscal(year=${nextMonth.year}, month=${nextMonth.month})}" th:text="|${nextMonth.label} →|" style="min-height:32px;padding:0 0.8rem">Mes siguiente →</a>
+            <a class="secondary-action btn-sm" th:href="@{/calendario-fiscal(year=${prevMonth.year}, month=${prevMonth.month})}" th:text="|← ${prevMonth.label}|">← Mes anterior</a>
+            
+            <form th:action="@{/calendario-fiscal}" method="get" style="flex:1;display:flex;justify-content:center;align-items:center;">
+                <input type="month" name="yearMonth" class="text-input w-max" style="padding: 0.2rem 0.5rem; min-height: 32px" 
+                       title="Elegir mes y año" aria-label="Elegir mes y año"
+                       th:value="${currentMonth.year + '-' + #numbers.formatInteger(currentMonth.monthValue, 2)}"
+                       onchange="const parts = this.value.split('-'); if(parts.length===2) { window.location.href='?year='+parts[0]+'&month='+parts[1]; }">
+            </form>
+
+            <a class="secondary-action btn-sm" th:href="@{/calendario-fiscal(year=${nextMonth.year}, month=${nextMonth.month})}" th:text="|${nextMonth.label} →|">Mes siguiente →</a>
         </nav>
 
         <section class="dashboard-grid">
@@ -60,11 +66,11 @@
                         <span class="calendar-count" th:if="${day.taskCount > 0}" th:text="${day.taskCount}">2</span>
                         <span class="pill tone-info" th:if="${day.today}">Hoy</span>
 
-                        <div class="day-obligations" th:if="${not #lists.isEmpty(day.obligations)}" style="margin-top:0.35rem;display:flex;flex-direction:column;gap:0.2rem;width:100%">
+                        <div class="day-obligations" th:if="${not #lists.isEmpty(day.obligations)}">
                             <small th:each="obl : ${day.obligations}"
+                                   class="obligation-tag"
                                    th:classappend="|pill tone-${obl.statusTone}|"
                                    th:attr="title=${obl.clientName + ' — ' + obl.obligationType}"
-                                   style="font-size:0.55rem;padding:0.1rem 0.25rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;cursor:default"
                                    th:text="${obl.obligationType}">IVA</small>
                         </div>
                     </article>

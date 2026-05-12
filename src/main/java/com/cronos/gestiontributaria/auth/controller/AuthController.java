@@ -134,7 +134,10 @@ public class AuthController {
      * Muestra una vista dedicada del calendario fiscal.
      */
     @GetMapping("/calendario-fiscal")
-    public String calendarPage(Model model, Authentication authentication) {
+    public String calendarPage(
+            @org.springframework.web.bind.annotation.RequestParam(required = false) Integer year,
+            @org.springframework.web.bind.annotation.RequestParam(required = false) Integer month,
+            Model model, Authentication authentication) {
         populateWorkspaceModel(model, authentication);
 
         List<TaxObligation> obligations = obligationRepository.findAll();
@@ -143,7 +146,12 @@ public class AuthController {
             .filter(p -> p != null && p.getId() != null)
             .collect(Collectors.toMap(TaxPayer::getId, Function.identity(), (a, b) -> a, LinkedHashMap::new));
         LocalDate today = LocalDate.now();
-        YearMonth currentMonth = YearMonth.from(today);
+        YearMonth currentMonth;
+        if (year != null && month != null) {
+            currentMonth = YearMonth.of(year, month);
+        } else {
+            currentMonth = YearMonth.from(today);
+        }
 
         List<CalendarDayDetail> dayDetails = PageViewModels.buildCalendarDayDetails(obligations, clientsById, today, currentMonth);
         MonthNav prevMonth = new MonthNav(formatMonthLabel(currentMonth.minusMonths(1)), currentMonth.minusMonths(1).getYear(), currentMonth.minusMonths(1).getMonthValue());
@@ -153,6 +161,7 @@ public class AuthController {
         model.addAttribute("prevMonth", prevMonth);
         model.addAttribute("nextMonth", nextMonth);
         model.addAttribute("currentMonthLabel", formatMonthLabel(currentMonth));
+        model.addAttribute("currentMonth", currentMonth);
 
         return "calendario/index";
     }

@@ -13,7 +13,7 @@
                 <p class="eyebrow">Centro de alertas</p>
                 <h2>Notificaciones por correo</h2>
                 <p>
-                    Revisa las obligaciones que están por vencer, envía recordatorios y prueba el SMTP sin salir de la aplicación.
+                    Gestión de alertas automáticas, seguimiento de vencimientos y envío de recordatorios a clientes desde un entorno centralizado.
                 </p>
             </div>
             <div class="hero-meta">
@@ -71,10 +71,10 @@
                 </div>
 
                 <p>
-                    Desde el panel administrativo puedes revisar usuarios, roles y validaciones del sistema.
+                    Administración de accesos, roles de usuario y parámetros generales del entorno.
                 </p>
                 <div class="hero-meta">
-                    <a sec:authorize="hasRole('ADMIN')" class="primary-action" th:href="@{/admin}" style="width:max-content">Abrir panel admin</a>
+                    <a sec:authorize="hasRole('ADMIN')" class="primary-action w-max" th:href="@{/admin}">Abrir panel admin</a>
                     <span class="pill tone-neutral">TaxControl</span>
                 </div>
             </article>
@@ -112,12 +112,12 @@
                             <td th:text="${alerta.dueDateLabel}">12 may 2026</td>
                             <td><span class="status-pill" th:classappend="| tone-${alerta.tone}|" th:text="${alerta.statusLabel}">Pendiente</span></td>
                             <td>
-                                <form th:if="${alerta.clientEmail != null and !#strings.isEmpty(alerta.clientEmail)}" th:action="@{/notificaciones/enviar}" method="post" class="status-form" style="display:inline">
+                                <form th:if="${alerta.clientEmail != null and !#strings.isEmpty(alerta.clientEmail)}" th:action="@{/notificaciones/enviar}" method="post" class="status-form inline">
                                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                                     <input type="hidden" name="recipientEmail" th:value="${alerta.clientEmail}" />
                                     <input type="hidden" name="subject" th:value="${alerta.subject}" />
                                     <input type="hidden" name="message" th:value="${alerta.body}" />
-                                    <button class="secondary-action" type="submit" style="min-height:32px;padding:0 0.8rem">Enviar recordatorio</button>
+                                    <button class="secondary-action btn-sm" type="submit">Enviar recordatorio</button>
                                 </form>
                                 <span class="pill tone-neutral" th:unless="${alerta.clientEmail != null and !#strings.isEmpty(alerta.clientEmail)}">Sin correo</span>
                             </td>
