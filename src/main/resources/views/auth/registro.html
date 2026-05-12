@@ -6,46 +6,45 @@
     <title>Registro | Cronos</title>
     <link rel="stylesheet" th:href="@{/css/app.css}" />
 </head>
-<body class="auth-minimal-page">
-<main class="auth-minimal-shell">
-    <section class="auth-minimal-card">
+<body class="auth-page">
+    <div class="auth-container">
         <div class="auth-brand">CT</div>
 
-        <p class="auth-kicker">Calendario tributario</p>
-        <h1>Crear cuenta</h1>
-        <p class="auth-lead">
-            Regístrate para ingresar al sistema y administrar tus accesos de forma segura.
-        </p>
+        <div class="auth-header">
+            <h1>Crear cuenta</h1>
+            <p>Registrate para ingresar al sistema y administrar tus accesos de forma segura.</p>
+        </div>
 
-        <form class="auth-form" th:action="@{/registro}" th:object="${usuario}" method="post">
-            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <div class="auth-card">
+            <form class="auth-form" th:action="@{/registro}" th:object="${usuario}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
-            <label class="field-group">
-                <span class="field-label">Nombre</span>
-                <input class="text-input" type="text" th:field="*{name}" placeholder="Tu nombre completo" autocomplete="name" />
-                <small class="field-error" th:errors="*{name}"></small>
-            </label>
+                <label class="field-group">
+                    <span class="field-label">Nombre</span>
+                    <input class="text-input" type="text" th:field="*{name}" placeholder="Tu nombre completo" autocomplete="name" />
+                    <small class="field-error" th:errors="*{name}"></small>
+                </label>
 
-            <label class="field-group">
-                <span class="field-label">Correo</span>
-                <input class="text-input" type="email" th:field="*{email}" placeholder="usuario@correo.com" autocomplete="email" />
-                <small class="field-error" th:errors="*{email}"></small>
-            </label>
+                <label class="field-group">
+                    <span class="field-label">Correo</span>
+                    <input class="text-input" type="email" th:field="*{email}" placeholder="usuario@correo.com" autocomplete="email" />
+                    <small class="field-error" th:errors="*{email}"></small>
+                </label>
 
-            <label class="field-group">
-                <span class="field-label">Contraseña</span>
-                <input class="text-input" type="password" th:field="*{password}" placeholder="Mínimo 8 caracteres" autocomplete="new-password" />
-                <small class="field-error" th:errors="*{password}"></small>
-            </label>
+                <label class="field-group">
+                    <span class="field-label">Contrasena</span>
+                    <input class="text-input" type="password" th:field="*{password}" placeholder="Minimo 8 caracteres" autocomplete="new-password" />
+                    <small class="field-error" th:errors="*{password}"></small>
+                </label>
 
-            <button class="primary-action" type="submit">Registrar</button>
-        </form>
+                <button class="primary-action" type="submit">Registrar</button>
+            </form>
+        </div>
 
         <p class="auth-footer">
-            ¿Ya tienes cuenta?
-            <a class="secondary-action" th:href="@{/login}">Volver al login</a>
+            Ya tienes cuenta?
+            <a th:href="@{/login}">Volver al login</a>
         </p>
-    </section>
-</main>
+    </div>
 </body>
 </html>
