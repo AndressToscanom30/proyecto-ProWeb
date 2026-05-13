@@ -116,5 +116,17 @@ public class TaxObligationViewController {
                                 @RequestParam String taxPayerId) {
         obligationService.changeStatus(id, TaxObligationStatus.valueOf(newStatus));
         return "redirect:/obligaciones?taxPayerId=" + taxPayerId;
+    @GetMapping("/{id}")
+    public String details(@PathVariable String id, Model model, Authentication authentication) {
+        User user = userService.findByEmail(authentication.getName())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+        model.addAttribute("usuario", user);
+        try {
+            TaxObligationResponseDTO dto = obligationService.findById(id);
+            model.addAttribute("obligacion", dto);
+            return "obligaciones/detail";
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Obligación no encontrada");
+        }
     }
 }

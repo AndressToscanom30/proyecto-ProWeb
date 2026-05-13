@@ -72,8 +72,9 @@
                                    class="obligation-tag clickable-tag"
                                    th:classappend="|pill tone-${obl.statusTone}|"
                                    th:attr="data-id=${obl.id},data-client=${obl.clientName},data-type=${obl.obligationType},data-status=${obl.statusLabel},data-tone=${obl.statusTone}"
+                                   th:title="|${obl.clientName} - ${obl.obligationType}|"
                                    onclick="openTaskPopup(this)"
-                                   th:text="${obl.obligationType}">IVA</button>
+                                   th:text="${obl.clientName + ' - ' + obl.obligationType}">IVA</button>
                             
                             <div th:if="${day.obligations.size() > 2}" class="more-obligations-wrapper">
                                 <button class="more-obligations-toggle pill tone-neutral" onclick="toggleDropdown(event, this)">
@@ -85,6 +86,7 @@
                                            class="obligation-tag clickable-tag w-full text-left"
                                            th:classappend="|pill tone-${obl.statusTone}|"
                                            th:attr="data-id=${obl.id},data-client=${obl.clientName},data-type=${obl.obligationType},data-status=${obl.statusLabel},data-tone=${obl.statusTone}"
+                                           th:title="|${obl.clientName} - ${obl.obligationType}|"
                                            onclick="openTaskPopup(this)">
                                         <span th:text="${obl.clientName}">Cliente</span> - <span th:text="${obl.obligationType}">IVA</span>
                                     </button>

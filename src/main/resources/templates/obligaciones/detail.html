@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detalles de Obligación | Cronos</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}" />
+</head>
+<body th:replace="~{fragments/layout :: shell('Detalles de Obligación', 'Información completa y estado de la tarea', 'calendario', ~{::content})}">
+    <section th:fragment="content" class="page-stack">
+        <section class="panel-card max-w-lg mx-auto" style="max-width: 800px; margin: 0 auto;">
+            <div class="panel-header" style="flex-direction: row; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--border); padding-bottom: 1.5rem; margin-bottom: 1.5rem;">
+                <div>
+                    <p class="eyebrow" th:text="${obligacion.taxPayerName}">Cliente</p>
+                    <h3 th:text="${obligacion.type.description}" style="font-size: 1.5rem; margin-top: 0.5rem;">Tipo de Obligación</h3>
+                </div>
+                <div style="text-align: right;">
+                    <span class="pill" style="font-size: 0.9rem; padding: 0.25rem 1rem;" 
+                          th:classappend="${obligacion.status != null ? 'tone-' + (obligacion.status.name() == 'COMPLETED' ? 'success' : (obligacion.status.name() == 'OVERDUE' ? 'danger' : (obligacion.status.name() == 'PENDING' ? 'warning' : 'primary'))) : 'tone-neutral'}" 
+                          th:text="${obligacion.status.description}">Estado</span>
+                </div>
+            </div>
+
+            <div class="grid-2 mb-lg">
+                <div class="info-card" style="background: var(--surface-hover); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
+                    <span class="card-label" style="display: block; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.25rem;">Identificación (NIT)</span>
+                    <strong class="card-value text-md" style="font-size: 1.1rem;" th:text="${obligacion.taxPayerIdentificacion}">NIT</strong>
+                </div>
+                <div class="info-card" style="background: var(--surface-hover); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
+                    <span class="card-label" style="display: block; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.25rem;">Periodo Fiscal</span>
+                    <strong class="card-value text-md" style="font-size: 1.1rem;" th:text="${obligacion.fiscalPeriod}">Periodo</strong>
+                </div>
+                <div class="info-card" style="background: var(--surface-hover); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
+                    <span class="card-label" style="display: block; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.25rem;">Año Fiscal</span>
+                    <strong class="card-value text-md" style="font-size: 1.1rem;" th:text="${obligacion.taxYear}">Año</strong>
+                </div>
+                <div class="info-card" style="background: var(--surface-hover); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border);">
+                    <span class="card-label" style="display: block; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.25rem;">Fecha de Vencimiento</span>
+                    <strong class="card-value text-md" style="font-size: 1.1rem; color: var(--primary);" th:text="${obligacion.dueDate}">Fecha</strong>
+                </div>
+            </div>
+
+            <div class="field-group mb-lg" th:if="${obligacion.notes != null and !#strings.isEmpty(obligacion.notes)}">
+                <span class="field-label" style="font-weight: 600; margin-bottom: 0.5rem; display: block;">Notas / Observaciones</span>
+                <p class="notes-cell" th:text="${obligacion.notes}" style="padding: 1.25rem; background: var(--surface-soft); border-radius: var(--radius-md); border-left: 4px solid var(--primary); line-height: 1.6;"></p>
+            </div>
+            
+            <div th:if="${obligacion.dueDateOverridden}" style="padding: 1rem; background: var(--warning-soft); border-radius: var(--radius-md); border: 1px solid var(--warning-border); margin-bottom: 1.5rem;">
+                <strong style="color: var(--warning); display: block; margin-bottom: 0.25rem;">⚠️ Fecha Modificada Manualmente</strong>
+                <p style="margin: 0; font-size: 0.9rem;" th:text="${obligacion.dueDateOverrideReason}">Razón</p>
+            </div>
+
+            <div class="form-actions" style="margin-top: 2.5rem; border-top: 1px solid var(--border); padding-top: 1.5rem; display: flex; justify-content: flex-end; gap: 1rem;">
+                <a th:href="@{/calendario}" class="secondary-action">Volver al Calendario</a>
+                <a sec:authorize="hasRole('GERENTE')" th:href="@{/obligaciones(taxPayerId=${obligacion.taxPayerId})}" class="primary-action">Gestionar en Tabla</a>
+            </div>
+        </section>
+    </section>
+</body>
+</html>
