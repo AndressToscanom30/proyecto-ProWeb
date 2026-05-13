@@ -1,4 +1,4 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
 
 :root {
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -2499,42 +2499,81 @@ textarea {
 
 @media (max-width: 900px) {
   .app-frame {
-    display: block;
+    display: flex;
+    flex-direction: column;
   }
 
   .app-sidebar {
-    position: relative;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
     height: auto;
-    width: auto;
+    width: 100%;
+    padding: 12px 8px;
     border-right: 0;
-    border-bottom: 1px solid var(--border);
-    border-radius: 0 0 24px 24px;
+    border-top: 1px solid var(--border);
+    border-radius: 24px 24px 0 0;
+    background: var(--surface);
+    z-index: 100;
+    flex-direction: row;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1);
+  }
+  
+  :root[data-theme='dark'] .app-sidebar {
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.4);
   }
 
-  .sidebar-brand {
-    justify-content: flex-start;
-  }
-
-  .brand-copy,
-  .sidebar-footer,
-  .sidebar-link span {
-    display: block;
+  .sidebar-brand,
+  .sidebar-toolbar,
+  .sidebar-footer {
+    display: none;
   }
 
   .sidebar-nav {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    display: flex;
+    width: 100%;
+    overflow-x: auto;
+    gap: 8px;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+  
+  .sidebar-nav::-webkit-scrollbar {
+    display: none;
   }
 
   .sidebar-link {
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
     width: auto;
-    justify-content: flex-start;
+    min-width: 72px;
+    padding: 8px 12px;
+    flex: 0 0 auto;
+  }
+
+  .sidebar-link svg {
+    margin: 0;
+  }
+
+  .sidebar-link span {
+    display: block;
+    font-size: 0.65rem;
+    text-align: center;
+  }
+  
+  .sidebar-link::before {
+    display: none;
   }
 
   .app-main {
     padding-top: 18px;
+    padding-bottom: 110px;
   }
 
   .metric-grid,
+  .metric-grid.cols-5,
   .chart-grid,
   .critical-grid,
   .grid-4,
@@ -2631,3 +2670,132 @@ textarea {
   }
 }
 
+/* ========== CALENDAR POPUP & DROPDOWN ========== */
+
+.more-obligations-wrapper {
+  position: relative;
+}
+
+.more-obligations-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 50;
+  display: none;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem;
+  box-shadow: var(--shadow-md);
+  min-width: 150px;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.more-obligations-wrapper.open .more-obligations-dropdown {
+  display: flex;
+}
+
+.task-popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition);
+}
+
+.task-popup-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.task-popup-modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  width: 90%;
+  max-width: 400px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-lg);
+  transform: translateY(20px);
+  transition: transform var(--transition);
+}
+
+.task-popup-overlay.active .task-popup-modal {
+  transform: translateY(0);
+}
+
+.task-popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.task-popup-title {
+  font-size: 1.1rem;
+  font-family: var(--font-heading);
+  color: var(--text);
+  margin: 0 0 0.25rem 0;
+}
+
+.task-popup-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.task-popup-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.task-popup-close:hover {
+  color: var(--text);
+}
+
+.task-popup-content {
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+}
+
+.task-popup-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+/* ========== SIDEBAR RESPONSIVE FIXES ========== */
+
+/* Add smooth transition when collapsing sidebar */
+.app-frame {
+  transition: grid-template-columns 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Allow sidebar to scroll vertically on short screens */
+.app-sidebar {
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+/* Center toggle button when sidebar is collapsed */
+.app-frame.sidebar-collapsed .sidebar-toolbar {
+  justify-content: center;
+}
+
+/* Fix mobile sidebar nav alignment */
+@media (max-width: 1100px) {
+  .sidebar-nav {
+    align-items: center; /* Fix justify-items which doesn't work in flex column */
+  }
+}
