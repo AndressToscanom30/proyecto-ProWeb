@@ -197,7 +197,8 @@ public record DashboardSummary(
                         .thenComparing(obligation -> describeType(obligation.getType())))
                 .limit(6)
                 .map(obligation -> new DeadlineItem(
-                    obligation.getTaxPayerId(),
+                        obligation.getId(),
+                        obligation.getTaxPayerId(),
                         resolveClientName(obligation, clientsById),
                         describeType(obligation.getType()),
                         formatDate(obligation.getDueDate()),
@@ -690,7 +691,7 @@ public record DashboardSummary(
     public record CalendarDay(int dayNumber, int taskCount, String tone, boolean currentMonth, boolean today) {
     }
 
-        public record DeadlineItem(String clientId, String client, String obligation, String dueDateLabel,
+        public record DeadlineItem(String id, String clientId, String client, String obligation, String dueDateLabel,
             String statusLabel, String tone) {
     }
 
