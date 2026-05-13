@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8" />
@@ -24,7 +24,7 @@
         </section>
 
         <nav class="month-nav" style="display:flex;gap:0.5rem;align-items:center;margin-bottom:1rem">
-            <a class="secondary-action btn-sm" th:href="@{/calendario-fiscal(year=${prevMonth.year}, month=${prevMonth.month})}" th:text="|â† ${prevMonth.label}|">â† Mes anterior</a>
+            <a class="secondary-action btn-sm" th:href="@{/calendario-fiscal(year=${prevMonth.year}, month=${prevMonth.month})}">&larr; <span th:text="${prevMonth.label}">Mes anterior</span></a>
             
             <form th:action="@{/calendario-fiscal}" method="get" style="flex:1;display:flex;justify-content:center;align-items:center;">
                 <input type="month" name="yearMonth" class="text-input w-max" style="padding: 0.2rem 0.5rem; min-height: 32px" 
@@ -33,7 +33,7 @@
                        onchange="const parts = this.value.split('-'); if(parts.length===2) { window.location.href='?year='+parts[0]+'&month='+parts[1]; }">
             </form>
 
-            <a class="secondary-action btn-sm" th:href="@{/calendario-fiscal(year=${nextMonth.year}, month=${nextMonth.month})}" th:text="|${nextMonth.label} â†’|">Mes siguiente â†’</a>
+            <a class="secondary-action btn-sm" th:href="@{/calendario-fiscal(year=${nextMonth.year}, month=${nextMonth.month})}"><span th:text="${nextMonth.label}">Mes siguiente</span> &rarr;</a>
         </nav>
 
         <section class="dashboard-grid">
@@ -67,11 +67,29 @@
                         <span class="pill tone-info" th:if="${day.today}">Hoy</span>
 
                         <div class="day-obligations" th:if="${not #lists.isEmpty(day.obligations)}">
-                            <small th:each="obl : ${day.obligations}"
-                                   class="obligation-tag"
+                            <button th:each="obl, iter : ${day.obligations}" 
+                                   th:if="${iter.index < 2}"
+                                   class="obligation-tag clickable-tag"
                                    th:classappend="|pill tone-${obl.statusTone}|"
-                                   th:attr="title=${obl.clientName + ' â€” ' + obl.obligationType}"
-                                   th:text="${obl.obligationType}">IVA</small>
+                                   th:attr="data-id=${obl.id},data-client=${obl.clientName},data-type=${obl.obligationType},data-status=${obl.statusLabel},data-tone=${obl.statusTone}"
+                                   onclick="openTaskPopup(this)"
+                                   th:text="${obl.obligationType}">IVA</button>
+                            
+                            <div th:if="${day.obligations.size() > 2}" class="more-obligations-wrapper">
+                                <button class="more-obligations-toggle pill tone-neutral" onclick="toggleDropdown(event, this)">
+                                    +<span th:text="${day.obligations.size() - 2}"></span> más
+                                </button>
+                                <div class="more-obligations-dropdown">
+                                    <button th:each="obl, iter : ${day.obligations}" 
+                                           th:if="${iter.index >= 2}"
+                                           class="obligation-tag clickable-tag w-full text-left"
+                                           th:classappend="|pill tone-${obl.statusTone}|"
+                                           th:attr="data-id=${obl.id},data-client=${obl.clientName},data-type=${obl.obligationType},data-status=${obl.statusLabel},data-tone=${obl.statusTone}"
+                                           onclick="openTaskPopup(this)">
+                                        <span th:text="${obl.clientName}">Cliente</span> - <span th:text="${obl.obligationType}">IVA</span>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </article>
                 </div>
@@ -151,6 +169,30 @@
                 </div>
             </article>
         </section>
+
+        <!-- Pop-up Modal -->
+        <div id="task-popup" class="task-popup-overlay">
+            <div class="task-popup-modal">
+                <div class="task-popup-header">
+                    <div>
+                        <h3 class="task-popup-title">Tipo Obligación</h3>
+                        <p class="task-popup-subtitle">Cliente</p>
+                    </div>
+                    <button class="task-popup-close" onclick="closeTaskPopup()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 6L6 18M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="task-popup-content">
+                    <span class="pill task-popup-status">Estado</span>
+                </div>
+                <div class="task-popup-actions">
+                    <button class="secondary-action btn-sm" onclick="closeTaskPopup()">Cerrar</button>
+                    <a class="primary-action btn-sm task-popup-details-btn" href="#">Ver detalles</a>
+                </div>
+            </div>
+        </div>
     </section>
 </body>
 </html>

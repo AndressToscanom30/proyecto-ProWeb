@@ -27,12 +27,28 @@
             <article class="metric-card" th:each="card : ${dashboard.metricCards}">
                 <div class="metric-icon" th:classappend="| tone-${card.tone}|">
                     <svg th:switch="${card.variant}" viewBox="0 0 24 24">
-                        <path th:case="'pending'" d="M7 6.5h10M7 10.5h10M7 14.5h6"/>
-                        <path th:case="'overdue'" d="M12 4.5 4.8 18h14.4L12 4.5z"/><path th:case="'overdue'" d="M12 9v4.2M12 15.8h.01"/>
-                        <path th:case="'calendar'" d="M7 4.5v3M17 4.5v3M4.5 8.5h15M6 6.5h12a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2z"/>
-                        <path th:case="'clients'" d="M15.5 20v-1.2a4.3 4.3 0 0 0-4.3-4.3H7a4.3 4.3 0 0 0-4.3 4.3V20"/><circle th:case="'clients'" cx="9" cy="7" r="3.5"/><path th:case="'clients'" d="M19.5 20v-1.2a3.8 3.8 0 0 0-2.4-3.5"/>
-                        <path th:case="'compliance'" d="M4.5 18.5 9 14l3 3 7.5-8.5"/><path th:case="'compliance'" d="M15.5 8.5h4v4"/>
-                        <path th:case="*" d="M7 6.5h10M7 10.5h10M7 14.5h6"/>
+                        <th:block th:case="'pending'">
+                            <path d="M7 6.5h10M7 10.5h10M7 14.5h6"/>
+                        </th:block>
+                        <th:block th:case="'overdue'">
+                            <path d="M12 4.5 4.8 18h14.4L12 4.5z"/>
+                            <path d="M12 9v4.2M12 15.8h.01"/>
+                        </th:block>
+                        <th:block th:case="'calendar'">
+                            <path d="M7 4.5v3M17 4.5v3M4.5 8.5h15M6 6.5h12a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2z"/>
+                        </th:block>
+                        <th:block th:case="'clients'">
+                            <path d="M15.5 20v-1.2a4.3 4.3 0 0 0-4.3-4.3H7a4.3 4.3 0 0 0-4.3 4.3V20"/>
+                            <circle cx="9" cy="7" r="3.5"/>
+                            <path d="M19.5 20v-1.2a3.8 3.8 0 0 0-2.4-3.5"/>
+                        </th:block>
+                        <th:block th:case="'compliance'">
+                            <path d="M4.5 18.5 9 14l3 3 7.5-8.5"/>
+                            <path d="M15.5 8.5h4v4"/>
+                        </th:block>
+                        <th:block th:case="*">
+                            <path d="M7 6.5h10M7 10.5h10M7 14.5h6"/>
+                        </th:block>
                     </svg>
                 </div>
                 <div class="metric-copy">
