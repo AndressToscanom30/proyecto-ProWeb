@@ -142,4 +142,52 @@
         });
     }
 
+    window.toggleDropdown = function(event, btn) {
+        event.stopPropagation();
+        var wrapper = btn.closest('.more-obligations-wrapper');
+        var wasOpen = wrapper.classList.contains('open');
+        document.querySelectorAll('.more-obligations-wrapper.open').forEach(function(el) {
+            el.classList.remove('open');
+        });
+        if (!wasOpen) {
+            wrapper.classList.add('open');
+        }
+    };
+
+    window.openTaskPopup = function(btn) {
+        var id = btn.getAttribute('data-id');
+        var client = btn.getAttribute('data-client');
+        var type = btn.getAttribute('data-type');
+        var status = btn.getAttribute('data-status');
+        var tone = btn.getAttribute('data-tone');
+        
+        var popup = document.getElementById('task-popup');
+        if (!popup) return;
+        
+        popup.querySelector('.task-popup-title').textContent = type;
+        popup.querySelector('.task-popup-subtitle').textContent = client;
+        popup.querySelector('.task-popup-status').textContent = status;
+        popup.querySelector('.task-popup-status').className = 'pill tone-' + tone + ' task-popup-status';
+        
+        var detailsBtn = popup.querySelector('.task-popup-details-btn');
+        if (detailsBtn) {
+            detailsBtn.href = '/obligaciones/' + id;
+        }
+        
+        popup.classList.add('active');
+    };
+
+    window.closeTaskPopup = function() {
+        var popup = document.getElementById('task-popup');
+        if (popup) popup.classList.remove('active');
+    };
+
+    document.addEventListener('click', function(event) {
+        if (!event.target.closest('.more-obligations-wrapper')) {
+            document.querySelectorAll('.more-obligations-wrapper.open').forEach(function(el) {
+                el.classList.remove('open');
+            });
+        }
+    });
+
 })();
