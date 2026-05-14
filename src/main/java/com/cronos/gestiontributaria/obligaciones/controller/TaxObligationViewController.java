@@ -35,8 +35,8 @@ public class TaxObligationViewController {
     private final UserService userService;
 
     public TaxObligationViewController(TaxObligationService obligationService,
-                                        TaxPayerService taxPayerService,
-                                        UserService userService) {
+            TaxPayerService taxPayerService,
+            UserService userService) {
         this.obligationService = obligationService;
         this.taxPayerService = taxPayerService;
         this.userService = userService;
@@ -75,13 +75,13 @@ public class TaxObligationViewController {
 
     @PostMapping("/guardar")
     public String save(@RequestParam String taxPayerId,
-                        @RequestParam TaxObligationType type,
-                        @RequestParam String fiscalPeriod,
-                        @RequestParam(required = false, defaultValue = "2026") int taxYear,
-                        @RequestParam(required = false) String notes,
-                        @RequestParam(required = false) String dueDateOverride,
-                        @RequestParam(required = false) String dueDateOverrideReason,
-                        Model model, Authentication authentication) {
+            @RequestParam TaxObligationType type,
+            @RequestParam String fiscalPeriod,
+            @RequestParam(required = false, defaultValue = "2026") int taxYear,
+            @RequestParam(required = false) String notes,
+            @RequestParam(required = false) String dueDateOverride,
+            @RequestParam(required = false) String dueDateOverrideReason,
+            Model model, Authentication authentication) {
         java.time.LocalDate overrideDate = null;
         try {
             if (dueDateOverride != null && !dueDateOverride.isBlank()) {
@@ -98,7 +98,8 @@ public class TaxObligationViewController {
             model.addAttribute("usuario", user);
             model.addAttribute("contribuyente", taxPayer);
             model.addAttribute("tipos", TaxObligationType.values());
-            model.addAttribute("dto", new CreateTaxObligationDTO(taxPayerId, type, fiscalPeriod, taxYear, notes, overrideDate, dueDateOverrideReason));
+            model.addAttribute("dto", new CreateTaxObligationDTO(taxPayerId, type, fiscalPeriod, taxYear, notes,
+                    overrideDate, dueDateOverrideReason));
             model.addAttribute("error", e.getMessage());
             return "obligaciones/form";
         }
@@ -112,10 +113,12 @@ public class TaxObligationViewController {
 
     @PostMapping("/{id}/status")
     public String changeStatus(@PathVariable String id,
-                                @RequestParam String newStatus,
-                                @RequestParam String taxPayerId) {
+            @RequestParam String newStatus,
+            @RequestParam String taxPayerId) {
         obligationService.changeStatus(id, TaxObligationStatus.valueOf(newStatus));
         return "redirect:/obligaciones?taxPayerId=" + taxPayerId;
+    }
+
     @GetMapping("/{id}")
     public String details(@PathVariable String id, Model model, Authentication authentication) {
         User user = userService.findByEmail(authentication.getName())

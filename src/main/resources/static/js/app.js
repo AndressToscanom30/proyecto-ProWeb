@@ -11,6 +11,9 @@
         initOverrideDateToggle();
         initConfirmDialogs();
         initTableSearch();
+        initTopbarAutoHide();
+        initUserDropdown();
+        initMobileSidebar();
     });
 
     function initThemeMode() {
@@ -142,6 +145,97 @@
         });
     }
 
+    /* ===== Topbar auto-hide on scroll ===== */
+    function initTopbarAutoHide() {
+        var topbar = document.querySelector('.app-topbar');
+        if (!topbar) return;
+
+        var lastScrollY = 0;
+        var ticking = false;
+
+        window.addEventListener('scroll', function() {
+            if (!ticking) {
+                window.requestAnimationFrame(function() {
+                    var currentScrollY = window.pageYOffset || document.documentElement.scrollTop;
+
+                    if (currentScrollY > lastScrollY && currentScrollY > 140) {
+                        topbar.classList.add('topbar-hidden');
+                    } else {
+                        topbar.classList.remove('topbar-hidden');
+                    }
+
+                    lastScrollY = Math.max(0, currentScrollY);
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        });
+    }
+
+    /* ===== User dropdown in navbar ===== */
+    function initUserDropdown() {
+        var trigger = document.querySelector('[data-user-menu]');
+        if (!trigger) return;
+
+        var wrapper = trigger.closest('.user-chip-wrapper');
+        if (!wrapper) return;
+
+        trigger.addEventListener('click', function(e) {
+            e.stopPropagation();
+            var isOpen = wrapper.classList.toggle('is-open');
+            trigger.setAttribute('aria-expanded', String(isOpen));
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!wrapper.contains(e.target)) {
+                wrapper.classList.remove('is-open');
+                trigger.setAttribute('aria-expanded', 'false');
+            }
+        });
+    }
+
+    /* ===== Mobile sidebar drawer ===== */
+    function initMobileSidebar() {
+        var menuBtn = document.querySelector('[data-mobile-menu]');
+        var closeBtn = document.querySelector('[data-sidebar-close]');
+        var overlay = document.querySelector('[data-sidebar-overlay]');
+        var sidebar = document.querySelector('.app-sidebar');
+        var frame = document.querySelector('.app-frame');
+        if (!menuBtn || !sidebar) return;
+
+        function closeSidebar() {
+            frame.classList.remove('mobile-sidebar-open');
+            document.body.style.overflow = '';
+        }
+
+        menuBtn.addEventListener('click', function() {
+            frame.classList.toggle('mobile-sidebar-open');
+            document.body.style.overflow = frame.classList.contains('mobile-sidebar-open') ? 'hidden' : '';
+        });
+
+        if (closeBtn) {
+            closeBtn.addEventListener('click', closeSidebar);
+        }
+
+        if (overlay) {
+            overlay.addEventListener('click', function() {
+                frame.classList.remove('mobile-sidebar-open');
+                document.body.style.overflow = '';
+            });
+        }
+
+        // Close on navigation link click (mobile)
+        sidebar.querySelectorAll('.sidebar-link').forEach(function(link) {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 900) {
+                    frame.classList.remove('mobile-sidebar-open');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+    }
+
+    /* ===== Calendar dropdown & popup ===== */
     window.toggleDropdown = function(event, btn) {
         event.stopPropagation();
         var wrapper = btn.closest('.more-obligations-wrapper');
@@ -179,6 +273,52 @@
 
     window.closeTaskPopup = function() {
         var popup = document.getElementById('task-popup');
+        if (popup) popup.classList.remove('active');
+    };
+
+    window.openDayPopup = function(btn) {
+        var dayNum = btn.getAttribute('data-day');
+        var article = btn.closest('.calendar-day');
+        var template = article.querySelector('template');
+        if (!template) return;
+
+        var dataContainer = template.content.querySelector('.day-obligations-data');
+        if (!dataContainer) return;
+
+        var items = dataContainer.querySelectorAll('.obl-data');
+        var popup = document.getElementById('day-popup');
+        var list = document.getElementById('day-popup-list');
+        if (!popup || !list) return;
+
+        popup.querySelector('.day-popup-title').textContent = 'Día ' + dayNum;
+        popup.querySelector('.day-popup-subtitle').textContent = items.length + (items.length === 1 ? ' obligación asignada' : ' obligaciones asignadas');
+
+        list.innerHTML = '';
+        items.forEach(function(item) {
+            var card = document.createElement('button');
+            card.className = 'day-popup-item';
+            card.setAttribute('data-id', item.getAttribute('data-id'));
+            card.setAttribute('data-client', item.getAttribute('data-client'));
+            card.setAttribute('data-type', item.getAttribute('data-type'));
+            card.setAttribute('data-status', item.getAttribute('data-status'));
+            card.setAttribute('data-tone', item.getAttribute('data-tone'));
+            card.onclick = function() { closeDayPopup(); openTaskPopup(card); };
+
+            var tone = item.getAttribute('data-tone') || 'neutral';
+            card.innerHTML =
+                '<div class="day-popup-item-info">' +
+                    '<span class="day-popup-item-client">' + (item.getAttribute('data-client') || '') + '</span>' +
+                    '<span class="day-popup-item-type">' + (item.getAttribute('data-type') || '') + '</span>' +
+                '</div>' +
+                '<span class="pill tone-' + tone + ' day-popup-item-status">' + (item.getAttribute('data-status') || '') + '</span>';
+            list.appendChild(card);
+        });
+
+        popup.classList.add('active');
+    };
+
+    window.closeDayPopup = function() {
+        var popup = document.getElementById('day-popup');
         if (popup) popup.classList.remove('active');
     };
 

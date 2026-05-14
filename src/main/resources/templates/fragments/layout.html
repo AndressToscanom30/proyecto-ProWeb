@@ -18,12 +18,17 @@
     </script>
     <div class="app-frame">
         <aside class="app-sidebar">
-            <div class="sidebar-brand">
-                <div class="brand-mark">C</div>
-                <div class="brand-copy">
-                    <strong>Cronos</strong>
-                    <span>Panel fiscal</span>
+            <div class="sidebar-header-mobile">
+                <div class="sidebar-brand">
+                    <div class="brand-mark">C</div>
+                    <div class="brand-copy">
+                        <strong>Cronos</strong>
+                        <span>Panel fiscal</span>
+                    </div>
                 </div>
+                <button class="sidebar-close-btn" type="button" data-sidebar-close aria-label="Cerrar menú">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                </button>
             </div>
 
             <div class="sidebar-toolbar">
@@ -79,20 +84,17 @@
             </nav>
 
             <div class="sidebar-footer">
-                <div class="sidebar-toolbar">
-                    <span class="eyebrow">Sesión</span>
-                    <form th:action="@{/logout}" method="post" style="margin:0">
-                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                        <button class="secondary-btn" type="submit" style="min-height:32px;padding:0 0.75rem">Salir</button>
-                    </form>
-                </div>
                 <p th:text="${usuario.role != null ? usuario.role.description : 'Usuario'}">Usuario</p>
                 <p th:text="${usuario.email}">correo@ejemplo.com</p>
             </div>
         </aside>
 
+        <div class="mobile-sidebar-overlay" data-sidebar-overlay></div>
         <div class="app-main">
             <header class="app-topbar">
+                <button class="mobile-menu-btn" type="button" data-mobile-menu aria-label="Abrir menú">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+                </button>
                 <div class="topbar-copy">
                     <p class="eyebrow">Cronos</p>
                     <h1 th:text="${pageTitle}">Dashboard</h1>
@@ -119,11 +121,31 @@
                         <svg viewBox="0 0 24 24"><path d="M9.4 4.8h5.2l.7 2.3 2.2 1.3-.6 2.4.6 2.4-2.2 1.3-.7 2.3H9.4l-.7-2.3-2.2-1.3.6-2.4-.6-2.4 2.2-1.3z"/><circle cx="12" cy="12" r="2.3"/></svg>
                     </a>
 
-                    <div class="user-chip">
-                        <div class="user-avatar" th:text="${usuario.name != null and !#strings.isEmpty(usuario.name) ? usuario.name.substring(0, 1) : 'U'}">U</div>
-                        <div class="user-meta">
-                            <strong th:text="${usuario.name}">Usuario</strong>
-                            <span th:text="${usuario.role != null ? usuario.role.description : 'Usuario'}">Rol</span>
+                    <div class="user-chip-wrapper">
+                        <button class="user-chip" type="button" data-user-menu aria-label="Menú de usuario" aria-expanded="false">
+                            <div class="user-avatar" th:text="${usuario.name != null and !#strings.isEmpty(usuario.name) ? usuario.name.substring(0, 1) : 'U'}">U</div>
+                            <div class="user-meta">
+                                <strong th:text="${usuario.name}">Usuario</strong>
+                                <span th:text="${usuario.role != null ? usuario.role.description : 'Usuario'}">Rol</span>
+                            </div>
+                            <svg class="user-chip-caret" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                        </button>
+                        <div class="user-dropdown">
+                            <div class="user-dropdown-info">
+                                <span th:text="${usuario.email}">correo@ejemplo.com</span>
+                            </div>
+                            <hr class="user-dropdown-divider" />
+                            <a th:href="@{/configuracion}" class="user-dropdown-item">
+                                <svg viewBox="0 0 24 24"><path d="M9.4 4.8h5.2l.7 2.3 2.2 1.3-.6 2.4.6 2.4-2.2 1.3-.7 2.3H9.4l-.7-2.3-2.2-1.3.6-2.4-.6-2.4 2.2-1.3z"/><circle cx="12" cy="12" r="2.3"/></svg>
+                                Configuración
+                            </a>
+                            <form th:action="@{/logout}" method="post" style="margin:0">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                <button class="user-dropdown-item user-dropdown-logout" type="submit">
+                                    <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                                    Cerrar sesión
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
