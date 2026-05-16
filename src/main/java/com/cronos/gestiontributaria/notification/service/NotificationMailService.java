@@ -166,7 +166,7 @@ public class NotificationMailService {
 
                 + detailRow("Cliente", taxpayer.getBusinessName())
                 + detailRow("Identificación", taxpayer.getIdentificacion())
-                + detailRow("Tipo", obligation.type())
+                + detailRow("Tipo", obligation.type() != null ? obligation.type().name() : "—")
                 + detailRow("Periodo", obligation.fiscalPeriod())
                 + detailRow("Año gravable", String.valueOf(obligation.taxYear()))
                 + detailRow("Vencimiento", obligation.dueDate() != null ? obligation.dueDate().toString() : "—")
