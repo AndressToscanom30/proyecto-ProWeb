@@ -14,7 +14,11 @@ import jakarta.validation.constraints.Size;
  * Representa un archivo asociado a un contribuyente y, opcionalmente, a una
  * obligación tributaria concreta. La subida real del archivo se implementa
  * en un paso posterior; aquí solo se modelan los metadatos.
+ *
+ * Persistencia: colección propia "documentos" (no embebida) para permitir
+ * listar todos los documentos de un contribuyente sin recorrer obligaciones.
  */
+@org.springframework.data.mongodb.core.mapping.Document(collection = "documentos")
 public class Document {
 
     // ─── Identificación ──────────────────────────────────────────────────
@@ -63,9 +67,11 @@ public class Document {
     }
 
     public void move(TaxObligation newObligation) {
-        if (newObligation != null && newObligation.getDocuments() != null
-                && !newObligation.getDocuments().contains(this)) {
-            newObligation.getDocuments().add(this);
+        if (newObligation != null && this.id != null
+                && newObligation.getDocumentIds() != null
+                && !newObligation.getDocumentIds().contains(this.id)) {
+            newObligation.getDocumentIds().add(this.id);
+            this.obligationId = newObligation.getId();
         }
     }
 

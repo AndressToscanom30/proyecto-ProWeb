@@ -2,7 +2,11 @@
   "permissions": {
     "allow": [
       "Bash(./mvnw compile *)",
-      "Bash(./mvnw test *)"
+      "Bash(./mvnw test *)",
+      "Bash(./mvnw dependency:tree -DoutputType=text)",
+      "Bash(./mvnw dependency:tree)",
+      "Bash(grep -v \"INFO\\\\] $\")",
+      "Bash(./mvnw test-compile *)"
     ]
   }
 }

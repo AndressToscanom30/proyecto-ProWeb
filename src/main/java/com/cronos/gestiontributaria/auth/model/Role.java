@@ -10,6 +10,23 @@ import java.util.List;
  * las autoridades de Spring Security.</p>
  */
 public class Role {
+
+    // ─── Nombres canónicos de roles (compatibles con Spring Security) ────
+    // En este proyecto Role es una clase persistible (no un enum) y el
+    // nombre del rol vive en el campo {@code name}. Estas constantes
+    // estandarizan los nombres usados en el código y en las anotaciones
+    // {@code @PreAuthorize("hasRole('...')")}.
+    public static final String GERENTE = "ROLE_GERENTE";
+    public static final String ASESOR = "ROLE_ASESOR";
+    public static final String CONTRIBUYENTE = "ROLE_CONTRIBUYENTE";
+
+    /**
+     * Factory para construir rápidamente un Role de contribuyente.
+     */
+    public static Role contribuyente() {
+        return new Role(CONTRIBUYENTE, "Contribuyente", new ArrayList<>());
+    }
+
     private String name;
     private String description;
     private List<String> permissions;

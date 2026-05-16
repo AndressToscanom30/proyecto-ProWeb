@@ -41,6 +41,12 @@ public class User {
     private boolean active = true;
     private Role role;
 
+    /**
+     * ID del {@code TaxPayer} asociado. Solo aplica cuando el rol del usuario
+     * es CONTRIBUYENTE. Es {@code null} para usuarios GERENTE y ASESOR.
+     */
+    private String taxPayerId;
+
     private List<Notification> notifications = new ArrayList<>();
 
     /**
@@ -147,6 +153,14 @@ public class User {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public String getTaxPayerId() {
+        return taxPayerId;
+    }
+
+    public void setTaxPayerId(String taxPayerId) {
+        this.taxPayerId = taxPayerId;
     }
 
     public List<Notification> getNotifications() {

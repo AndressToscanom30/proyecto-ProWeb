@@ -43,5 +43,22 @@ public class DataInitializer implements CommandLineRunner {
             userRepository.save(gerente);
             System.out.println(">>> GERENTE por defecto creado: gerente@cronos.com / admin123");
         }
+
+        // Usuario de prueba para el portal del contribuyente.
+        // taxPayerId queda como placeholder hasta que se cree un TaxPayer real
+        // (el vínculo automático se implementa en B-3).
+        boolean hasContribuyente = userRepository.findByEmail("contribuyente@cronos.com").isPresent();
+        if (!hasContribuyente) {
+            User contribuyente = new User();
+            contribuyente.setName("Contribuyente Demo");
+            contribuyente.setEmail("contribuyente@cronos.com");
+            contribuyente.setPasswordHash(passwordEncoder.encode("test1234"));
+            contribuyente.setActive(true);
+            contribuyente.setRole(Role.contribuyente());
+            contribuyente.setTaxPayerId("test-taxpayer-id");
+            contribuyente.setNotifications(new ArrayList<>());
+            userRepository.save(contribuyente);
+            System.out.println(">>> CONTRIBUYENTE por defecto creado: contribuyente@cronos.com / test1234");
+        }
     }
 }

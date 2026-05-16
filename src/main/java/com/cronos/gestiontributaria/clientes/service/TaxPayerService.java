@@ -43,16 +43,25 @@ public class TaxPayerService {
         return repository.save(taxPayer);
     }
 
-    public TaxPayer update(String id, TaxPayer updated) {
-        TaxPayer existing = findById(id);
-        existing.setBusinessName(updated.getBusinessName());
-        existing.setIdentificacion(updated.getIdentificacion());
-        existing.setType(updated.getType());
-        existing.setGranContribuyente(updated.isGranContribuyente());
-        existing.setEmail(updated.getEmail());
-        existing.setPhone(updated.getPhone());
-        existing.setAddress(updated.getAddress());
-        existing.setActive(updated.isActive());
+    public TaxPayer update(String id, TaxPayer incoming) {
+        TaxPayer existing = findById(id);  // lanza excepción si no existe
+
+        // Campos editables desde el formulario
+        existing.setBusinessName(incoming.getBusinessName());
+        existing.setIdentificacion(incoming.getIdentificacion());
+        existing.setType(incoming.getType());
+        existing.setEmail(incoming.getEmail());
+        existing.setPhone(incoming.getPhone());
+        existing.setAddress(incoming.getAddress());
+        existing.setGranContribuyente(incoming.isGranContribuyente());
+        existing.setActive(incoming.isActive());
+
+        // Colecciones embebidas: NUNCA se actualizan desde el form.
+        // Se preservan siempre. Cada módulo las gestiona por su cuenta.
+        // existing.setObligations(...)    ← NO
+        // existing.setBankAccounts(...)   ← NO
+        // existing.setNotifications(...)  ← NO
+
         return repository.save(existing);
     }
 

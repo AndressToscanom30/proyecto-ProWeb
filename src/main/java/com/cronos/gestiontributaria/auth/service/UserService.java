@@ -113,4 +113,24 @@ public class UserService {
     private Role defaultUserRole() {
         return new Role("ROLE_USER", "Usuario estándar", new ArrayList<>());
     }
+
+    /**
+     * Asigna rol CONTRIBUYENTE y vincula el User al TaxPayer indicado.
+     *
+     * <p>Si no existe un User con ese email, no hace nada (el vínculo
+     * se puede crear después cuando el contribuyente se registre).</p>
+     *
+     * @param email correo del usuario a vincular
+     * @param taxPayerId ID del {@code TaxPayer} a asociar
+     */
+    public void vincularContribuyente(String email, String taxPayerId) {
+        if (email == null || email.isBlank()) {
+            return;
+        }
+        repository.findByEmail(normalizeEmail(email)).ifPresent(user -> {
+            user.setRole(Role.contribuyente());
+            user.setTaxPayerId(taxPayerId);
+            repository.save(user);
+        });
+    }
 }

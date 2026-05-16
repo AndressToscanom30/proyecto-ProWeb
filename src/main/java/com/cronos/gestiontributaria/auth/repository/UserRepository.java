@@ -34,4 +34,12 @@ public interface UserRepository extends MongoRepository<User, String> {
      * @return lista de usuarios ordenados
      */
     List<User> findAllByOrderByNameAsc();
+
+    /**
+     * Busca el usuario asociado a un contribuyente.
+     *
+     * @param taxPayerId ID del {@code TaxPayer}
+     * @return usuario encontrado, si existe
+     */
+    Optional<User> findByTaxPayerId(String taxPayerId);
 }

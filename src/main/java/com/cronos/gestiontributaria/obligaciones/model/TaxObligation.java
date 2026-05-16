@@ -27,7 +27,12 @@ public class TaxObligation {
     private String dueDateOverrideReason;   // obligatorio si dueDateOverridden=true (auditoría)
     private TaxObligationStatus status;
     private String notes;
-    private List<Document> documents;
+    /**
+     * IDs de los documentos asociados a esta obligación.
+     * Los documentos viven en su propia colección "documentos"
+     * (ver {@link Document}); aquí solo guardamos referencias por id.
+     */
+    private List<String> documentIds = new ArrayList<>();
     private List<Alert> alerts;
     private List<TaxIndicator> indicators;
     private List<Task> tasks;
@@ -39,7 +44,7 @@ public class TaxObligation {
     public TaxObligation(TaxObligationType type, String taxPayerId, String fiscalPeriod,
                         int taxYear, LocalDate dueDate, boolean dueDateOverridden,
                         String dueDateOverrideReason, TaxObligationStatus status, String notes,
-                        List<Document> documents, List<Alert> alerts,
+                        List<String> documentIds, List<Alert> alerts,
                         List<TaxIndicator> indicators, List<Task> tasks) {
         this.type = type;
         this.taxPayerId = taxPayerId;
@@ -50,7 +55,7 @@ public class TaxObligation {
         this.dueDateOverrideReason = dueDateOverrideReason;
         this.status = status;
         this.notes = notes;
-        this.documents = documents != null ? documents : new ArrayList<>();
+        this.documentIds = documentIds != null ? documentIds : new ArrayList<>();
         this.alerts = alerts != null ? alerts : new ArrayList<>();
         this.indicators = indicators != null ? indicators : new ArrayList<>();
         this.tasks = tasks != null ? tasks : new ArrayList<>();
@@ -161,12 +166,12 @@ public class TaxObligation {
         this.notes = notes;
     }
 
-    public List<Document> getDocuments() {
-        return documents;
+    public List<String> getDocumentIds() {
+        return documentIds;
     }
 
-    public void setDocuments(List<Document> documents) {
-        this.documents = documents != null ? documents : new ArrayList<>();
+    public void setDocumentIds(List<String> documentIds) {
+        this.documentIds = documentIds != null ? documentIds : new ArrayList<>();
     }
 
     public List<Alert> getAlerts() {

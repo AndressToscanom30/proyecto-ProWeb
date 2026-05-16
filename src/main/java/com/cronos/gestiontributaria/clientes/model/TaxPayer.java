@@ -2,6 +2,7 @@ package com.cronos.gestiontributaria.clientes.model;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
@@ -115,16 +116,14 @@ public class TaxPayer {
         return obligations;
     }
 
+    /**
+     * La consulta de documentos del contribuyente se hace directamente
+     * en DocumentService.findByTaxPayerId(taxPayerId).
+     * Este método ya no aplica con la colección "documentos" propia.
+     */
+    @Deprecated
     public List<com.cronos.gestiontributaria.obligaciones.model.Document> getDocuments() {
-        List<com.cronos.gestiontributaria.obligaciones.model.Document> docs = new ArrayList<>();
-        if (obligations != null) {
-            for (TaxObligation obligation : obligations) {
-                if (obligation != null && obligation.getDocuments() != null) {
-                    docs.addAll(obligation.getDocuments());
-                }
-            }
-        }
-        return docs;
+        return Collections.emptyList();
     }
 
     public String getBusinessName() {
