@@ -11,6 +11,11 @@ import com.cronos.gestiontributaria.common.TaxpayerType;
 import com.cronos.gestiontributaria.notification.model.Notification;
 import com.cronos.gestiontributaria.obligaciones.model.TaxObligation;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
 /**
 
  * Documentación de la entidad TaxPayer.
@@ -21,13 +26,30 @@ import com.cronos.gestiontributaria.obligaciones.model.TaxObligation;
 public class TaxPayer {
     @Id
     private String id;
+
+    @NotBlank(message = "La razón social es obligatoria")
+    @Size(max = 200, message = "Máximo 200 caracteres")
     private String businessName;
+
+    @NotBlank(message = "La identificación es obligatoria")
+    @Size(max = 20, message = "Máximo 20 caracteres")
     private String identificacion;       // NIT (persona jurídica) o CC (persona natural)
+
+    @NotNull(message = "El tipo de contribuyente es obligatorio")
     private TaxpayerType type;
+
     private boolean granContribuyente;   // true si es clasificado como gran contribuyente por la DIAN
+
+    @NotBlank(message = "El email es obligatorio")
+    @Email(message = "El email no tiene un formato válido")
     private String email;
+
+    @Size(max = 20, message = "Máximo 20 caracteres")
     private String phone;
+
+    @Size(max = 300, message = "Máximo 300 caracteres")
     private String address;
+
     private boolean active;
     private LocalDate registrationDate;
     private List<TaxObligation> obligations;

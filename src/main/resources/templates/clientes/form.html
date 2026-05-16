@@ -23,29 +23,41 @@
 
                 <label class="field-group">
                     <span class="field-label">Razón social / Nombre</span>
-                    <input class="text-input" type="text" th:field="*{businessName}" placeholder="Nombre o razón social" />
-                    <small class="field-error" th:errors="*{businessName}"></small>
+                    <input type="text" th:field="*{businessName}" class="text-input form-control"
+                           th:classappend="${#fields.hasErrors('businessName')} ? 'is-invalid'"
+                           placeholder="Nombre o razón social" />
+                    <div class="invalid-feedback field-error" th:if="${#fields.hasErrors('businessName')}"
+                         th:errors="*{businessName}"></div>
                 </label>
 
                 <label class="field-group">
                     <span class="field-label">Identificación (NIT / CC)</span>
-                    <input class="text-input" type="text" th:field="*{identificacion}" placeholder="NIT o cédula" />
-                    <small class="field-error" th:errors="*{identificacion}"></small>
+                    <input type="text" th:field="*{identificacion}" class="text-input form-control"
+                           th:classappend="${#fields.hasErrors('identificacion')} ? 'is-invalid'"
+                           placeholder="NIT o cédula" />
+                    <div class="invalid-feedback field-error" th:if="${#fields.hasErrors('identificacion')}"
+                         th:errors="*{identificacion}"></div>
                 </label>
 
                 <div class="form-row">
                     <label class="field-group">
                         <span class="field-label">Tipo de persona</span>
-                        <select class="text-input" th:field="*{type}">
+                        <select th:field="*{type}" class="text-input form-control"
+                                th:classappend="${#fields.hasErrors('type')} ? 'is-invalid'">
                             <option th:value="NATURAL_PERSON">Persona natural</option>
                             <option th:value="LEGAL_ENTITY">Persona jurídica</option>
                         </select>
+                        <div class="invalid-feedback field-error" th:if="${#fields.hasErrors('type')}"
+                             th:errors="*{type}"></div>
                     </label>
 
                     <label class="field-group">
                         <span class="field-label">Email</span>
-                        <input class="text-input" type="email" th:field="*{email}" placeholder="correo@ejemplo.com" />
-                        <small class="field-error" th:errors="*{email}"></small>
+                        <input type="email" th:field="*{email}" class="text-input form-control"
+                               th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'"
+                               placeholder="correo@ejemplo.com" />
+                        <div class="invalid-feedback field-error" th:if="${#fields.hasErrors('email')}"
+                             th:errors="*{email}"></div>
                     </label>
                 </div>
 
@@ -53,6 +65,7 @@
                     <label class="field-group">
                         <span class="field-label">Teléfono</span>
                         <input class="text-input" type="text" th:field="*{phone}" placeholder="Teléfono" />
+                        <span class="field-error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></span>
                     </label>
 
                     <label class="field-group">
@@ -67,6 +80,7 @@
                 <label class="field-group">
                     <span class="field-label">Dirección</span>
                     <input class="text-input" type="text" th:field="*{address}" placeholder="Dirección" />
+                    <span class="field-error" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></span>
                 </label>
 
                 <label class="field-group">

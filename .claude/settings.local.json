@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./mvnw compile *)",
+      "Bash(git stash *)",
+      "Bash(./mvnw test *)"
+    ]
+  }
+}

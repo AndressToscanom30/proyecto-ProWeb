@@ -2,6 +2,10 @@ package com.cronos.gestiontributaria.clientes.model;
 
 import com.cronos.gestiontributaria.common.AccountType;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
 /**
 
  * Documentación de la entidad BankAccount.
@@ -9,9 +13,16 @@ import com.cronos.gestiontributaria.common.AccountType;
  */
 
 public class BankAccount {
+    @NotBlank(message = "El banco es obligatorio")
     private String bank;
+
+    @NotBlank(message = "El número de cuenta es obligatorio")
+    @Size(max = 30, message = "Máximo 30 caracteres")
     private String accountNumber;
+
+    @NotNull(message = "El tipo de cuenta es obligatorio")
     private AccountType type;
+
     private boolean active;
 
     public BankAccount(){
