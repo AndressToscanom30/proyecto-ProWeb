@@ -6,7 +6,11 @@
       "Bash(./mvnw dependency:tree -DoutputType=text)",
       "Bash(./mvnw dependency:tree)",
       "Bash(grep -v \"INFO\\\\] $\")",
-      "Bash(./mvnw test-compile *)"
+      "Bash(./mvnw test-compile *)",
+      "Bash(xargs -I {} unzip -l {})",
+      "Bash(unzip -l \"/c/Users/tosca/.m2/repository/org/springframework/boot/spring-boot-test-autoconfigure/4.0.6/spring-boot-test-autoconfigure-4.0.6.jar\")",
+      "Bash(find ~/.m2/repository -name \"spring-boot-*webmvc*test*.jar\" 2>/dev/null | head -5)",
+      "Bash(unzip -l \"/c/Users/tosca/.m2/repository/org/springframework/boot/spring-boot-webmvc-test/4.0.6/spring-boot-webmvc-test-4.0.6.jar\")"
     ]
   }
 }

@@ -1,5 +1,9 @@
 package com.cronos.gestiontributaria.clientes.controller;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -11,12 +15,14 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.cronos.gestiontributaria.auth.model.User;
 import com.cronos.gestiontributaria.auth.service.UserService;
 import com.cronos.gestiontributaria.clientes.model.TaxPayer;
 import com.cronos.gestiontributaria.clientes.service.TaxPayerService;
+import com.cronos.gestiontributaria.common.TaxpayerType;
 
 import jakarta.validation.Valid;
 
@@ -36,11 +42,33 @@ public class TaxPayerViewController {
     }
 
     @GetMapping
-    public String list(Model model, Authentication authentication) {
+    public String list(
+            @RequestParam(required = false) String q,
+            @RequestParam(required = false) TaxpayerType tipo,
+            @RequestParam(required = false) Boolean activo,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            Model model,
+            Authentication authentication) {
         User user = userService.findByEmail(authentication.getName())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+
+        Pageable pageable = PageRequest.of(page, size,
+                Sort.by("businessName").ascending());
+        Page<TaxPayer> resultado =
+                taxPayerService.findByFilters(q, tipo, activo, pageable);
+
         model.addAttribute("usuario", user);
-        model.addAttribute("contribuyentes", taxPayerService.findAll());
+        // Alias para no romper la vista actual que itera sobre "contribuyentes".
+        model.addAttribute("contribuyentes", resultado.getContent());
+        model.addAttribute("clientes", resultado.getContent());
+        model.addAttribute("paginaActual", page);
+        model.addAttribute("totalPaginas", resultado.getTotalPages());
+        model.addAttribute("totalElementos", resultado.getTotalElements());
+        model.addAttribute("q", q);
+        model.addAttribute("tipo", tipo);
+        model.addAttribute("activo", activo);
+        model.addAttribute("tiposTaxpayer", TaxpayerType.values());
         return "clientes/list";
     }
 

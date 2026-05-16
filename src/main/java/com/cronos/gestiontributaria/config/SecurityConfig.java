@@ -63,10 +63,14 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers("/api/**"))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login", "/403", "/css/**", "/js/**", "/images/**", "/error",
-                                         "/api/**")
+                        .requestMatchers("/", "/login", "/403", "/css/**", "/js/**", "/images/**", "/error")
                         .permitAll()
+                        // Reglas específicas primero (orden importa: el primer matcher gana).
+                        .requestMatchers("/api/contribuyente/**").hasRole("CONTRIBUYENTE")
+                        .requestMatchers("/portal/**").hasRole("CONTRIBUYENTE")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        // Resto de la API REST queda como estaba antes: público.
+                        .requestMatchers("/api/**").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login")
