@@ -1241,6 +1241,7 @@ textarea {
   border-right: 1px solid var(--border);
   backdrop-filter: blur(18px);
   box-shadow: var(--shadow-sm);
+  overflow-y: auto;
 }
 
 .sidebar-brand {
