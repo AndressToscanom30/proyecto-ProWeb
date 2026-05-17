@@ -2,6 +2,7 @@ package com.cronos.gestiontributaria.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -66,6 +67,9 @@ public class SecurityConfig {
                         .requestMatchers("/", "/login", "/403", "/css/**", "/js/**", "/images/**", "/error")
                         .permitAll()
                         // Reglas específicas primero (orden importa: el primer matcher gana).
+                        // toggle-active es para GERENTE aunque viva bajo /api/contribuyente.
+                        .requestMatchers(HttpMethod.PATCH, "/api/contribuyente/*/toggle-active")
+                            .hasRole("GERENTE")
                         .requestMatchers("/api/contribuyente/**").hasRole("CONTRIBUYENTE")
                         .requestMatchers("/portal/**").hasRole("CONTRIBUYENTE")
                         .requestMatchers("/admin/**").hasRole("ADMIN")

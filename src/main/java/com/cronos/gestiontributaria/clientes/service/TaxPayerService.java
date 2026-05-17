@@ -144,6 +144,23 @@ public class TaxPayerService {
         repository.deleteById(id);
     }
 
+    /**
+     * Invierte el estado activo del contribuyente y lo persiste.
+     *
+     * @param id ID del contribuyente
+     * @return contribuyente actualizado con el nuevo estado
+     * @throws NoSuchElementException si no existe un contribuyente con ese id
+     */
+    public TaxPayer toggleActive(String id) {
+        TaxPayer existing = findById(id);
+        if (existing.isActive()) {
+            existing.deactivate();
+        } else {
+            existing.activate();
+        }
+        return repository.save(existing);
+    }
+
     public long count() {
         return repository.count();
     }
