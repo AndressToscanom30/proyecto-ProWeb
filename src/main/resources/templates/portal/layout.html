@@ -36,6 +36,104 @@
         }
         .portal-logout-btn:hover { background: #f1f5f9; }
         .portal-content { padding: 2rem; flex: 1; }
+
+        /* Eyebrow del portal */
+        .portal-content .eyebrow {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #64748b;
+            margin-bottom: 0.4rem;
+        }
+        .portal-content h1 {
+            font-size: 1.6rem;
+            margin: 0 0 1.2rem 0;
+            color: #1a1a1a;
+        }
+
+        /* Grid de tarjetas para datos de perfil */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        .info-card--full { grid-column: 1 / -1; }
+        .info-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 1rem 1.25rem;
+        }
+        .info-card__label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #666;
+            margin-bottom: 0.25rem;
+        }
+        .info-card__value {
+            font-size: 1rem;
+            color: #1a1a1a;
+            font-weight: 500;
+        }
+
+        /* Badges de estado genéricos */
+        .status-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .status-badge--active   { background: #d4edda; color: #155724; }
+        .status-badge--inactive { background: #f8d7da; color: #721c24; }
+
+        /* Badges por estado de obligación (TaxObligationStatus) */
+        .status-badge--pending      { background: #fff3cd; color: #856404; }
+        .status-badge--in-progress  { background: #cce5ff; color: #004085; }
+        .status-badge--completed    { background: #d4edda; color: #155724; }
+        .status-badge--overdue      { background: #f8d7da; color: #721c24; }
+        .status-badge--cancelled    { background: #e2e3e5; color: #383d41; }
+
+        /* Tabla del portal */
+        .table-wrapper { overflow-x: auto; margin-top: 1.5rem; }
+        .portal-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .portal-table th {
+            text-align: left;
+            padding: 0.6rem 1rem;
+            border-bottom: 2px solid #dee2e6;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #666;
+            background: #f8fafc;
+        }
+        .portal-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: middle;
+        }
+        .portal-table tr:last-child td { border-bottom: none; }
+        .portal-link {
+            color: #1a73e8;
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+        .portal-link:hover { text-decoration: underline; }
+        .empty-state {
+            margin-top: 2rem;
+            color: #666;
+            font-style: italic;
+        }
     </style>
 </head>
 <body th:fragment="layout(title, content)">

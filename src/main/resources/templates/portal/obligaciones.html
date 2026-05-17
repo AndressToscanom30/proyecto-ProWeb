@@ -6,8 +6,67 @@
 </head>
 <body th:replace="~{portal/layout :: layout('Mis obligaciones', ~{::main-content})}">
     <section th:fragment="main-content">
-        <h2>Mis obligaciones</h2>
-        <p>Cargando información...</p>
+
+        <div class="eyebrow">Mis obligaciones tributarias</div>
+        <h1>Obligaciones</h1>
+
+        <!-- Empty state -->
+        <div th:if="${#lists.isEmpty(obligaciones)}" class="empty-state">
+            <p>No tienes obligaciones registradas.</p>
+        </div>
+
+        <!-- Tabla -->
+        <div th:unless="${#lists.isEmpty(obligaciones)}" class="table-wrapper">
+            <table class="portal-table">
+                <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Período</th>
+                        <th>Vencimiento</th>
+                        <th>Estado</th>
+                        <th>Detalle</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="ob : ${obligaciones}">
+
+                        <!-- Tipo (enum legible) -->
+                        <td th:text="${ob.type() != null
+                                        ? (ob.type().getDescription() != null
+                                           ? ob.type().getDescription()
+                                           : #strings.replace(ob.type().name(), '_', ' '))
+                                        : '—'}">—</td>
+
+                        <!-- Período (fiscalPeriod en el DTO) -->
+                        <td th:text="${ob.fiscalPeriod()} ?: '—'">—</td>
+
+                        <!-- Vencimiento -->
+                        <td th:text="${ob.dueDate() != null
+                                        ? #temporals.format(ob.dueDate(), 'dd/MM/yyyy')
+                                        : '—'}">—</td>
+
+                        <!-- Estado con badge -->
+                        <td>
+                            <span class="status-badge"
+                                  th:classappend="${ob.status() != null
+                                        ? 'status-badge--' + #strings.replace(#strings.toLowerCase(ob.status().name()), '_', '-')
+                                        : ''}"
+                                  th:text="${ob.status() != null
+                                        ? #strings.replace(ob.status().name(), '_', ' ')
+                                        : '—'}">—</span>
+                        </td>
+
+                        <!-- Enlace al detalle -->
+                        <td>
+                            <a th:href="@{/portal/obligaciones/{id}(id=${ob.id()})}"
+                               class="portal-link">Ver detalle</a>
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
     </section>
 </body>
 </html>

@@ -1,10 +1,18 @@
 package com.cronos.gestiontributaria.clientes.controller;
 
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
+import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +25,13 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import com.cronos.gestiontributaria.auth.model.User;
 import com.cronos.gestiontributaria.auth.service.UserService;
+import com.cronos.gestiontributaria.clientes.model.TaxPayer;
 import com.cronos.gestiontributaria.clientes.service.TaxPayerService;
+import com.cronos.gestiontributaria.common.TaxObligationStatus;
+import com.cronos.gestiontributaria.common.TaxObligationType;
+import com.cronos.gestiontributaria.obligaciones.dto.TaxObligationResponseDTO;
 import com.cronos.gestiontributaria.obligaciones.service.DocumentService;
 import com.cronos.gestiontributaria.obligaciones.service.TaxObligationService;
 
@@ -57,16 +70,26 @@ class PortalViewControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = "CONTRIBUYENTE")
+    @WithMockUser(username = "user", roles = "CONTRIBUYENTE")
     void portalInicio_comoContribuyente_retorna200() throws Exception {
+        when(userService.findByEmail("user"))
+                .thenReturn(Optional.of(userConTaxPayer("user", "tp-001")));
+        when(taxPayerService.findById("tp-001"))
+                .thenReturn(ejemploTaxPayer("tp-001", "Empresa"));
+
         mockMvc.perform(get("/portal/inicio"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("portal/inicio"));
     }
 
     @Test
-    @WithMockUser(roles = "CONTRIBUYENTE")
+    @WithMockUser(username = "user", roles = "CONTRIBUYENTE")
     void portalObligaciones_comoContribuyente_retorna200() throws Exception {
+        when(userService.findByEmail("user"))
+                .thenReturn(Optional.of(userConTaxPayer("user", "tp-001")));
+        when(taxObligationService.findByTaxPayerId("tp-001"))
+                .thenReturn(List.of());
+
         mockMvc.perform(get("/portal/obligaciones"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("portal/obligaciones"));
@@ -80,5 +103,127 @@ class PortalViewControllerTest {
         // distinta a 200 indica que se negó el acceso.
         assertNotEquals(200, status,
                 "Sin autenticación NO debe responder 200, fue: " + status);
+    }
+
+    // ─── Helpers ────────────────────────────────────────────────────────
+
+    private User userConTaxPayer(String email, String taxPayerId) {
+        User u = new User();
+        u.setEmail(email);
+        u.setTaxPayerId(taxPayerId);
+        return u;
+    }
+
+    private TaxPayer ejemploTaxPayer(String id, String businessName) {
+        TaxPayer tp = new TaxPayer();
+        tp.setId(id);
+        tp.setBusinessName(businessName);
+        tp.setIdentificacion("900100200-1");
+        tp.setEmail("contacto@empresa.com");
+        tp.setActive(true);
+        return tp;
+    }
+
+    private TaxObligationResponseDTO ejemploObligacion(String id) {
+        return new TaxObligationResponseDTO(
+                id, "tp-001", "Empresa Test S.A.S", "900100200-1",
+                null, TaxObligationType.INCOME_TAX, "2026", 2026,
+                null, false, null, TaxObligationStatus.PENDING, null);
+    }
+
+    // ─── D-2: vista de perfil ───────────────────────────────────────────
+
+    @Test
+    @WithMockUser(username = "contribuyente@test.com", roles = "CONTRIBUYENTE")
+    void inicio_pueblaModelConContribuyente() throws Exception {
+        when(userService.findByEmail("contribuyente@test.com"))
+                .thenReturn(Optional.of(userConTaxPayer("contribuyente@test.com", "tp-001")));
+        when(taxPayerService.findById("tp-001"))
+                .thenReturn(ejemploTaxPayer("tp-001", "Empresa Test S.A.S"));
+
+        mockMvc.perform(get("/portal/inicio"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("portal/inicio"))
+                .andExpect(model().attributeExists("contribuyente"))
+                .andExpect(model().attribute("contribuyente",
+                        org.hamcrest.Matchers.hasProperty("businessName",
+                                org.hamcrest.Matchers.equalTo("Empresa Test S.A.S"))));
+    }
+
+    @Test
+    @WithMockUser(username = "sin-vinculo@test.com", roles = "CONTRIBUYENTE")
+    void inicio_taxPayerIdNull_retorna403() throws Exception {
+        User user = new User();
+        user.setEmail("sin-vinculo@test.com");
+        user.setTaxPayerId(null);
+        when(userService.findByEmail("sin-vinculo@test.com"))
+                .thenReturn(Optional.of(user));
+
+        mockMvc.perform(get("/portal/inicio"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(username = "contribuyente@test.com", roles = "CONTRIBUYENTE")
+    void inicio_renderizaBusinessNameEnHtml() throws Exception {
+        when(userService.findByEmail("contribuyente@test.com"))
+                .thenReturn(Optional.of(userConTaxPayer("contribuyente@test.com", "tp-001")));
+        when(taxPayerService.findById("tp-001"))
+                .thenReturn(ejemploTaxPayer("tp-001", "Empresa Test S.A.S"));
+
+        mockMvc.perform(get("/portal/inicio"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Empresa Test S.A.S")));
+    }
+
+    // ─── D-3: vista de obligaciones ─────────────────────────────────────
+
+    @Test
+    @WithMockUser(username = "contribuyente@test.com", roles = "CONTRIBUYENTE")
+    void obligaciones_pueblaModelConLista() throws Exception {
+        when(userService.findByEmail("contribuyente@test.com"))
+                .thenReturn(Optional.of(userConTaxPayer("contribuyente@test.com", "tp-001")));
+        when(taxObligationService.findByTaxPayerId("tp-001"))
+                .thenReturn(List.of(ejemploObligacion("ob-1"), ejemploObligacion("ob-2")));
+
+        mockMvc.perform(get("/portal/obligaciones"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("portal/obligaciones"))
+                .andExpect(model().attributeExists("obligaciones"))
+                .andExpect(model().attribute("obligaciones", hasSize(2)));
+    }
+
+    @Test
+    @WithMockUser(username = "contribuyente@test.com", roles = "CONTRIBUYENTE")
+    void obligaciones_listaVacia_retorna200() throws Exception {
+        when(userService.findByEmail("contribuyente@test.com"))
+                .thenReturn(Optional.of(userConTaxPayer("contribuyente@test.com", "tp-001")));
+        when(taxObligationService.findByTaxPayerId("tp-001"))
+                .thenReturn(List.of());
+
+        mockMvc.perform(get("/portal/obligaciones"))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("obligaciones", hasSize(0)));
+    }
+
+    @Test
+    @WithMockUser(username = "contribuyente@test.com", roles = "CONTRIBUYENTE")
+    void obligaciones_renderizaTablaConEnlaceVerDetalle() throws Exception {
+        when(userService.findByEmail("contribuyente@test.com"))
+                .thenReturn(Optional.of(userConTaxPayer("contribuyente@test.com", "tp-001")));
+        when(taxObligationService.findByTaxPayerId("tp-001"))
+                .thenReturn(List.of(ejemploObligacion("ob-1")));
+
+        mockMvc.perform(get("/portal/obligaciones"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Ver detalle")));
+    }
+
+    @Test
+    @WithMockUser(roles = "CONTRIBUYENTE")
+    void detalleObligacion_placeholder_retorna200() throws Exception {
+        mockMvc.perform(get("/portal/obligaciones/ob-001"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("portal/obligacion-detalle"));
     }
 }
