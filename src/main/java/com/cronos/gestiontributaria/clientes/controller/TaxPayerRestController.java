@@ -3,6 +3,10 @@ package com.cronos.gestiontributaria.clientes.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+
+import com.cronos.gestiontributaria.common.TaxpayerType;
 
 import com.cronos.gestiontributaria.auth.model.User;
 import com.cronos.gestiontributaria.auth.service.UserService;
@@ -51,6 +57,33 @@ public class TaxPayerRestController {
 
     @Autowired
     private UserService userService;
+
+    /**
+     * Listado paginado y filtrable de contribuyentes.
+     * Solo accesible para GERENTE y ASESOR.
+     *
+     * Parámetros opcionales:
+     *   q      — texto libre (busca en businessName e identificacion)
+     *   tipo   — NATURAL_PERSON | LEGAL_ENTITY
+     *   activo — true | false
+     *   page   — número de página (default 0)
+     *   size   — elementos por página (default 20)
+     */
+    @GetMapping
+    @PreAuthorize("hasAnyRole('GERENTE', 'ASESOR')")
+    public ResponseEntity<Page<TaxPayer>> listar(
+            @RequestParam(required = false) String q,
+            @RequestParam(required = false) TaxpayerType tipo,
+            @RequestParam(required = false) Boolean activo,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+
+        Pageable pageable = PageRequest.of(page, size,
+                Sort.by("businessName").ascending());
+        Page<TaxPayer> resultado =
+                taxPayerService.findByFilters(q, tipo, activo, pageable);
+        return ResponseEntity.ok(resultado);
+    }
 
     /**
      * Retorna los datos del contribuyente autenticado.

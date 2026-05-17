@@ -18,6 +18,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+
+import com.cronos.gestiontributaria.common.TaxpayerType;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -309,5 +315,59 @@ class TaxPayerRestControllerTest {
         int status = result.getResponse().getStatus();
         assertTrue(status == 401 || status == 403 || status == 302,
                 "Sin autenticación se esperaba 401/403/302, fue: " + status);
+    }
+
+    // ─── C-4: GET /api/contribuyente (listado paginado) ──────────────────
+
+    @Test
+    @WithMockUser(username = "gerente@test.com", roles = "GERENTE")
+    void listar_comoGerente_retorna200() throws Exception {
+        TaxPayer tp1 = new TaxPayer();
+        tp1.setId("tp-001");
+        TaxPayer tp2 = new TaxPayer();
+        tp2.setId("tp-002");
+        Page<TaxPayer> pagina = new PageImpl<>(List.of(tp1, tp2),
+                PageRequest.of(0, 20), 2);
+        when(taxPayerService.findByFilters(any(), any(), any(), any()))
+                .thenReturn(pagina);
+
+        mockMvc.perform(get("/api/contribuyente"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content", hasSize(2)))
+                .andExpect(jsonPath("$.totalElements").value(2));
+    }
+
+    @Test
+    @WithMockUser(username = "asesor@test.com", roles = "ASESOR")
+    void listar_comoAsesor_retorna200() throws Exception {
+        when(taxPayerService.findByFilters(any(), any(), any(), any()))
+                .thenReturn(new PageImpl<>(List.of(), PageRequest.of(0, 20), 0));
+
+        mockMvc.perform(get("/api/contribuyente"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(username = "contribuyente@test.com", roles = "CONTRIBUYENTE")
+    void listar_comoContribuyente_retorna403() throws Exception {
+        mockMvc.perform(get("/api/contribuyente"))
+                .andExpect(status().isForbidden());
+
+        verify(taxPayerService, never()).findByFilters(any(), any(), any(), any());
+    }
+
+    @Test
+    @WithMockUser(username = "gerente@test.com", roles = "GERENTE")
+    void listar_conParametros_qYActivo_pasaAlServicio() throws Exception {
+        when(taxPayerService.findByFilters(any(), any(), any(), any()))
+                .thenReturn(new PageImpl<>(List.of(), PageRequest.of(0, 20), 0));
+
+        mockMvc.perform(get("/api/contribuyente")
+                        .param("q", "empresa")
+                        .param("activo", "true"))
+                .andExpect(status().isOk());
+
+        verify(taxPayerService).findByFilters(
+                eq("empresa"), isNull(), eq(Boolean.TRUE), any());
     }
 }

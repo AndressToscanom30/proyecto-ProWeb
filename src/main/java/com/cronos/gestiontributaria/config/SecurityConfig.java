@@ -67,6 +67,9 @@ public class SecurityConfig {
                         .requestMatchers("/", "/login", "/403", "/css/**", "/js/**", "/images/**", "/error")
                         .permitAll()
                         // Reglas específicas primero (orden importa: el primer matcher gana).
+                        // Listado REST de contribuyentes: GERENTE y ASESOR.
+                        .requestMatchers(HttpMethod.GET, "/api/contribuyente")
+                            .hasAnyRole("GERENTE", "ASESOR")
                         // toggle-active es para GERENTE aunque viva bajo /api/contribuyente.
                         .requestMatchers(HttpMethod.PATCH, "/api/contribuyente/*/toggle-active")
                             .hasRole("GERENTE")
