@@ -6,8 +6,20 @@
 </head>
 <body th:replace="~{portal/layout :: layout('Mis documentos', ~{::main-content})}">
     <section th:fragment="main-content">
-        <h2>Mis documentos</h2>
-        <p>Cargando información...</p>
+
+        <div class="eyebrow">Mis documentos</div>
+        <h1>Documentos</h1>
+
+        <!-- Componente de subida: sin obligación asociada -->
+        <div class="upload-section" style="margin-bottom:2rem;">
+            <h3 style="font-size:1.1rem; margin:0 0 0.5rem 0;">Subir documento</h3>
+            <div th:replace="~{portal/upload-form :: upload-form(null)}"></div>
+        </div>
+
+        <p style="color:#666; font-style:italic;">
+            El listado completo de documentos se implementa próximamente.
+        </p>
+
     </section>
 </body>
 </html>

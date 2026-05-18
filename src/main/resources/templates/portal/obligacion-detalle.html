@@ -6,9 +6,116 @@
 </head>
 <body th:replace="~{portal/layout :: layout('Detalle de obligación', ~{::main-content})}">
     <section th:fragment="main-content">
-        <div class="eyebrow">Obligación</div>
-        <h1>Detalle</h1>
-        <p>Cargando información...</p>
+
+        <!-- Encabezado -->
+        <div class="eyebrow">Mis obligaciones</div>
+        <h1 th:text="${obligacion.type() != null
+                        ? (obligacion.type().getDescription() != null
+                           ? obligacion.type().getDescription()
+                           : #strings.replace(obligacion.type().name(), '_', ' '))
+                        : 'Obligación'}">Obligación</h1>
+
+        <!-- Volver -->
+        <a th:href="@{/portal/obligaciones}"
+           class="portal-link"
+           style="display:inline-block; margin-bottom:1.5rem;">
+            ← Volver al listado
+        </a>
+
+        <!-- Datos de la obligación -->
+        <div class="card-grid">
+
+            <div class="info-card">
+                <div class="info-card__label">Período fiscal</div>
+                <div class="info-card__value"
+                     th:text="${obligacion.fiscalPeriod()} ?: '—'">—</div>
+            </div>
+
+            <div class="info-card">
+                <div class="info-card__label">Año gravable</div>
+                <div class="info-card__value"
+                     th:text="${obligacion.taxYear()}">—</div>
+            </div>
+
+            <div class="info-card">
+                <div class="info-card__label">Fecha de vencimiento</div>
+                <div class="info-card__value"
+                     th:text="${obligacion.dueDate() != null
+                                 ? #temporals.format(obligacion.dueDate(), 'dd/MM/yyyy')
+                                 : '—'}">—</div>
+            </div>
+
+            <div class="info-card">
+                <div class="info-card__label">Estado</div>
+                <div class="info-card__value">
+                    <span class="status-badge"
+                          th:classappend="${obligacion.status() != null
+                                ? 'status-badge--' + #strings.replace(#strings.toLowerCase(obligacion.status().name()), '_', '-')
+                                : ''}"
+                          th:text="${obligacion.status() != null
+                                ? #strings.replace(obligacion.status().name(), '_', ' ')
+                                : '—'}">—</span>
+                </div>
+            </div>
+
+            <div class="info-card" th:if="${obligacion.dueDateOverridden()}">
+                <div class="info-card__label">Fecha sobrescrita</div>
+                <div class="info-card__value"
+                     th:text="${obligacion.dueDateOverrideReason()} ?: '—'">—</div>
+            </div>
+
+            <div class="info-card info-card--full">
+                <div class="info-card__label">Observaciones</div>
+                <div class="info-card__value"
+                     th:text="${obligacion.notes()} ?: '—'">—</div>
+            </div>
+
+        </div><!-- /card-grid -->
+
+        <!-- Sección de documentos -->
+        <div class="section-header" style="margin-top:2.5rem;">
+            <h2 style="font-size:1.2rem;">Documentos asociados</h2>
+        </div>
+
+        <!-- Empty state -->
+        <div th:if="${#lists.isEmpty(documentos)}" class="empty-state">
+            <p>No hay documentos cargados para esta obligación.</p>
+        </div>
+
+        <!-- Tabla de documentos -->
+        <div th:unless="${#lists.isEmpty(documentos)}" class="table-wrapper">
+            <table class="portal-table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Tipo</th>
+                        <th>Tamaño</th>
+                        <th>Fecha subida</th>
+                        <th>Descripción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="doc : ${documentos}">
+                        <td th:text="${doc.fileName} ?: '—'">—</td>
+                        <td th:text="${doc.fileType} ?: '—'">—</td>
+                        <td th:text="${doc.fileSize != null
+                                       ? #numbers.formatDecimal(doc.fileSize / 1024.0, 1, 'COMMA', 1, 'POINT') + ' KB'
+                                       : '—'}">—</td>
+                        <td th:text="${doc.uploadedAt != null
+                                       ? #temporals.format(doc.uploadedAt, 'dd/MM/yyyy HH:mm')
+                                       : '—'}">—</td>
+                        <td th:text="${doc.description} ?: '—'">—</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Componente de subida (D-5) -->
+        <div class="upload-section" style="margin-top:2rem;">
+            <h3 style="font-size:1.1rem; margin:0 0 0.5rem 0;">Subir documento</h3>
+            <div th:replace="~{portal/upload-form :: upload-form(${obligacion.id()})}"></div>
+        </div>
+
     </section>
 </body>
 </html>

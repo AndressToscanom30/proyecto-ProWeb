@@ -18,6 +18,7 @@ import com.cronos.gestiontributaria.auth.service.UserService;
 import com.cronos.gestiontributaria.clientes.model.TaxPayer;
 import com.cronos.gestiontributaria.clientes.service.TaxPayerService;
 import com.cronos.gestiontributaria.obligaciones.dto.TaxObligationResponseDTO;
+import com.cronos.gestiontributaria.obligaciones.model.Document;
 import com.cronos.gestiontributaria.obligaciones.service.DocumentService;
 import com.cronos.gestiontributaria.obligaciones.service.TaxObligationService;
 
@@ -82,12 +83,33 @@ public class PortalViewController {
     }
 
     /**
-     * Placeholder para {@code /portal/obligaciones/{id}} — se implementa en D-4.
+     * Detalle de una obligación tributaria.
+     *
+     * <p>El guard se hace filtrando la lista del contribuyente autenticado:
+     * si la obligación pedida no aparece en {@code findByTaxPayerId(taxPayerId)},
+     * devolvemos 403. No exponemos {@code findById} directamente para evitar
+     * que un id ajeno pueda leerse "por accidente".</p>
      */
     @GetMapping("/obligaciones/{id}")
     public String detalleObligacion(@PathVariable String id,
                                     Authentication authentication,
                                     Model model) {
+        String taxPayerId = resolverTaxPayerId(authentication);
+
+        TaxObligationResponseDTO obligacion = taxObligationService
+                .findByTaxPayerId(taxPayerId)
+                .stream()
+                .filter(ob -> id.equals(ob.id()))
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.FORBIDDEN,
+                        "No tienes acceso a esta obligación."));
+
+        List<Document> documentos = documentService.findByObligation(id);
+
+        model.addAttribute("obligacion", obligacion);
+        model.addAttribute("documentos", documentos);
+        model.addAttribute("taxPayerId", taxPayerId);
         return "portal/obligacion-detalle";
     }
 

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!--
+  Fragmento reutilizable de subida de documentos.
+  Uso:
+    <div th:replace="~{portal/upload-form :: upload-form(${obligacion.id()})}"></div>
+    <div th:replace="~{portal/upload-form :: upload-form(null)}"></div>
+
+  obligationId:
+    - String → se envía como parámetro al POST (asocia el documento a la obligación)
+    - null   → subida libre, sin obligación asociada
+-->
+<div th:fragment="upload-form(obligationId)" class="upload-form">
+
+    <!-- Mensajes de feedback -->
+    <div id="upload-success" class="upload-msg upload-msg--success" style="display:none;">
+        Documento subido correctamente.
+    </div>
+    <div id="upload-error" class="upload-msg upload-msg--error" style="display:none;"></div>
+
+    <!-- Campos -->
+    <div class="upload-fields">
+
+        <div class="upload-field">
+            <label for="upload-file" class="upload-label">
+                Archivo
+                <span class="upload-hint">PDF, JPG, PNG o XLSX · máx. 10 MB</span>
+            </label>
+            <input type="file" id="upload-file"
+                   accept=".pdf,.jpg,.jpeg,.png,.xlsx"
+                   class="upload-input" />
+        </div>
+
+        <div class="upload-field">
+            <label for="upload-desc" class="upload-label">Descripción (opcional)</label>
+            <input type="text" id="upload-desc"
+                   maxlength="500"
+                   placeholder="Ej: Declaración de renta 2025"
+                   class="upload-input" />
+        </div>
+
+        <button type="button" id="upload-btn"
+                class="upload-btn"
+                th:attr="data-obligation-id=${obligationId}">
+            Subir documento
+        </button>
+
+        <span id="upload-spinner" class="upload-spinner" style="display:none;">
+            Subiendo...
+        </span>
+
+    </div>
+
+    <script th:inline="javascript">
+    (function () {
+        const btn       = document.getElementById('upload-btn');
+        const fileInput = document.getElementById('upload-file');
+        const descInput = document.getElementById('upload-desc');
+        const spinner   = document.getElementById('upload-spinner');
+        const msgOk     = document.getElementById('upload-success');
+        const msgErr    = document.getElementById('upload-error');
+
+        // obligationId puede ser null cuando el fragmento se usa fuera del detalle.
+        const obligationId = btn.dataset.obligationId && btn.dataset.obligationId !== 'null'
+            ? btn.dataset.obligationId : null;
+
+        // Token CSRF leído de cookie XSRF-TOKEN si existe (SecurityConfig excluye
+        // /api/** de CSRF, así que no es obligatorio).
+        const csrfToken = document.cookie
+            .split('; ')
+            .find(r => r.startsWith('XSRF-TOKEN='))
+            ?.split('=')[1];
+
+        function mostrarError(texto) {
+            msgErr.textContent   = texto;
+            msgErr.style.display = 'block';
+        }
+
+        btn.addEventListener('click', async () => {
+            msgOk.style.display  = 'none';
+            msgErr.style.display = 'none';
+
+            const file = fileInput.files[0];
+            if (!file) {
+                mostrarError('Selecciona un archivo antes de subir.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+            if (descInput.value.trim()) {
+                formData.append('description', descInput.value.trim());
+            }
+            if (obligationId) {
+                formData.append('obligationId', obligationId);
+            }
+
+            btn.disabled          = true;
+            spinner.style.display = 'inline';
+
+            try {
+                const headers = { 'X-Requested-With': 'XMLHttpRequest' };
+                if (csrfToken) {
+                    headers['X-XSRF-TOKEN'] = csrfToken;
+                }
+
+                const resp = await fetch('/api/contribuyente/me/documentos', {
+                    method: 'POST',
+                    headers,
+                    body: formData
+                });
+
+                if (resp.status === 201) {
+                    msgOk.style.display = 'block';
+                    fileInput.value     = '';
+                    descInput.value     = '';
+                    // Recarga para actualizar la tabla de documentos.
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    const body = await resp.text();
+                    let msg = 'Error al subir el documento.';
+                    try {
+                        const json = JSON.parse(body);
+                        msg = json.message || json.detail || msg;
+                    } catch (_) { msg = body || msg; }
+                    mostrarError(msg);
+                }
+            } catch (e) {
+                mostrarError('Error de conexión. Intenta de nuevo.');
+            } finally {
+                btn.disabled          = false;
+                spinner.style.display = 'none';
+            }
+        });
+    })();
+    </script>
+
+</div>
+
+</body>
+</html>

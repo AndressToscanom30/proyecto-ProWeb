@@ -220,10 +220,78 @@ class PortalViewControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = "CONTRIBUYENTE")
-    void detalleObligacion_placeholder_retorna200() throws Exception {
+    @WithMockUser(username = "contribuyente@test.com", roles = "CONTRIBUYENTE")
+    void detalleObligacion_obligacionPropia_pueblaModel() throws Exception {
+        when(userService.findByEmail("contribuyente@test.com"))
+                .thenReturn(Optional.of(userConTaxPayer("contribuyente@test.com", "tp-001")));
+        when(taxObligationService.findByTaxPayerId("tp-001"))
+                .thenReturn(List.of(ejemploObligacion("ob-001")));
+        when(documentService.findByObligation("ob-001"))
+                .thenReturn(List.of(
+                        new com.cronos.gestiontributaria.obligaciones.model.Document(),
+                        new com.cronos.gestiontributaria.obligaciones.model.Document()));
+
         mockMvc.perform(get("/portal/obligaciones/ob-001"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("portal/obligacion-detalle"));
+                .andExpect(view().name("portal/obligacion-detalle"))
+                .andExpect(model().attributeExists("obligacion"))
+                .andExpect(model().attribute("documentos", hasSize(2)));
+    }
+
+    // ─── D-4: detalle de obligación ─────────────────────────────────────
+
+    @Test
+    @WithMockUser(username = "contribuyente@test.com", roles = "CONTRIBUYENTE")
+    void detalleObligacion_obligacionAjena_retorna403() throws Exception {
+        when(userService.findByEmail("contribuyente@test.com"))
+                .thenReturn(Optional.of(userConTaxPayer("contribuyente@test.com", "tp-001")));
+        // El contribuyente no tiene ninguna obligación con id ob-999.
+        when(taxObligationService.findByTaxPayerId("tp-001"))
+                .thenReturn(List.of());
+
+        mockMvc.perform(get("/portal/obligaciones/ob-999"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(username = "contribuyente@test.com", roles = "CONTRIBUYENTE")
+    void detalleObligacion_renderizaBotonSubirDocumento() throws Exception {
+        when(userService.findByEmail("contribuyente@test.com"))
+                .thenReturn(Optional.of(userConTaxPayer("contribuyente@test.com", "tp-001")));
+        when(taxObligationService.findByTaxPayerId("tp-001"))
+                .thenReturn(List.of(ejemploObligacion("ob-001")));
+        when(documentService.findByObligation("ob-001"))
+                .thenReturn(List.of());
+
+        mockMvc.perform(get("/portal/obligaciones/ob-001"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Subir documento")));
+    }
+
+    @Test
+    @WithMockUser(username = "contribuyente@test.com", roles = "CONTRIBUYENTE")
+    void detalleObligacion_renderizaPeriodoFiscalDelRecord() throws Exception {
+        // Valida que los accessors del record DTO funcionan en el template.
+        when(userService.findByEmail("contribuyente@test.com"))
+                .thenReturn(Optional.of(userConTaxPayer("contribuyente@test.com", "tp-001")));
+        when(taxObligationService.findByTaxPayerId("tp-001"))
+                .thenReturn(List.of(ejemploObligacion("ob-001")));
+        when(documentService.findByObligation("ob-001"))
+                .thenReturn(List.of());
+
+        mockMvc.perform(get("/portal/obligaciones/ob-001"))
+                .andExpect(status().isOk())
+                // El periodo fiscal del ejemploObligacion es "2026".
+                .andExpect(content().string(containsString("2026")));
+    }
+
+    // ─── D-5: fragmento de subida en /portal/documentos ─────────────────
+
+    @Test
+    @WithMockUser(username = "contribuyente@test.com", roles = "CONTRIBUYENTE")
+    void documentos_renderizaSeccionDeSubida() throws Exception {
+        mockMvc.perform(get("/portal/documentos"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Subir documento")));
     }
 }
