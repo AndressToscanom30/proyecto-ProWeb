@@ -14,6 +14,9 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import com.cronos.gestiontributaria.auth.service.UserService;
+import com.cronos.gestiontributaria.common.service.EmailService;
+
 import com.cronos.gestiontributaria.clientes.model.TaxPayer;
 import com.cronos.gestiontributaria.clientes.repository.TaxPayerRepository;
 import com.cronos.gestiontributaria.common.TaxpayerType;
@@ -36,8 +39,25 @@ public class TaxPayerService {
     @Autowired(required = false)
     private MongoTemplate mongoTemplate;
 
-    public TaxPayerService(TaxPayerRepository repository) {
+    private final UserService userService;
+    private final EmailService emailService;
+
+    public TaxPayerService(TaxPayerRepository repository,
+                           @Autowired(required=false) UserService userService,
+                           @Autowired(required=false) EmailService emailService) {
         this.repository = repository;
+        this.userService = userService;
+        this.emailService = emailService;
+    }
+
+    private String generarPasswordTemporal() {
+        String caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%";
+        StringBuilder password = new StringBuilder();
+        java.security.SecureRandom rnd = new java.security.SecureRandom();
+        for (int i = 0; i < 12; i++) {
+            password.append(caracteres.charAt(rnd.nextInt(caracteres.length())));
+        }
+        return password.toString();
     }
 
     public List<TaxPayer> findAll() {
@@ -112,7 +132,30 @@ public class TaxPayerService {
         taxPayer.setId(null);
         taxPayer.setRegistrationDate(LocalDate.now());
         taxPayer.setActive(true);
-        return repository.save(taxPayer);
+        TaxPayer savedTaxPayer = repository.save(taxPayer);
+
+        if (userService != null && emailService != null && taxPayer.getEmail() != null && !taxPayer.getEmail().isBlank()) {
+            try {
+                String tempPassword = generarPasswordTemporal();
+                com.cronos.gestiontributaria.auth.model.User newUser = new com.cronos.gestiontributaria.auth.model.User();
+                newUser.setName(taxPayer.getBusinessName());
+                newUser.setEmail(taxPayer.getEmail());
+                newUser.setPassword(tempPassword);
+                
+                // Registramos al usuario (la contraseña se encripta dentro)
+                userService.register(newUser);
+                // Vinculamos el usuario con este contribuyente y rol CONTRIBUYENTE
+                userService.vincularContribuyente(newUser.getEmail(), savedTaxPayer.getId());
+                
+                // Enviamos correo
+                emailService.sendTemporaryPassword(taxPayer.getEmail(), tempPassword);
+            } catch (Exception e) {
+                // Si el usuario ya existe, vinculamos sin generar clave
+                userService.vincularContribuyente(taxPayer.getEmail(), savedTaxPayer.getId());
+            }
+        }
+
+        return savedTaxPayer;
     }
 
     public TaxPayer update(String id, TaxPayer incoming) {

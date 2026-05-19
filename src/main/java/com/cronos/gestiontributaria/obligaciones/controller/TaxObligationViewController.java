@@ -119,6 +119,15 @@ public class TaxObligationViewController {
         return "redirect:/obligaciones?taxPayerId=" + taxPayerId;
     }
 
+    @PostMapping("/{id}/requirements")
+    public String addRequirement(@PathVariable String id,
+            @RequestParam String requirementName,
+            @RequestParam String taxPayerId) {
+        obligationService.addRequirement(id, requirementName);
+        // Redirige al detalle de la obligación para que el contador vea el cambio
+        return "redirect:/obligaciones/" + id;
+    }
+
     @GetMapping("/{id}")
     public String details(@PathVariable String id, Model model, Authentication authentication) {
         User user = userService.findByEmail(authentication.getName())

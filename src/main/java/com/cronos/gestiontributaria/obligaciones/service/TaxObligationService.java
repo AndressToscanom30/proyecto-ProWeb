@@ -216,6 +216,50 @@ public class TaxObligationService {
         return response;
     }
 
+    /**
+     * Añade un requerimiento de documento a la obligación.
+     */
+    public TaxObligationResponseDTO addRequirement(String obligationId, String requirementName) {
+        TaxObligation obligation = repository.findById(obligationId)
+                .orElseThrow(() -> new NoSuchElementException("Obligación no encontrada con ID: " + obligationId));
+        
+        com.cronos.gestiontributaria.obligaciones.model.DocumentRequirement req = 
+                new com.cronos.gestiontributaria.obligaciones.model.DocumentRequirement(requirementName);
+        
+        obligation.getDocumentRequirements().add(req);
+        TaxObligation saved = repository.save(obligation);
+        
+        TaxPayer taxpayer = taxPayerRepository.findById(saved.getTaxPayerId()).orElse(null);
+        return toResponseDTO(saved, taxpayer);
+    }
+
+    /**
+     * Marca un requerimiento como cumplido, asociando el documento subido.
+     */
+    public TaxObligationResponseDTO fulfillRequirement(String obligationId, String requirementId, String documentId) {
+        TaxObligation obligation = repository.findById(obligationId)
+                .orElseThrow(() -> new NoSuchElementException("Obligación no encontrada con ID: " + obligationId));
+        
+        boolean found = false;
+        for (com.cronos.gestiontributaria.obligaciones.model.DocumentRequirement req : obligation.getDocumentRequirements()) {
+            if (req.getId().equals(requirementId)) {
+                req.setStatus(com.cronos.gestiontributaria.obligaciones.model.DocumentRequirement.RequirementStatus.FULFILLED);
+                req.setDocumentId(documentId);
+                req.setFulfilledAt(LocalDate.now().atStartOfDay());
+                found = true;
+                break;
+            }
+        }
+        
+        if (!found) {
+            throw new NoSuchElementException("Requerimiento no encontrado con ID: " + requirementId);
+        }
+        
+        TaxObligation saved = repository.save(obligation);
+        TaxPayer taxpayer = taxPayerRepository.findById(saved.getTaxPayerId()).orElse(null);
+        return toResponseDTO(saved, taxpayer);
+    }
+
     // ─── Validaciones ─────────────────────────────────────────────────────
 
     private void validateFiscalPeriod(TaxObligationType type, String fiscalPeriod) {
@@ -252,7 +296,8 @@ public class TaxObligationService {
                 o.isDueDateOverridden(),
                 o.getDueDateOverrideReason(),
                 o.getStatus(),
-                o.getNotes()
+                o.getNotes(),
+                o.getDocumentRequirements()
         );
     }
 

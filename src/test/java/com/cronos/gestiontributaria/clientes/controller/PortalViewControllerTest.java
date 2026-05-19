@@ -128,7 +128,7 @@ class PortalViewControllerTest {
         return new TaxObligationResponseDTO(
                 id, "tp-001", "Empresa Test S.A.S", "900100200-1",
                 null, TaxObligationType.INCOME_TAX, "2026", 2026,
-                null, false, null, TaxObligationStatus.PENDING, null);
+                null, false, null, TaxObligationStatus.PENDING, null, new java.util.ArrayList<>());
     }
 
     // ─── D-2: vista de perfil ───────────────────────────────────────────

@@ -66,64 +66,54 @@
             </div>
         </section>
 
-        <!-- Sección de documentos -->
+        <!-- Sección de Requerimientos -->
         <section class="panel-card">
             <div class="panel-header">
                 <div>
-                    <p class="eyebrow">Archivos adjuntos</p>
-                    <h3>Documentos asociados</h3>
+                    <p class="eyebrow">Checklist de Documentos</p>
+                    <h3>Documentos requeridos por tu contador</h3>
                 </div>
             </div>
 
-            <!-- Empty state -->
-            <div th:if="${#lists.isEmpty(documentos)}" class="empty-state">
+            <div th:if="${#lists.isEmpty(obligacion.documentRequirements())}" class="empty-state">
                 <div class="empty-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                         <polyline points="14 2 14 8 20 8" />
                     </svg>
                 </div>
-                <p>No hay documentos cargados para esta obligación.</p>
+                <p>Tu contador no te ha solicitado ningún documento para esta obligación.</p>
             </div>
 
-            <!-- Tabla de documentos -->
-            <div class="table-wrap" th:if="${not #lists.isEmpty(documentos)}">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Tipo</th>
-                            <th>Tamaño</th>
-                            <th>Fecha subida</th>
-                            <th>Descripción</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="doc : ${documentos}">
-                            <td th:text="${doc.fileName} ?: '—'">—</td>
-                            <td><span class="pill tone-neutral" th:text="${doc.fileType} ?: '—'">—</span></td>
-                            <td th:text="${doc.fileSize != null
-                                           ? #numbers.formatDecimal(doc.fileSize / 1024.0, 1, 'COMMA', 1, 'POINT') + ' KB'
-                                           : '—'}">—</td>
-                            <td th:text="${doc.uploadedAt != null
-                                           ? #temporals.format(doc.uploadedAt, 'dd/MM/yyyy HH:mm')
-                                           : '—'}">—</td>
-                            <td th:text="${doc.description} ?: '—'">—</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div th:if="${not #lists.isEmpty(obligacion.documentRequirements())}">
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                    <li th:each="req : ${obligacion.documentRequirements()}" style="padding: 1.5rem; border: 1px solid var(--border); border-radius: var(--radius-md); margin-bottom: 1rem; background: var(--surface-hover);">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                            <div>
+                                <h4 th:text="${req.name}" style="margin: 0 0 0.25rem 0;">Nombre Documento</h4>
+                                <small style="color: var(--text-muted);" th:text="'Solicitado el: ' + ${#temporals.format(req.requestedAt, 'dd/MM/yyyy')}">Fecha</small>
+                            </div>
+                            <div>
+                                <span class="pill" th:classappend="${req.status.name() == 'FULFILLED' ? 'tone-success' : 'tone-danger'}" 
+                                      th:text="${req.status.name() == 'FULFILLED' ? 'Entregado' : 'Pendiente'}">Estado</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Formulario de subida si está PENDING -->
+                        <div th:if="${req.status.name() == 'PENDING'}">
+                            <form th:action="@{/portal/obligaciones/{id}/requirements/{reqId}/upload(id=${obligacion.id()}, reqId=${req.id})}" method="post" enctype="multipart/form-data" style="display: flex; gap: 1rem; align-items: center; border-top: 1px dashed var(--border); padding-top: 1rem;">
+                                <input type="file" name="file" required class="text-input" style="flex: 1; padding: 0.5rem;" />
+                                <button type="submit" class="primary-action">Subir Documento</button>
+                            </form>
+                        </div>
+                        
+                        <!-- Link al documento si está FULFILLED -->
+                        <div th:if="${req.status.name() == 'FULFILLED'}" style="border-top: 1px dashed var(--border); padding-top: 1rem; margin-top: 0.5rem;">
+                            <a th:href="@{/portal/documentos/{id}/descargar(id=${req.documentId})}" class="secondary-action" style="text-decoration: none;">Ver archivo entregado</a>
+                        </div>
+                    </li>
+                </ul>
             </div>
-        </section>
-
-        <!-- Componente de subida (D-5) -->
-        <section class="panel-card">
-            <div class="panel-header">
-                <div>
-                    <p class="eyebrow">Carga de archivos</p>
-                    <h3>Subir documento</h3>
-                </div>
-            </div>
-            <div th:replace="~{portal/upload-form :: upload-form(${obligacion.id()})}"></div>
         </section>
 
     </section>

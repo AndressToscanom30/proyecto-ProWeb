@@ -36,6 +36,7 @@ public class TaxObligation {
     private List<Alert> alerts;
     private List<TaxIndicator> indicators;
     private List<Task> tasks;
+    private List<DocumentRequirement> documentRequirements = new ArrayList<>();
 
     public TaxObligation(){
 
@@ -196,5 +197,13 @@ public class TaxObligation {
 
     public void setTasks(List<Task> tasks) {
         this.tasks = tasks != null ? tasks : new ArrayList<>();
+    }
+
+    public List<DocumentRequirement> getDocumentRequirements() {
+        return documentRequirements;
+    }
+
+    public void setDocumentRequirements(List<DocumentRequirement> documentRequirements) {
+        this.documentRequirements = documentRequirements != null ? documentRequirements : new ArrayList<>();
     }
 }

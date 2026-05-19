@@ -2,9 +2,12 @@ package com.cronos.gestiontributaria.obligaciones.dto;
 
 import java.time.LocalDate;
 
+import java.util.List;
+
 import com.cronos.gestiontributaria.common.TaxObligationStatus;
 import com.cronos.gestiontributaria.common.TaxObligationType;
 import com.cronos.gestiontributaria.common.TaxpayerType;
+import com.cronos.gestiontributaria.obligaciones.model.DocumentRequirement;
 
 /**
  * DTO de respuesta para obligaciones tributarias.
@@ -39,5 +42,6 @@ public record TaxObligationResponseDTO(
     boolean dueDateOverridden,
     String dueDateOverrideReason,
     TaxObligationStatus status,
-    String notes
+    String notes,
+    List<DocumentRequirement> documentRequirements
 ) {}

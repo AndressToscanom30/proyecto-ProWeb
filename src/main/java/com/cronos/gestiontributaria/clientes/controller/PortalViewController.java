@@ -26,6 +26,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -136,6 +137,31 @@ public class PortalViewController {
         model.addAttribute("documentos", documentos);
         model.addAttribute("taxPayerId", taxPayerId);
         return "portal/obligacion-detalle";
+    }
+
+    /**
+     * Sube un documento para cumplir un requerimiento de una obligación.
+     */
+    @PostMapping("/obligaciones/{id}/requirements/{reqId}/upload")
+    public String uploadRequirementDocument(@PathVariable String id,
+                                            @PathVariable String reqId,
+                                            @org.springframework.web.bind.annotation.RequestParam("file") org.springframework.web.multipart.MultipartFile file,
+                                            Authentication authentication) {
+        String taxPayerId = resolverTaxPayerId(authentication);
+
+        // Validar que la obligación pertenece a este contribuyente
+        taxObligationService.findByTaxPayerId(taxPayerId).stream()
+                .filter(ob -> id.equals(ob.id()))
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "No tienes acceso a esta obligación."));
+
+        // Guardar documento
+        Document savedDoc = documentService.uploadDocument(taxPayerId, id, file, "Documento para requerimiento");
+
+        // Marcar requerimiento como cumplido
+        taxObligationService.fulfillRequirement(id, reqId, savedDoc.getId());
+
+        return "redirect:/portal/obligaciones/" + id;
     }
 
     /**

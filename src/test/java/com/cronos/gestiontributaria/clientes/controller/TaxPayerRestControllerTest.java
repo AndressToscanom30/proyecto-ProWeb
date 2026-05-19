@@ -127,10 +127,10 @@ class TaxPayerRestControllerTest {
                 .thenReturn(Optional.of(userConTaxPayer("contribuyente@test.com", "tp-001")));
         TaxObligationResponseDTO o1 = new TaxObligationResponseDTO(
                 "ob-1", "tp-001", "Empresa", "900", null, null, "2026-01", 2026,
-                null, false, null, null, null);
+                null, false, null, null, null, new java.util.ArrayList<>());
         TaxObligationResponseDTO o2 = new TaxObligationResponseDTO(
                 "ob-2", "tp-001", "Empresa", "900", null, null, "2026-02", 2026,
-                null, false, null, null, null);
+                null, false, null, null, null, new java.util.ArrayList<>());
         when(taxObligationService.findByTaxPayerId("tp-001"))
                 .thenReturn(List.of(o1, o2));
 
@@ -193,7 +193,7 @@ class TaxPayerRestControllerTest {
         // La obligación ob-001 pertenece a tp-001.
         TaxObligationResponseDTO dto = new TaxObligationResponseDTO(
                 "ob-001", "tp-001", "Empresa", "900", null, null, "2026-01", 2026,
-                null, false, null, null, null);
+                null, false, null, null, null, new java.util.ArrayList<>());
         when(taxObligationService.findByTaxPayerId("tp-001"))
                 .thenReturn(List.of(dto));
 
