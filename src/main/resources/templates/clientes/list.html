@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8" />
@@ -15,7 +15,7 @@
                     <h3>Base de clientes activos</h3>
                     <small th:text="${totalElementos + ' resultados en la página actual'}">0 resultados</small>
                 </div>
-                <a sec:authorize="hasRole('GERENTE')" th:href="@{/clientes/nuevo}" class="primary-action" style="width:auto">+ Nuevo contribuyente</a>
+                <a sec:authorize="hasRole('GERENTE')" th:href="@{/clientes/nuevo}" class="primary-action w-max">+ Nuevo contribuyente</a>
             </div>
 
             <form th:action="@{/clientes}" method="get" class="filter-bar">
@@ -60,7 +60,7 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                 </div>
                 <p>No hay contribuyentes registrados.</p>
-                <a sec:authorize="hasRole('GERENTE')" th:href="@{/clientes/nuevo}" class="primary-action" style="width:auto">Crear primer contribuyente</a>
+                <a sec:authorize="hasRole('GERENTE')" th:href="@{/clientes/nuevo}" class="primary-action w-max">Crear primer contribuyente</a>
             </div>
 
             <div class="table-wrap" th:if="${not #lists.isEmpty(contribuyentes)}">
