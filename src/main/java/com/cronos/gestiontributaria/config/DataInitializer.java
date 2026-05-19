@@ -29,10 +29,8 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        boolean hasGerente = userRepository.findAll().stream()
-                .anyMatch(u -> u.getRole() != null && "ROLE_GERENTE".equals(u.getRole().getName()));
-
-        if (!hasGerente) {
+        java.util.Optional<User> optGerente = userRepository.findByEmail("gerente@cronos.com");
+        if (optGerente.isEmpty()) {
             User gerente = new User();
             gerente.setName("Gerente General");
             gerente.setEmail("gerente@cronos.com");
@@ -42,6 +40,13 @@ public class DataInitializer implements CommandLineRunner {
             gerente.setNotifications(new ArrayList<>());
             userRepository.save(gerente);
             System.out.println(">>> GERENTE por defecto creado: gerente@cronos.com / admin123");
+        } else {
+            User gerente = optGerente.get();
+            if (gerente.getRole() == null || !"ROLE_GERENTE".equals(gerente.getRole().getName())) {
+                gerente.setRole(new Role("ROLE_GERENTE", "Gerente", new ArrayList<>()));
+                userRepository.save(gerente);
+                System.out.println(">>> Rol de GERENTE restaurado para gerente@cronos.com");
+            }
         }
 
         // Usuario de prueba para el portal del contribuyente.

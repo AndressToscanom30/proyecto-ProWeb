@@ -128,7 +128,9 @@ public class UserService {
             return;
         }
         repository.findByEmail(normalizeEmail(email)).ifPresent(user -> {
-            user.setRole(Role.contribuyente());
+            if (user.getRole() == null || "ROLE_USER".equals(user.getRole().getName())) {
+                user.setRole(Role.contribuyente());
+            }
             user.setTaxPayerId(taxPayerId);
             repository.save(user);
         });
