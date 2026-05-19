@@ -3501,9 +3501,8 @@ textarea {
 }
 
 .day-popup-item:hover {
-  background: var(--primary-soft);
+  background: var(--surface-soft);
   border-color: var(--primary);
-  transform: translateX(4px);
 }
 
 .day-popup-item-info {
