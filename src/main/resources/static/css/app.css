@@ -3965,7 +3965,12 @@ textarea {
 
 
 /* ========== CHART GRID & MORE CHARTS ========== */
-.chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; }
+.chart-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; }
+.chart-grid > article:nth-child(3) { grid-column: 1 / -1; }
+@media (max-width: 1024px) {
+  .chart-grid { grid-template-columns: 1fr; }
+  .chart-grid > article:nth-child(3) { grid-column: auto; }
+}
 .bar-chart { display: flex; align-items: flex-end; justify-content: space-between; height: 120px; width: 100%; margin-top: auto; gap: 0.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); margin-bottom: 1rem; }
 .bar-column { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; flex: 1; height: 100%; }
 .bar-track { width: 24px; height: 100%; background: var(--surface-soft); border-radius: 4px; position: relative; overflow: hidden; margin-bottom: 0.5rem; }

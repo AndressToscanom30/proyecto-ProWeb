@@ -186,20 +186,22 @@
                     <a class="secondary-action btn-sm" th:href="@{/reportes}">Ver detalle</a>
                 </div>
 
-                <div class="donut-wrap">
-                    <div class="donut-chart" th:style="|--distribution: ${dashboard.distributionStyle}|"></div>
-                    <div class="donut-center">
-                        <strong th:text="${dashboard.metricCards[2].value}">42</strong>
-                        <small th:text="${dashboard.metricCards[2].label}">Obligaciones</small>
+                <div class="distribution-body" style="display: flex; align-items: center; gap: 3rem; flex-wrap: wrap; justify-content: center; padding: 1rem 0;">
+                    <div class="donut-wrap" style="margin: 0; flex-shrink: 0;">
+                        <div class="donut-chart" th:style="|--distribution: ${dashboard.distributionStyle}|"></div>
+                        <div class="donut-center">
+                            <strong th:text="${dashboard.metricCards[2].value}">42</strong>
+                            <small th:text="${dashboard.metricCards[2].label}">Obligaciones</small>
+                        </div>
                     </div>
-                </div>
 
-                <div class="legend-list">
-                    <span class="legend-item" th:each="slice : ${dashboard.distributionSlices}">
-                        <span class="legend-swatch" th:classappend="| tone-${slice.tone}|"></span>
-                        <strong th:text="${slice.label}">IVA</strong>
-                        <small th:text="${slice.summary}">12 obligaciones â€¢ 28.6%</small>
-                    </span>
+                    <div class="legend-list" style="flex: 1; min-width: 250px; margin-top: 0; padding-top: 0; border-top: none;">
+                        <span class="legend-item" th:each="slice : ${dashboard.distributionSlices}">
+                            <span class="legend-swatch" th:classappend="| tone-${slice.tone}|"></span>
+                            <strong th:text="${slice.label}">IVA</strong>
+                            <small th:text="${slice.summary}">12 obligaciones â€¢ 28.6%</small>
+                        </span>
+                    </div>
                 </div>
             </article>
         </section>
