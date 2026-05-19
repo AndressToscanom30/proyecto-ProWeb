@@ -3856,3 +3856,53 @@ textarea {
 :root[data-theme='dark'] .day-view-btn:hover .day-view-count {
   background: rgba(255, 255, 255, 0.2);
 }
+/* ========== TABLE ACTIONS ========== */
+.action-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.action-link {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--primary);
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.action-link:hover {
+  opacity: 0.7;
+  text-decoration: underline;
+}
+
+.action-link.action-danger {
+  color: var(--danger);
+}
+
+
+/* ========== MISSING UTILITY CLASSES ========== */
+.panel-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.hero-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
