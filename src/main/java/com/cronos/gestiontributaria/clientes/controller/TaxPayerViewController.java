@@ -65,6 +65,7 @@ public class TaxPayerViewController {
         model.addAttribute("paginaActual", page);
         model.addAttribute("totalPaginas", resultado.getTotalPages());
         model.addAttribute("totalElementos", resultado.getTotalElements());
+        model.addAttribute("size", size);
         model.addAttribute("q", q);
         model.addAttribute("tipo", tipo);
         model.addAttribute("activo", activo);

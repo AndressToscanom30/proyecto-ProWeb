@@ -7,10 +7,12 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,6 +34,8 @@ import com.cronos.gestiontributaria.obligaciones.repository.TaxObligationReposit
 @Service
 public class DocumentService {
 
+    private static final Logger log = LoggerFactory.getLogger(DocumentService.class);
+
     @Value("${cronos.storage.upload-dir}")
     private String uploadDir;
 
@@ -41,11 +45,15 @@ public class DocumentService {
     @Value("${cronos.storage.allowed-types}")
     private String[] allowedTypes;
 
-    @Autowired
-    private DocumentRepository documentRepository;
+    private final DocumentRepository documentRepository;
 
-    @Autowired
-    private TaxObligationRepository taxObligationRepository;
+    private final TaxObligationRepository taxObligationRepository;
+
+    public DocumentService(DocumentRepository documentRepository,
+                           TaxObligationRepository taxObligationRepository) {
+        this.documentRepository = documentRepository;
+        this.taxObligationRepository = taxObligationRepository;
+    }
 
     /**
      * Sube un archivo y guarda sus metadatos.
@@ -71,7 +79,7 @@ public class DocumentService {
             Files.createDirectories(destino.getParent());
             file.transferTo(destino.toFile());
         } catch (IOException e) {
-            throw new RuntimeException("Error al guardar el archivo: "
+            throw new IllegalStateException("Error al guardar el archivo: "
                     + e.getMessage(), e);
         }
 
@@ -115,6 +123,19 @@ public class DocumentService {
     }
 
     /**
+     * Busca un documento por su ID.
+     *
+     * @param documentId identificador del documento
+     * @return documento persistido
+     * @throws NoSuchElementException si no existe
+     */
+    public Document findById(String documentId) {
+        return documentRepository.findById(documentId)
+                .orElseThrow(() -> new NoSuchElementException(
+                        "Documento no encontrado con ID: " + documentId));
+    }
+
+    /**
      * Elimina un documento (uso interno / GERENTE).
      * Elimina también el archivo físico si existe.
      */
@@ -124,9 +145,8 @@ public class DocumentService {
             try {
                 Files.deleteIfExists(archivo);
             } catch (IOException e) {
-                // loggear pero no relanzar: el registro se borra igual
-                System.err.println("No se pudo borrar el archivo físico "
-                        + archivo + ": " + e.getMessage());
+                // El registro se borra igual aunque falle el borrado físico.
+                log.warn("No se pudo borrar el archivo físico {}", archivo, e);
             }
             documentRepository.delete(doc);
         });

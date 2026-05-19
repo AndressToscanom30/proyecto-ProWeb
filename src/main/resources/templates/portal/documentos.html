@@ -7,18 +7,63 @@
 <body th:replace="~{portal/layout :: layout('Mis documentos', ~{::main-content})}">
     <section th:fragment="main-content">
 
-        <div class="eyebrow">Mis documentos</div>
-        <h1>Documentos</h1>
+        <section class="page-stack">
+            <section class="panel-card">
+                <div class="panel-header">
+                    <div>
+                        <p class="eyebrow">Mis documentos</p>
+                        <h3>Todos mis documentos</h3>
+                        <small>Ordenados por fecha de subida descendente.</small>
+                    </div>
+                </div>
 
-        <!-- Componente de subida: sin obligación asociada -->
-        <div class="upload-section" style="margin-bottom:2rem;">
-            <h3 style="font-size:1.1rem; margin:0 0 0.5rem 0;">Subir documento</h3>
-            <div th:replace="~{portal/upload-form :: upload-form(null)}"></div>
-        </div>
+                <div th:if="${#lists.isEmpty(documentos)}" class="empty-state compact">
+                    <div class="empty-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M7 4.5h7l4.5 4.5V19a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 19V6A1.5 1.5 0 0 1 7 4.5z"/>
+                            <path d="M13 4.5V9h4.5"/>
+                        </svg>
+                    </div>
+                    <p>Aún no has subido documentos.</p>
+                </div>
 
-        <p style="color:#666; font-style:italic;">
-            El listado completo de documentos se implementa próximamente.
-        </p>
+                <div th:unless="${#lists.isEmpty(documentos)}" class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Tipo</th>
+                                <th>Tamaño</th>
+                                <th>Fecha subida</th>
+                                <th>Obligación vinculada</th>
+                                <th>Descarga</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="doc : ${documentos}">
+                                <td>
+                                    <span class="table-link" th:text="${doc.fileName()}">Documento</span>
+                                </td>
+                                <td th:text="${doc.fileTypeLabel()}">PDF</td>
+                                <td th:text="${doc.fileSizeLabel()}">—</td>
+                                <td th:text="${doc.uploadedAtLabel()}">—</td>
+                                <td th:text="${doc.obligationLabel()}">Sin vincular</td>
+                                <td>
+                                    <a th:href="@{/portal/documentos/{id}/descargar(id=${doc.id()})}"
+                                       class="secondary-action btn-sm">Descargar</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Componente de subida: sin obligación asociada -->
+                <div class="upload-section" style="margin-top:2rem;">
+                    <h3 style="font-size:1.1rem; margin:0 0 0.5rem 0;">Subir documento</h3>
+                    <div th:replace="~{portal/upload-form :: upload-form(null)}"></div>
+                </div>
+            </section>
+        </section>
 
     </section>
 </body>

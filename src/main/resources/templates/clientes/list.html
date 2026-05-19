@@ -13,9 +13,47 @@
                 <div>
                     <p class="eyebrow">Contribuyentes</p>
                     <h3>Base de clientes activos</h3>
+                    <small th:text="${totalElementos + ' resultados en la página actual'}">0 resultados</small>
                 </div>
                 <a sec:authorize="hasRole('GERENTE')" th:href="@{/clientes/nuevo}" class="primary-action" style="width:auto">+ Nuevo contribuyente</a>
             </div>
+
+            <form th:action="@{/clientes}" method="get" class="filter-bar">
+                <input type="hidden" name="page" value="0" />
+                <input type="hidden" name="size" th:value="${size}" />
+
+                <div class="filter-grid">
+                    <label class="field-group">
+                        <span class="field-label">NIT o razón social</span>
+                        <input type="text" name="q" class="text-input" th:value="${q}" placeholder="Buscar por nombre o identificación" />
+                    </label>
+
+                    <label class="field-group">
+                        <span class="field-label">Tipo</span>
+                        <select name="tipo" class="text-input">
+                            <option value="" th:selected="${tipo == null}">Todos</option>
+                            <option th:each="tipoTaxpayer : ${tiposTaxpayer}"
+                                    th:value="${tipoTaxpayer}"
+                                    th:text="${tipoTaxpayer.name() == 'NATURAL_PERSON' ? 'Persona natural' : 'Persona jurídica'}"
+                                    th:selected="${tipo == tipoTaxpayer}"></option>
+                        </select>
+                    </label>
+
+                    <label class="field-group">
+                        <span class="field-label">Estado</span>
+                        <select name="activo" class="text-input">
+                            <option value="" th:selected="${activo == null}">Todos</option>
+                            <option value="true" th:selected="${activo != null and activo}">Activo</option>
+                            <option value="false" th:selected="${activo != null and !activo}">Inactivo</option>
+                        </select>
+                    </label>
+                </div>
+
+                <div class="filter-actions">
+                    <button type="submit" class="primary-action">Aplicar filtros</button>
+                    <a th:href="@{/clientes}" class="secondary-action">Limpiar</a>
+                </div>
+            </form>
 
             <div th:if="${#lists.isEmpty(contribuyentes)}" class="empty-state">
                 <div class="empty-icon">
@@ -62,6 +100,31 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+
+            <div class="pagination-bar" th:if="${totalPaginas > 1}">
+                <div class="pagination-meta"
+                     th:text="${'Página ' + (paginaActual + 1) + ' de ' + totalPaginas + ' · ' + totalElementos + ' resultados'}">
+                    Página 1 de 1
+                </div>
+
+                <nav class="pagination-nav" aria-label="Paginación de clientes">
+                    <a th:if="${paginaActual > 0}"
+                       class="pagination-link"
+                       th:href="@{/clientes(page=${paginaActual - 1}, size=${size}, q=${q}, tipo=${tipo}, activo=${activo})}">Anterior</a>
+                    <span th:unless="${paginaActual > 0}" class="pagination-link is-disabled">Anterior</span>
+
+                    <a th:each="i : ${#numbers.sequence(0, totalPaginas - 1)}"
+                       th:href="@{/clientes(page=${i}, size=${size}, q=${q}, tipo=${tipo}, activo=${activo})}"
+                       th:text="${i + 1}"
+                       class="pagination-link"
+                       th:classappend="${i == paginaActual} ? ' is-active' : ''">1</a>
+
+                    <a th:if="${paginaActual + 1 < totalPaginas}"
+                       class="pagination-link"
+                       th:href="@{/clientes(page=${paginaActual + 1}, size=${size}, q=${q}, tipo=${tipo}, activo=${activo})}">Siguiente</a>
+                    <span th:unless="${paginaActual + 1 < totalPaginas}" class="pagination-link is-disabled">Siguiente</span>
+                </nav>
             </div>
         </section>
     </section>
