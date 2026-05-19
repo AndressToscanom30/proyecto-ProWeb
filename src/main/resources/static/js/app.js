@@ -158,7 +158,7 @@
 
                     if (currentScrollY > lastScrollY && currentScrollY > 140) {
                         topbar.classList.add('topbar-hidden');
-                    } else {
+                    } else if (currentScrollY < lastScrollY - 40 || currentScrollY <= 140) {
                         topbar.classList.remove('topbar-hidden');
                     }
 
