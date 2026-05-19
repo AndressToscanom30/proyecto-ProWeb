@@ -66,13 +66,25 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/login", "/403", "/css/**", "/js/**", "/images/**", "/error")
                         .permitAll()
-                        // Reglas específicas primero (orden importa: el primer matcher gana).
+                        // ── Área de GERENTE: bloquear CONTRIBUYENTE explícitamente ──
+                        // Vistas MVC de gestión de clientes: solo GERENTE y ASESOR.
+                        .requestMatchers("/clientes/**")
+                            .hasAnyRole("GERENTE", "ASESOR")
+                        // ── API REST ──
                         // Listado REST de contribuyentes: GERENTE y ASESOR.
                         .requestMatchers(HttpMethod.GET, "/api/contribuyente")
                             .hasAnyRole("GERENTE", "ASESOR")
                         // toggle-active es para GERENTE aunque viva bajo /api/contribuyente.
                         .requestMatchers(HttpMethod.PATCH, "/api/contribuyente/*/toggle-active")
                             .hasRole("GERENTE")
+                        // API de clientes (POST/PUT/DELETE): solo GERENTE.
+                        .requestMatchers(HttpMethod.POST, "/api/clientes/**")
+                            .hasRole("GERENTE")
+                        .requestMatchers(HttpMethod.PUT, "/api/clientes/**")
+                            .hasRole("GERENTE")
+                        .requestMatchers(HttpMethod.DELETE, "/api/clientes/**")
+                            .hasRole("GERENTE")
+                        // Portal del contribuyente.
                         .requestMatchers("/api/contribuyente/**").hasRole("CONTRIBUYENTE")
                         .requestMatchers("/portal/**").hasRole("CONTRIBUYENTE")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
@@ -91,6 +103,10 @@ public class SecurityConfig {
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                         .permitAll())
+                .sessionManagement(session -> session
+                        .invalidSessionUrl("/login?expired")
+                        .maximumSessions(1)
+                        .expiredUrl("/login?expired"))
                 .exceptionHandling(exception -> exception.accessDeniedPage("/403"));
 
         return http.build();
