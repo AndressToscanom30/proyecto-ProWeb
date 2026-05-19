@@ -97,6 +97,7 @@
                             <td>
                                 <div class="action-group">
                                     <a th:href="@{/obligaciones/{id}(id=${o.id})}" class="action-link">Detalles</a>
+                                    <a sec:authorize="hasRole('GERENTE')" th:href="@{/obligaciones/editar/{id}(id=${o.id}, taxPayerId=${o.taxPayerId})}" class="action-link">Editar</a>
                                     <a sec:authorize="hasRole('GERENTE')" th:href="@{/obligaciones/eliminar/{id}(id=${o.id}, taxPayerId=${o.taxPayerId})}" class="action-link action-danger"
                                        data-confirm="¿Eliminar esta obligación?">Eliminar</a>
                                 </div>

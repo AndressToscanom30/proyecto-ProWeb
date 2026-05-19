@@ -124,6 +124,61 @@ public class TaxObligationViewController {
         }
     }
 
+    @GetMapping("/editar/{id}")
+    public String editForm(@PathVariable String id, @RequestParam String taxPayerId, Model model, Authentication authentication) {
+        User user = userService.findByEmail(authentication.getName())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+        TaxPayer taxPayer = taxPayerService.findById(taxPayerId);
+        TaxObligationResponseDTO obligacion = obligationService.findById(id);
+        
+        CreateTaxObligationDTO dto = new CreateTaxObligationDTO(
+                obligacion.taxPayerId(), obligacion.type(), obligacion.fiscalPeriod(), 
+                obligacion.taxYear(), obligacion.notes(), 
+                obligacion.dueDateOverridden() ? obligacion.dueDate() : null, 
+                obligacion.dueDateOverrideReason());
+
+        model.addAttribute("usuario", user);
+        model.addAttribute("contribuyente", taxPayer);
+        model.addAttribute("tipos", TaxObligationType.values());
+        model.addAttribute("dto", dto);
+        model.addAttribute("editId", id);
+        return "obligaciones/form";
+    }
+
+    @PostMapping("/actualizar/{id}")
+    public String update(@PathVariable String id,
+            @RequestParam String taxPayerId,
+            @RequestParam TaxObligationType type,
+            @RequestParam String fiscalPeriod,
+            @RequestParam(required = false, defaultValue = "2026") int taxYear,
+            @RequestParam(required = false) String notes,
+            @RequestParam(required = false) String dueDateOverride,
+            @RequestParam(required = false) String dueDateOverrideReason,
+            Model model, Authentication authentication) {
+        java.time.LocalDate overrideDate = null;
+        try {
+            if (dueDateOverride != null && !dueDateOverride.isBlank()) {
+                overrideDate = java.time.LocalDate.parse(dueDateOverride);
+            }
+            CreateTaxObligationDTO dto = new CreateTaxObligationDTO(
+                    taxPayerId, type, fiscalPeriod, taxYear, notes, overrideDate, dueDateOverrideReason);
+            obligationService.update(id, dto);
+            return "redirect:/obligaciones?taxPayerId=" + taxPayerId;
+        } catch (IllegalArgumentException | java.util.NoSuchElementException e) {
+            User user = userService.findByEmail(authentication.getName())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+            TaxPayer taxPayer = taxPayerService.findById(taxPayerId);
+            model.addAttribute("usuario", user);
+            model.addAttribute("contribuyente", taxPayer);
+            model.addAttribute("tipos", TaxObligationType.values());
+            model.addAttribute("dto", new CreateTaxObligationDTO(taxPayerId, type, fiscalPeriod, taxYear, notes,
+                    overrideDate, dueDateOverrideReason));
+            model.addAttribute("editId", id);
+            model.addAttribute("error", e.getMessage());
+            return "obligaciones/form";
+        }
+    }
+
     @GetMapping("/eliminar/{id}")
     public String delete(@PathVariable String id, @RequestParam String taxPayerId) {
         obligationService.delete(id);
