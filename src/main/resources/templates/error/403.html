@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
@@ -10,11 +10,12 @@
     <div class="error-card">
         <div class="error-code">403</div>
         <h1>Acceso denegado</h1>
-        <p>No tienes permisos para ver esta sección con el rol actual.</p>
+        <p>No tienes permisos para acceder a esta sección. Si eres contribuyente, debes usar el Portal.</p>
 
-        <div class="error-actions">
-            <a class="primary-btn" th:href="@{/dashboard}">Volver al dashboard</a>
-            <a class="secondary-btn" th:href="@{/login}">Ir al login</a>
+        <div class="error-actions" style="margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a class="primary-action" th:href="@{/portal/inicio}">Ir a mi Portal</a>
+            <a class="secondary-action" th:href="@{/dashboard}">Volver al panel admin</a>
+            <a class="secondary-action" th:href="@{/login}">Ir al login</a>
         </div>
     </div>
 </body>
