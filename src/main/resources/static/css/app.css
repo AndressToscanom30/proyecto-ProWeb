@@ -3820,41 +3820,81 @@ textarea {
 /* ========== DAY-VIEW-BTN THEME POLISH ========== */
 
 .day-view-btn {
-  background: rgba(99, 102, 241, 0.1);
-  color: var(--primary);
-  border: 1px solid rgba(99, 102, 241, 0.15);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 5px 10px;
+  border: 1px solid var(--tone-border, rgba(99, 102, 241, 0.15));
+  border-radius: 10px;
+  background: var(--tone-soft, rgba(99, 102, 241, 0.1));
+  color: var(--tone, var(--primary));
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  line-height: 1.4;
+  outline: none;
 }
 
 .day-view-btn:hover {
-  background: var(--primary);
+  background: var(--tone, var(--primary));
   color: #fff;
-  border-color: var(--primary);
+  border-color: var(--tone, var(--primary));
+  transform: translateY(-1.5px);
+  box-shadow: 0 4px 12px var(--tone-soft, rgba(99, 102, 241, 0.25));
+}
+
+.day-view-btn:active {
+  transform: translateY(0) scale(0.96);
 }
 
 .day-view-count {
-  background: var(--primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 6px;
+  background: var(--tone, var(--primary));
   color: #fff;
+  font-size: 0.65rem;
+  font-weight: 800;
+  transition: all 0.2s ease;
+}
+
+.day-view-btn:hover .day-view-count {
+  background: #fff;
+  color: var(--tone, var(--primary));
+}
+
+.day-view-label {
+  white-space: nowrap;
+  font-weight: 600;
 }
 
 :root[data-theme='dark'] .day-view-btn {
-  background: rgba(129, 140, 248, 0.12);
-  color: var(--primary);
-  border-color: rgba(129, 140, 248, 0.2);
+  background: var(--tone-soft, rgba(129, 140, 248, 0.12));
+  color: var(--tone, var(--primary));
+  border-color: var(--tone-border, rgba(129, 140, 248, 0.2));
 }
 
 :root[data-theme='dark'] .day-view-btn:hover {
-  background: var(--primary);
+  background: var(--tone, var(--primary));
   color: #fff;
-  border-color: var(--primary);
+  border-color: var(--tone, var(--primary));
 }
 
 :root[data-theme='dark'] .day-view-count {
-  background: var(--primary);
+  background: var(--tone, var(--primary));
   color: #fff;
 }
 
 :root[data-theme='dark'] .day-view-btn:hover .day-view-count {
-  background: rgba(255, 255, 255, 0.2);
+  background: #fff;
+  color: var(--tone, var(--primary));
 }
 /* ========== TABLE ACTIONS ========== */
 .action-group {
