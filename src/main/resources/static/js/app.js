@@ -3,7 +3,6 @@
 
     document.addEventListener('DOMContentLoaded', function() {
 
-        initThemeMode();
         initThemeToggle();
         initSidebarState();
         initSidebarToggle();
@@ -16,30 +15,29 @@
         initMobileSidebar();
     });
 
-    function initThemeMode() {
-        var root = document.documentElement;
-        var storedTheme = null;
-
-        try {
-            storedTheme = localStorage.getItem('cronos-theme');
-        } catch (error) {
-            storedTheme = null;
-        }
-
-        var preferredTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
-            ? 'dark'
-            : 'light';
-        root.dataset.theme = storedTheme || preferredTheme;
-    }
-
     function initThemeToggle() {
         var button = document.querySelector('[data-theme-toggle]');
         if (!button) return;
 
         var label = button.querySelector('[data-theme-label]');
         var root = document.documentElement;
+        var currentTheme = root.dataset.theme;
 
-        syncThemeToggleState(button, label, root.dataset.theme || 'light');
+        // Fallback: read from localStorage if data-theme wasn't set yet
+        if (!currentTheme) {
+            try {
+                currentTheme = localStorage.getItem('cronos-theme');
+            } catch (error) {
+                currentTheme = null;
+            }
+            if (!currentTheme) {
+                currentTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+                    ? 'dark' : 'light';
+            }
+            root.dataset.theme = currentTheme;
+        }
+
+        syncThemeToggleState(button, label, currentTheme);
 
         button.addEventListener('click', function() {
             var nextTheme = root.dataset.theme === 'dark' ? 'light' : 'dark';
