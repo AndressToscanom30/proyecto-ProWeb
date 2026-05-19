@@ -118,13 +118,26 @@ public class TaxPayerService {
     public TaxPayer update(String id, TaxPayer incoming) {
         TaxPayer existing = findById(id);  // lanza excepción si no existe
 
-        // Campos editables desde el formulario
-        existing.setBusinessName(incoming.getBusinessName());
-        existing.setIdentificacion(incoming.getIdentificacion());
-        existing.setType(incoming.getType());
-        existing.setEmail(incoming.getEmail());
+        // Campos editables desde el formulario. Se protegen contra nulos
+        // críticos para evitar corromper la BD si se bypassa la validación del form.
+        if (incoming.getBusinessName() != null && !incoming.getBusinessName().isBlank()) {
+            existing.setBusinessName(incoming.getBusinessName());
+        }
+        if (incoming.getIdentificacion() != null && !incoming.getIdentificacion().isBlank()) {
+            existing.setIdentificacion(incoming.getIdentificacion());
+        }
+        if (incoming.getType() != null) {
+            existing.setType(incoming.getType());
+        }
+        if (incoming.getEmail() != null && !incoming.getEmail().isBlank()) {
+            existing.setEmail(incoming.getEmail());
+        }
+        
+        // Campos que sí pueden ser actualizados a nulo o vacío (opcionales)
         existing.setPhone(incoming.getPhone());
         existing.setAddress(incoming.getAddress());
+        
+        // Booleanos (no pueden ser null, son primitivos boolean)
         existing.setGranContribuyente(incoming.isGranContribuyente());
         existing.setActive(incoming.isActive());
 
