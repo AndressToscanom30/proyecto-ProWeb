@@ -3952,3 +3952,14 @@ textarea {
 .legend-swatch.tone-danger { background: var(--danger); }
 .legend-swatch.tone-info { background: var(--info, #3b82f6); }
 
+
+/* ========== CHARTS CSS FIX ========== */
+.chart-panel { display: flex; flex-direction: column; }
+.line-chart-shell { width: 100%; margin-top: auto; }
+.line-chart { width: 100%; height: 120px; overflow: visible; display: block; }
+.line-chart path { fill: none; stroke: var(--primary); stroke-width: 1.5; }
+.line-chart circle { fill: #fff; stroke: var(--primary); stroke-width: 1.5; }
+
+.line-legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 0.75rem; width: 100%; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+.legend-item { border: 1px solid var(--border); padding: 0.6rem 0.85rem; border-radius: var(--radius-md); background: var(--surface); justify-content: flex-start; }
+

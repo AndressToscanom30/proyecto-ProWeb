@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8" />
@@ -155,12 +155,6 @@
                         <div class="deadline-meta">
                             <strong>Volver a operación</strong>
                             <small>Regresa al resumen principal cuando termines de ajustar el entorno.</small>
-                        </div>
-                        <div class="deadline-side">
-                            <form th:action="@{/logout}" method="post" class="m-0">
-                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                                <button class="secondary-action btn-sm" type="submit">Cerrar sesión</button>
-                            </form>
                         </div>
                     </article>
                 </div>
