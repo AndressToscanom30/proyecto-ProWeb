@@ -36,7 +36,14 @@ public final class PageViewModels {
         String clientName,
         String obligationType,
         String statusLabel,
-        String statusTone
+        String statusTone,
+        String dueDateLabel,
+        String fiscalPeriod,
+        int taxYear,
+        String priorityLabel,
+        String priorityTone,
+        String responsible,
+        String notes
     ) {}
 
     public record CalendarDayDetail(
@@ -113,7 +120,14 @@ public final class PageViewModels {
                     resolveClientName(obl, clientsById),
                     describeType(obl.getType()),
                     describeStatus(obl.getStatus(), obl, today),
-                    statusTone(obl.getStatus(), obl, today)))
+                    statusTone(obl.getStatus(), obl, today),
+                    formatDate(obl.getDueDate()),
+                    obl.getFiscalPeriod() != null ? obl.getFiscalPeriod() : "",
+                    obl.getTaxYear(),
+                    priorityLabel(obl, today),
+                    priorityTone(obl, today),
+                    responsibleFor(obl.getType()),
+                    obl.getNotes() != null ? obl.getNotes() : ""))
                 .sorted(Comparator.comparing((CalendarObligation o) -> o.statusTone())
                     .thenComparing(o -> o.clientName()))
                 .toList();

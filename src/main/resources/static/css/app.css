@@ -2640,8 +2640,66 @@ textarea {
 }
 
 .task-popup-content {
-  margin-bottom: 1.5rem;
+  margin-bottom: 0;
   font-size: 0.9rem;
+}
+
+.detail-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 0.75rem;
+  background: var(--surface-soft);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+.detail-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  flex: 0 0 auto;
+}
+
+.detail-value {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  text-align: right;
+  word-break: break-word;
+  max-width: 60%;
+}
+
+.detail-row-notes .detail-value {
+  font-weight: 400;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.detail-value.tone-danger {
+  color: var(--danger);
+}
+
+.detail-value.tone-warning {
+  color: var(--warning);
+}
+
+.detail-value.tone-success {
+  color: var(--success);
+}
+
+.task-popup-content .task-popup-status {
+  font-size: 0.78rem;
 }
 
 .task-popup-actions {
@@ -2893,25 +2951,7 @@ textarea {
   border-bottom: 1px solid var(--border);
 }
 
-.task-popup-content {
-  background: var(--surface-hover);
-  padding: 1rem;
-  border-radius: var(--radius-sm);
-  margin-bottom: 1.25rem;
-  border: 1px solid var(--border);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
 
-.task-popup-content::before {
-  content: "Estado:";
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-weight: 700;
-}
 
 /* ========== MOBILE SIDEBAR OVERLAY ========== */
 
