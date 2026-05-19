@@ -84,6 +84,9 @@ public class SecurityConfig {
                             .hasRole("GERENTE")
                         .requestMatchers(HttpMethod.DELETE, "/api/clientes/**")
                             .hasRole("GERENTE")
+                        // ── Vistas del Administrador / Empleados (Bloqueadas para CONTRIBUYENTE) ──
+                        .requestMatchers("/dashboard", "/calendario-fiscal", "/tareas/**", "/reportes/**", "/empleados/**", "/configuracion/**", "/notificaciones/**", "/obligaciones/**")
+                            .hasAnyRole("GERENTE", "ASESOR", "ADMIN", "AUXILIAR")
                         // Portal del contribuyente.
                         .requestMatchers("/api/contribuyente/**").hasRole("CONTRIBUYENTE")
                         .requestMatchers("/portal/**").hasRole("CONTRIBUYENTE")
@@ -94,7 +97,15 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/login")
-                        .defaultSuccessUrl("/dashboard", true)
+                        .successHandler((request, response, authentication) -> {
+                            boolean isContribuyente = authentication.getAuthorities().stream()
+                                    .anyMatch(a -> a.getAuthority().equals("ROLE_CONTRIBUYENTE"));
+                            if (isContribuyente) {
+                                response.sendRedirect("/portal");
+                            } else {
+                                response.sendRedirect("/dashboard");
+                            }
+                        })
                         .failureUrl("/login?error=true")
                         .permitAll())
                 .logout(logout -> logout

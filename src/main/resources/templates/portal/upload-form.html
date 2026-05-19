@@ -12,44 +12,44 @@
     - String → se envía como parámetro al POST (asocia el documento a la obligación)
     - null   → subida libre, sin obligación asociada
 -->
-<div th:fragment="upload-form(obligationId)" class="upload-form">
+<div th:fragment="upload-form(obligationId)">
 
     <!-- Mensajes de feedback -->
-    <div id="upload-success" class="upload-msg upload-msg--success" style="display:none;">
+    <div id="upload-success" class="alert-line alert-success" style="display:none; margin-bottom: 1rem;">
         Documento subido correctamente.
     </div>
-    <div id="upload-error" class="upload-msg upload-msg--error" style="display:none;"></div>
+    <div id="upload-error" class="alert-line alert-error" style="display:none; margin-bottom: 1rem;"></div>
 
     <!-- Campos -->
-    <div class="upload-fields">
+    <div class="form-grid">
 
-        <div class="upload-field">
-            <label for="upload-file" class="upload-label">
-                Archivo
-                <span class="upload-hint">PDF, JPG, PNG o XLSX · máx. 10 MB</span>
-            </label>
+        <label class="field-group">
+            <span class="field-label">Archivo</span>
             <input type="file" id="upload-file"
                    accept=".pdf,.jpg,.jpeg,.png,.xlsx"
-                   class="upload-input" />
-        </div>
+                   class="text-input" />
+            <small class="field-hint">PDF, JPG, PNG o XLSX · máx. 10 MB</small>
+        </label>
 
-        <div class="upload-field">
-            <label for="upload-desc" class="upload-label">Descripción (opcional)</label>
+        <label class="field-group">
+            <span class="field-label">Descripción (opcional)</span>
             <input type="text" id="upload-desc"
                    maxlength="500"
                    placeholder="Ej: Declaración de renta 2025"
-                   class="upload-input" />
+                   class="text-input" />
+        </label>
+
+        <div class="form-actions">
+            <button type="button" id="upload-btn"
+                    class="primary-action"
+                    th:attr="data-obligation-id=${obligationId}">
+                Subir documento
+            </button>
+
+            <span id="upload-spinner" class="pill tone-info" style="display:none;">
+                Subiendo...
+            </span>
         </div>
-
-        <button type="button" id="upload-btn"
-                class="upload-btn"
-                th:attr="data-obligation-id=${obligationId}">
-            Subir documento
-        </button>
-
-        <span id="upload-spinner" class="upload-spinner" style="display:none;">
-            Subiendo...
-        </span>
 
     </div>
 
@@ -66,8 +66,7 @@
         const obligationId = btn.dataset.obligationId && btn.dataset.obligationId !== 'null'
             ? btn.dataset.obligationId : null;
 
-        // Token CSRF leído de cookie XSRF-TOKEN si existe (SecurityConfig excluye
-        // /api/** de CSRF, así que no es obligatorio).
+        // Token CSRF leído de cookie XSRF-TOKEN si existe
         const csrfToken = document.cookie
             .split('; ')
             .find(r => r.startsWith('XSRF-TOKEN='))
@@ -75,7 +74,7 @@
 
         function mostrarError(texto) {
             msgErr.textContent   = texto;
-            msgErr.style.display = 'block';
+            msgErr.style.display = 'flex';
         }
 
         btn.addEventListener('click', async () => {
@@ -98,7 +97,7 @@
             }
 
             btn.disabled          = true;
-            spinner.style.display = 'inline';
+            spinner.style.display = 'inline-flex';
 
             try {
                 const headers = { 'X-Requested-With': 'XMLHttpRequest' };
@@ -113,7 +112,7 @@
                 });
 
                 if (resp.status === 201) {
-                    msgOk.style.display = 'block';
+                    msgOk.style.display = 'flex';
                     fileInput.value     = '';
                     descInput.value     = '';
                     // Recarga para actualizar la tabla de documentos.

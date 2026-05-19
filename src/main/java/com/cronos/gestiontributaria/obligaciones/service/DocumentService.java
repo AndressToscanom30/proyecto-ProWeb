@@ -73,7 +73,7 @@ public class DocumentService {
         validarArchivo(file);
 
         String storedFileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
-        Path destino = Paths.get(uploadDir).resolve(storedFileName);
+        Path destino = Paths.get(uploadDir).toAbsolutePath().resolve(storedFileName);
 
         try {
             Files.createDirectories(destino.getParent());
@@ -141,7 +141,7 @@ public class DocumentService {
      */
     public void delete(String documentId) {
         documentRepository.findById(documentId).ifPresent(doc -> {
-            Path archivo = Paths.get(uploadDir).resolve(doc.getStoredFileName());
+            Path archivo = Paths.get(uploadDir).toAbsolutePath().resolve(doc.getStoredFileName());
             try {
                 Files.deleteIfExists(archivo);
             } catch (IOException e) {

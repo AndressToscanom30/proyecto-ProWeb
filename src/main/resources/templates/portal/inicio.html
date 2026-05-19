@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <title>Mi perfil | Portal Cronos</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}" />
 </head>
 <body th:replace="~{portal/layout :: layout('Mi perfil', ~{::content})}">
     <section th:fragment="content" class="page-stack">
@@ -18,27 +19,27 @@
                 <!-- Identificación -->
                 <div class="metric-card">
                     <h4 class="card-label">Identificación (NIT / CC)</h4>
-                    <p class="card-value" th:text="${contribuyente.identificacion} ?: '—'">—</p>
+                    <p class="card-value" style="word-wrap: break-word; overflow-wrap: break-word; word-break: break-all;" th:text="${contribuyente.identificacion} ?: '—'">—</p>
                 </div>
 
                 <!-- Tipo de contribuyente -->
                 <div class="metric-card">
                     <h4 class="card-label">Tipo de contribuyente</h4>
-                    <p class="card-value"
+                    <p class="card-value" style="word-wrap: break-word; overflow-wrap: break-word; word-break: break-all;"
                          th:text="${contribuyente.type != null
-                                     ? #strings.replace(contribuyente.type.name(), '_', ' ')
+                                     ? (contribuyente.type.name() == 'LEGAL_ENTITY' ? 'Persona Jurídica' : 'Persona Natural')
                                      : '—'}">—</p>
                 </div>
 
                 <!-- Contacto -->
                 <div class="metric-card">
                     <h4 class="card-label">Correo electrónico</h4>
-                    <p class="card-value" th:text="${contribuyente.email} ?: '—'">—</p>
+                    <p class="card-value" style="word-wrap: break-word; overflow-wrap: break-word; word-break: break-all;" th:text="${contribuyente.email} ?: '—'">—</p>
                 </div>
 
                 <div class="metric-card">
                     <h4 class="card-label">Teléfono</h4>
-                    <p class="card-value" th:text="${contribuyente.phone} ?: '—'">—</p>
+                    <p class="card-value" style="word-wrap: break-word; overflow-wrap: break-word; word-break: break-all;" th:text="${contribuyente.phone} ?: '—'">—</p>
                 </div>
 
                 <!-- Estado -->
@@ -62,7 +63,7 @@
                 <!-- Dirección -->
                 <div class="metric-card" style="grid-column: 1 / -1;">
                     <h4 class="card-label">Dirección</h4>
-                    <p class="card-value" th:text="${contribuyente.address} ?: '—'">—</p>
+                    <p class="card-value" style="word-wrap: break-word; overflow-wrap: break-word; word-break: break-all;" th:text="${contribuyente.address} ?: '—'">—</p>
                 </div>
             </div>
         </section>
