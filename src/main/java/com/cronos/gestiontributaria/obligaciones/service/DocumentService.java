@@ -154,21 +154,48 @@ public class DocumentService {
 
     // ── privado ──────────────────────────────────────────────
 
+    private static final List<String> ALLOWED_EXTENSIONS = List.of(
+            ".pdf", ".jpg", ".jpeg", ".png", ".xlsx"
+    );
+
     private void validarArchivo(MultipartFile file) {
         if (file == null || file.isEmpty()) {
             throw new IllegalArgumentException("El archivo no puede estar vacío.");
         }
+
+        // Validar tamaño
         long maxBytes = (long) maxFileSizeMb * 1024 * 1024;
         if (file.getSize() > maxBytes) {
+            log.warn("Archivo rechazado por tamaño: {} bytes (máx {} MB) — nombre: {}",
+                    file.getSize(), maxFileSizeMb, file.getOriginalFilename());
             throw new IllegalArgumentException(
                     "El archivo supera el tamaño máximo permitido de "
                             + maxFileSizeMb + " MB.");
         }
+
+        // Validar tipo MIME
         String tipo = file.getContentType();
         boolean tipoPermitido = Arrays.asList(allowedTypes).contains(tipo);
         if (!tipoPermitido) {
+            log.warn("Archivo rechazado por tipo MIME: {} — nombre: {}",
+                    tipo, file.getOriginalFilename());
             throw new IllegalArgumentException(
-                    "Tipo de archivo no permitido: " + tipo);
+                    "Tipo de archivo no permitido: " + tipo
+                            + ". Solo se aceptan PDF, JPG, PNG y XLSX.");
+        }
+
+        // Validar extensión del nombre de archivo (defensa en profundidad)
+        String nombreOriginal = file.getOriginalFilename();
+        if (nombreOriginal != null && !nombreOriginal.isBlank()) {
+            String extensionLower = nombreOriginal.substring(
+                    nombreOriginal.lastIndexOf('.')).toLowerCase();
+            if (!ALLOWED_EXTENSIONS.contains(extensionLower)) {
+                log.warn("Archivo rechazado por extensión: {} — MIME declarado: {}",
+                        nombreOriginal, tipo);
+                throw new IllegalArgumentException(
+                        "Extensión de archivo no permitida. "
+                                + "Solo se aceptan: PDF, JPG, PNG y XLSX.");
+            }
         }
     }
 }
