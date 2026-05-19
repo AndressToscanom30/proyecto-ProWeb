@@ -3,7 +3,6 @@
 
     document.addEventListener('DOMContentLoaded', function() {
 
-        initThemeMode();
         initThemeToggle();
         initSidebarState();
         initSidebarToggle();
@@ -16,30 +15,29 @@
         initMobileSidebar();
     });
 
-    function initThemeMode() {
-        var root = document.documentElement;
-        var storedTheme = null;
-
-        try {
-            storedTheme = localStorage.getItem('cronos-theme');
-        } catch (error) {
-            storedTheme = null;
-        }
-
-        var preferredTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
-            ? 'dark'
-            : 'light';
-        root.dataset.theme = storedTheme || preferredTheme;
-    }
-
     function initThemeToggle() {
         var button = document.querySelector('[data-theme-toggle]');
         if (!button) return;
 
         var label = button.querySelector('[data-theme-label]');
         var root = document.documentElement;
+        var currentTheme = root.dataset.theme;
 
-        syncThemeToggleState(button, label, root.dataset.theme || 'light');
+        // Fallback: read from localStorage if data-theme wasn't set yet
+        if (!currentTheme) {
+            try {
+                currentTheme = localStorage.getItem('cronos-theme');
+            } catch (error) {
+                currentTheme = null;
+            }
+            if (!currentTheme) {
+                currentTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+                    ? 'dark' : 'light';
+            }
+            root.dataset.theme = currentTheme;
+        }
+
+        syncThemeToggleState(button, label, currentTheme);
 
         button.addEventListener('click', function() {
             var nextTheme = root.dataset.theme === 'dark' ? 'light' : 'dark';
@@ -160,7 +158,7 @@
 
                     if (currentScrollY > lastScrollY && currentScrollY > 140) {
                         topbar.classList.add('topbar-hidden');
-                    } else {
+                    } else if (currentScrollY < lastScrollY - 40 || currentScrollY <= 140) {
                         topbar.classList.remove('topbar-hidden');
                     }
 
@@ -254,6 +252,13 @@
         var type = btn.getAttribute('data-type');
         var status = btn.getAttribute('data-status');
         var tone = btn.getAttribute('data-tone');
+        var dueDate = btn.getAttribute('data-duedate') || '—';
+        var period = btn.getAttribute('data-period') || '—';
+        var year = btn.getAttribute('data-year') || '—';
+        var priority = btn.getAttribute('data-priority') || '—';
+        var priorityTone = btn.getAttribute('data-prioritytone') || 'neutral';
+        var responsible = btn.getAttribute('data-responsible') || '—';
+        var notes = btn.getAttribute('data-notes');
         
         var popup = document.getElementById('task-popup');
         if (!popup) return;
@@ -266,6 +271,26 @@
         var detailsBtn = popup.querySelector('.task-popup-details-btn');
         if (detailsBtn) {
             detailsBtn.href = '/obligaciones/' + id;
+        }
+
+        popup.querySelector('#popup-duedate').textContent = dueDate;
+        popup.querySelector('#popup-period').textContent = period;
+        popup.querySelector('#popup-year').textContent = year;
+        
+        var priorityEl = popup.querySelector('#popup-priority');
+        priorityEl.textContent = priority;
+        priorityEl.className = 'detail-value';
+        if (priority === 'Alta') priorityEl.classList.add('tone-danger');
+        else if (priority === 'Media') priorityEl.classList.add('tone-warning');
+        else if (priority === 'Baja') priorityEl.classList.add('tone-success');
+
+        popup.querySelector('#popup-responsible').textContent = responsible;
+        
+        var notesEl = popup.querySelector('#popup-notes');
+        if (notes && notes.trim() !== '') {
+            notesEl.textContent = notes;
+        } else {
+            notesEl.textContent = 'Sin observaciones';
         }
         
         popup.classList.add('active');
@@ -302,6 +327,13 @@
             card.setAttribute('data-type', item.getAttribute('data-type'));
             card.setAttribute('data-status', item.getAttribute('data-status'));
             card.setAttribute('data-tone', item.getAttribute('data-tone'));
+            card.setAttribute('data-duedate', item.getAttribute('data-duedate'));
+            card.setAttribute('data-period', item.getAttribute('data-period'));
+            card.setAttribute('data-year', item.getAttribute('data-year'));
+            card.setAttribute('data-priority', item.getAttribute('data-priority'));
+            card.setAttribute('data-prioritytone', item.getAttribute('data-prioritytone'));
+            card.setAttribute('data-responsible', item.getAttribute('data-responsible'));
+            card.setAttribute('data-notes', item.getAttribute('data-notes'));
             card.onclick = function() { closeDayPopup(); openTaskPopup(card); };
 
             var tone = item.getAttribute('data-tone') || 'neutral';

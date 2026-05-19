@@ -82,7 +82,7 @@
                             <div class="day-obligations-data" th:attr="data-day=${day.dayNumber}" style="display:none">
                                 <div th:each="obl : ${day.obligations}"
                                      class="obl-data"
-                                     th:attr="data-id=${obl.id},data-client=${obl.clientName},data-type=${obl.obligationType},data-status=${obl.statusLabel},data-tone=${obl.statusTone}">
+                                     th:attr="data-id=${obl.id},data-client=${obl.clientName},data-type=${obl.obligationType},data-status=${obl.statusLabel},data-tone=${obl.statusTone},data-duedate=${obl.dueDateLabel},data-period=${obl.fiscalPeriod},data-year=${obl.taxYear},data-priority=${obl.priorityLabel},data-prioritytone=${obl.priorityTone},data-responsible=${obl.responsible},data-notes=${obl.notes}">
                                 </div>
                             </div>
                         </template>
@@ -203,8 +203,35 @@
                         </svg>
                     </button>
                 </div>
-                <div class="task-popup-content">
-                    <span class="pill task-popup-status">Estado</span>
+                <div class="task-popup-content detail-grid">
+                    <div class="detail-row">
+                        <span class="detail-label">Estado</span>
+                        <span class="pill task-popup-status">Estado</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Vence</span>
+                        <span class="detail-value" id="popup-duedate">—</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Período fiscal</span>
+                        <span class="detail-value" id="popup-period">—</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Año fiscal</span>
+                        <span class="detail-value" id="popup-year">—</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Prioridad</span>
+                        <span class="detail-value" id="popup-priority">—</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Responsable</span>
+                        <span class="detail-value" id="popup-responsible">—</span>
+                    </div>
+                    <div class="detail-row detail-row-notes">
+                        <span class="detail-label">Notas</span>
+                        <span class="detail-value" id="popup-notes">—</span>
+                    </div>
                 </div>
                 <div class="task-popup-actions">
                     <button class="secondary-action btn-sm" onclick="closeTaskPopup()">Cerrar</button>
