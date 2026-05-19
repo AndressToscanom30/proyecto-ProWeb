@@ -17,7 +17,7 @@
                 <div style="text-align: right;">
                     <span class="pill" style="font-size: 0.9rem; padding: 0.25rem 1rem;" 
                           th:classappend="${obligacion.status != null ? 'tone-' + (obligacion.status.name() == 'COMPLETED' ? 'success' : (obligacion.status.name() == 'OVERDUE' ? 'danger' : (obligacion.status.name() == 'PENDING' ? 'warning' : 'primary'))) : 'tone-neutral'}" 
-                          th:text="${obligacion.status.description}">Estado</span>
+                          th:text="${obligacion.status != null ? #strings.replace(obligacion.status.name(), '_', ' ') : '—'}">Estado</span>
                 </div>
             </div>
 
