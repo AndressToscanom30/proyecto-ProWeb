@@ -212,23 +212,46 @@ public record DashboardSummary(
         String[] labels = { "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom" };
         int[] counts = new int[7];
         int max = 0;
+        List<List<TaxObligation>> dailyObligations = new ArrayList<>();
 
         for (int index = 0; index < 7; index++) {
             LocalDate day = weekStart.plusDays(index);
+            List<TaxObligation> dayObligations = new ArrayList<>();
             int count = 0;
             for (TaxObligation obligation : obligations) {
                 if (obligation != null && obligation.getDueDate() != null && obligation.getDueDate().isEqual(day)) {
                     count++;
+                    dayObligations.add(obligation);
                 }
             }
             counts[index] = count;
             max = Math.max(max, count);
+            dailyObligations.add(dayObligations);
         }
+
+        // Actually, we can use a blank map since we might not have all clients here.
+        Map<String, TaxPayer> clientsById = new LinkedHashMap<>();
 
         List<WorkloadBar> bars = new ArrayList<>();
         for (int index = 0; index < 7; index++) {
             double percent = max == 0 ? 0.0 : (counts[index] * 100.0 / max);
-            bars.add(new WorkloadBar(labels[index], counts[index], percent, "primary"));
+            List<PageViewModels.CalendarObligation> details = dailyObligations.get(index).stream()
+                .map(obl -> new PageViewModels.CalendarObligation(
+                    obl.getId(),
+                    obl.getTaxPayerId() != null ? obl.getTaxPayerId() : "Contribuyente", // Defaulting since we don't have full map here easily
+                    describeType(obl.getType()),
+                    describeStatus(obl.getStatus(), obl, today),
+                    statusTone(obl, today),
+                    formatDate(obl.getDueDate()),
+                    obl.getFiscalPeriod() != null ? obl.getFiscalPeriod() : "",
+                    obl.getTaxYear(),
+                    priorityLabel(obl, today),
+                    priorityTone(obl, today),
+                    responsibleFor(obl.getType()),
+                    obl.getNotes() != null ? obl.getNotes() : ""))
+                .toList();
+
+            bars.add(new WorkloadBar(labels[index], counts[index], percent, "primary", details, index + 100)); // index+100 to avoid collision with month days
         }
 
         return bars;
@@ -695,7 +718,7 @@ public record DashboardSummary(
             String statusLabel, String tone) {
     }
 
-    public record WorkloadBar(String label, int value, double percent, String tone) {
+    public record WorkloadBar(String label, int value, double percent, String tone, List<PageViewModels.CalendarObligation> obligations, int dayIndex) {
     }
 
     public record MonthlyPoint(String label, String valueLabel, int x, int y) {

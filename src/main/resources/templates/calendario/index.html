@@ -136,12 +136,25 @@
                 </div>
 
                 <div class="bar-chart">
-                    <article class="bar-column" th:each="bar : ${dashboard.weeklyWorkload}">
+                    <article class="bar-column" th:each="bar : ${dashboard.weeklyWorkload}"
+                             th:attr="data-day=${bar.dayIndex}"
+                             th:onclick="${bar.value > 0 ? 'openDayPopup(this)' : ''}"
+                             th:style="${bar.value > 0 ? 'cursor: pointer;' : ''}">
                         <div class="bar-track">
                             <span class="bar-fill" th:style="|height: ${bar.percent}%|"></span>
                         </div>
                         <strong th:text="${bar.value}">12</strong>
                         <small th:text="${bar.label}">Lun</small>
+
+                        <!-- Hidden data for popup -->
+                        <template th:if="${not #lists.isEmpty(bar.obligations)}">
+                            <div class="day-obligations-data" th:attr="data-day=${bar.dayIndex}" style="display:none">
+                                <div th:each="obl : ${bar.obligations}"
+                                     class="obl-data"
+                                     th:attr="data-id=${obl.id},data-client=${obl.clientName},data-type=${obl.obligationType},data-status=${obl.statusLabel},data-tone=${obl.statusTone},data-duedate=${obl.dueDateLabel},data-period=${obl.fiscalPeriod},data-year=${obl.taxYear},data-priority=${obl.priorityLabel},data-prioritytone=${obl.priorityTone},data-responsible=${obl.responsible},data-notes=${obl.notes}">
+                                </div>
+                            </div>
+                        </template>
                     </article>
                 </div>
             </article>

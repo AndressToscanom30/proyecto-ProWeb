@@ -289,19 +289,42 @@ public final class PageViewModels {
         String[] labels = { "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom" };
         int[] counts = new int[7];
         int max = 0;
+        List<List<TaxObligation>> dailyObligations = new ArrayList<>();
+
         for (int i = 0; i < 7; i++) {
             LocalDate day = weekStart.plusDays(i);
+            List<TaxObligation> dayObligations = new ArrayList<>();
             int count = 0;
             for (TaxObligation o : obligations) {
-                if (o != null && o.getDueDate() != null && o.getDueDate().isEqual(day)) count++;
+                if (o != null && o.getDueDate() != null && o.getDueDate().isEqual(day)) {
+                    count++;
+                    dayObligations.add(o);
+                }
             }
             counts[i] = count;
             max = Math.max(max, count);
+            dailyObligations.add(dayObligations);
         }
+        
         List<DashboardSummary.WorkloadBar> bars = new ArrayList<>();
         for (int i = 0; i < 7; i++) {
             double pct = max == 0 ? 0.0 : (counts[i] * 100.0 / max);
-            bars.add(new DashboardSummary.WorkloadBar(labels[i], counts[i], pct, "primary"));
+            List<CalendarObligation> details = dailyObligations.get(i).stream()
+                .map(obl -> new CalendarObligation(
+                    obl.getId(),
+                    obl.getTaxPayerId() != null ? obl.getTaxPayerId() : "Contribuyente", // Default
+                    describeType(obl.getType()),
+                    describeStatus(obl.getStatus(), obl, today),
+                    statusTone(obl.getStatus(), obl, today),
+                    formatDate(obl.getDueDate()),
+                    obl.getFiscalPeriod() != null ? obl.getFiscalPeriod() : "",
+                    obl.getTaxYear(),
+                    priorityLabel(obl, today),
+                    priorityTone(obl, today),
+                    responsibleFor(obl.getType()),
+                    obl.getNotes() != null ? obl.getNotes() : ""))
+                .toList();
+            bars.add(new DashboardSummary.WorkloadBar(labels[i], counts[i], pct, "primary", details, i + 100));
         }
         return bars;
     }

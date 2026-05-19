@@ -144,12 +144,25 @@
                 </div>
 
                 <div class="bar-chart">
-                    <article class="bar-column" th:each="bar : ${dashboard.weeklyWorkload}">
+                    <article class="bar-column" th:each="bar : ${dashboard.weeklyWorkload}"
+                             th:attr="data-day=${bar.dayIndex}"
+                             th:onclick="${bar.value > 0 ? 'openDayPopup(this)' : ''}"
+                             th:style="${bar.value > 0 ? 'cursor: pointer;' : ''}">
                         <div class="bar-track">
                             <span class="bar-fill" th:style="|height: ${bar.percent}%|"></span>
                         </div>
                         <strong th:text="${bar.value}">12</strong>
                         <small th:text="${bar.label}">Lun</small>
+
+                        <!-- Hidden data for popup -->
+                        <template th:if="${not #lists.isEmpty(bar.obligations)}">
+                            <div class="day-obligations-data" th:attr="data-day=${bar.dayIndex}" style="display:none">
+                                <div th:each="obl : ${bar.obligations}"
+                                     class="obl-data"
+                                     th:attr="data-id=${obl.id},data-client=${obl.clientName},data-type=${obl.obligationType},data-status=${obl.statusLabel},data-tone=${obl.statusTone},data-duedate=${obl.dueDateLabel},data-period=${obl.fiscalPeriod},data-year=${obl.taxYear},data-priority=${obl.priorityLabel},data-prioritytone=${obl.priorityTone},data-responsible=${obl.responsible},data-notes=${obl.notes}">
+                                </div>
+                            </div>
+                        </template>
                     </article>
                 </div>
             </article>
@@ -327,6 +340,81 @@
                 </div>
             </article>
         </section>
+
+        <!-- Day Detail Pop-up -->
+        <div id="day-popup" class="task-popup-overlay">
+            <div class="task-popup-modal day-popup-modal">
+                <div class="task-popup-header">
+                    <div>
+                        <h3 class="task-popup-title day-popup-title">Tareas del día</h3>
+                        <p class="task-popup-subtitle day-popup-subtitle">Obligaciones asignadas</p>
+                    </div>
+                    <button class="task-popup-close" onclick="closeDayPopup()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 6L6 18M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="day-popup-list" id="day-popup-list">
+                    <!-- Filled dynamically by JS -->
+                </div>
+                <div class="task-popup-actions">
+                    <button class="secondary-action btn-sm" onclick="closeDayPopup()">Cerrar</button>
+                    <a class="primary-action btn-sm" th:href="@{/obligaciones}">Ver obligaciones</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Single Task Pop-up -->
+        <div id="task-popup" class="task-popup-overlay">
+            <div class="task-popup-modal">
+                <div class="task-popup-header">
+                    <div>
+                        <h3 class="task-popup-title">Tipo Obligación</h3>
+                        <p class="task-popup-subtitle">Cliente</p>
+                    </div>
+                    <button class="task-popup-close" onclick="closeTaskPopup()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 6L6 18M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="task-popup-content detail-grid">
+                    <div class="detail-row">
+                        <span class="detail-label">Estado</span>
+                        <span class="pill task-popup-status">Estado</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Vence</span>
+                        <span class="detail-value" id="popup-duedate">—</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Período fiscal</span>
+                        <span class="detail-value" id="popup-period">—</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Año fiscal</span>
+                        <span class="detail-value" id="popup-year">—</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Prioridad</span>
+                        <span class="detail-value" id="popup-priority">—</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Responsable</span>
+                        <span class="detail-value" id="popup-responsible">—</span>
+                    </div>
+                    <div class="detail-row detail-row-notes">
+                        <span class="detail-label">Notas</span>
+                        <span class="detail-value" id="popup-notes">—</span>
+                    </div>
+                </div>
+                <div class="task-popup-actions">
+                    <button class="secondary-action btn-sm" onclick="closeTaskPopup()">Cerrar</button>
+                    <a class="primary-action btn-sm task-popup-details-btn" href="#">Ver detalles</a>
+                </div>
+            </div>
+        </div>
     </section>
 </body>
 </html>
