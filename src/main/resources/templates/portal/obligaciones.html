@@ -4,68 +4,83 @@
     <meta charset="UTF-8" />
     <title>Mis obligaciones | Portal Cronos</title>
 </head>
-<body th:replace="~{portal/layout :: layout('Mis obligaciones', ~{::main-content})}">
-    <section th:fragment="main-content">
+<body th:replace="~{portal/layout :: layout('Mis obligaciones', ~{::content})}">
+    <section th:fragment="content" class="page-stack">
+        
+        <section class="panel-card">
+            <div class="panel-header">
+                <div>
+                    <p class="eyebrow">Mis obligaciones tributarias</p>
+                    <h3>Obligaciones</h3>
+                </div>
+            </div>
 
-        <div class="eyebrow">Mis obligaciones tributarias</div>
-        <h1>Obligaciones</h1>
+            <!-- Empty state -->
+            <div th:if="${#lists.isEmpty(obligaciones)}" class="empty-state">
+                <div class="empty-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                        <line x1="16" y1="13" x2="8" y2="13" />
+                        <line x1="16" y1="17" x2="8" y2="17" />
+                        <polyline points="10 9 9 9 8 9" />
+                    </svg>
+                </div>
+                <p>No tienes obligaciones registradas.</p>
+            </div>
 
-        <!-- Empty state -->
-        <div th:if="${#lists.isEmpty(obligaciones)}" class="empty-state">
-            <p>No tienes obligaciones registradas.</p>
-        </div>
+            <!-- Tabla -->
+            <div class="table-wrap" th:if="${not #lists.isEmpty(obligaciones)}">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Período</th>
+                            <th>Vencimiento</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="ob : ${obligaciones}">
+                            <!-- Tipo (enum legible) -->
+                            <td th:text="${ob.type() != null
+                                            ? (ob.type().getDescription() != null
+                                               ? ob.type().getDescription()
+                                               : #strings.replace(ob.type().name(), '_', ' '))
+                                            : '—'}">—</td>
 
-        <!-- Tabla -->
-        <div th:unless="${#lists.isEmpty(obligaciones)}" class="table-wrapper">
-            <table class="portal-table">
-                <thead>
-                    <tr>
-                        <th>Tipo</th>
-                        <th>Período</th>
-                        <th>Vencimiento</th>
-                        <th>Estado</th>
-                        <th>Detalle</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="ob : ${obligaciones}">
+                            <!-- Período (fiscalPeriod en el DTO) -->
+                            <td th:text="${ob.fiscalPeriod()} ?: '—'">—</td>
 
-                        <!-- Tipo (enum legible) -->
-                        <td th:text="${ob.type() != null
-                                        ? (ob.type().getDescription() != null
-                                           ? ob.type().getDescription()
-                                           : #strings.replace(ob.type().name(), '_', ' '))
-                                        : '—'}">—</td>
+                            <!-- Vencimiento -->
+                            <td th:text="${ob.dueDate() != null
+                                            ? #temporals.format(ob.dueDate(), 'dd/MM/yyyy')
+                                            : '—'}">—</td>
 
-                        <!-- Período (fiscalPeriod en el DTO) -->
-                        <td th:text="${ob.fiscalPeriod()} ?: '—'">—</td>
+                            <!-- Estado con badge (usando design system classes: pill) -->
+                            <td>
+                                <span class="pill"
+                                      th:classappend="${ob.status() != null and ob.status().name() == 'COMPLETED' ? 'tone-success' : 
+                                                       (ob.status() != null and ob.status().name() == 'OVERDUE' ? 'tone-danger' : 
+                                                       (ob.status() != null and ob.status().name() == 'IN_PROGRESS' ? 'tone-primary' : 'tone-neutral'))}"
+                                      th:text="${ob.status() != null
+                                            ? #strings.replace(ob.status().name(), '_', ' ')
+                                            : '—'}">—</span>
+                            </td>
 
-                        <!-- Vencimiento -->
-                        <td th:text="${ob.dueDate() != null
-                                        ? #temporals.format(ob.dueDate(), 'dd/MM/yyyy')
-                                        : '—'}">—</td>
-
-                        <!-- Estado con badge -->
-                        <td>
-                            <span class="status-badge"
-                                  th:classappend="${ob.status() != null
-                                        ? 'status-badge--' + #strings.replace(#strings.toLowerCase(ob.status().name()), '_', '-')
-                                        : ''}"
-                                  th:text="${ob.status() != null
-                                        ? #strings.replace(ob.status().name(), '_', ' ')
-                                        : '—'}">—</span>
-                        </td>
-
-                        <!-- Enlace al detalle -->
-                        <td>
-                            <a th:href="@{/portal/obligaciones/{id}(id=${ob.id()})}"
-                               class="portal-link">Ver detalle</a>
-                        </td>
-
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+                            <!-- Enlace al detalle -->
+                            <td>
+                                <div class="action-group">
+                                    <a th:href="@{/portal/obligaciones/{id}(id=${ob.id()})}"
+                                       class="action-link">Ver detalle</a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
 
     </section>
 </body>

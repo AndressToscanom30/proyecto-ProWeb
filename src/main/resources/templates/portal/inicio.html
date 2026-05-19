@@ -4,78 +4,68 @@
     <meta charset="UTF-8" />
     <title>Mi perfil | Portal Cronos</title>
 </head>
-<body th:replace="~{portal/layout :: layout('Mi perfil', ~{::main-content})}">
-    <section th:fragment="main-content">
-
-        <div class="eyebrow">Mi perfil</div>
-        <h1 th:text="${contribuyente.businessName}">Razón social</h1>
-
-        <div class="card-grid">
-
-            <!-- Identificación -->
-            <div class="info-card">
-                <div class="info-card__label">Identificación (NIT / CC)</div>
-                <div class="info-card__value"
-                     th:text="${contribuyente.identificacion} ?: '—'">—</div>
-            </div>
-
-            <!-- Tipo de contribuyente -->
-            <div class="info-card">
-                <div class="info-card__label">Tipo de contribuyente</div>
-                <div class="info-card__value"
-                     th:text="${contribuyente.type != null
-                                 ? #strings.replace(contribuyente.type.name(), '_', ' ')
-                                 : '—'}">—</div>
-            </div>
-
-            <!-- Contacto -->
-            <div class="info-card">
-                <div class="info-card__label">Correo electrónico</div>
-                <div class="info-card__value"
-                     th:text="${contribuyente.email} ?: '—'">—</div>
-            </div>
-
-            <div class="info-card">
-                <div class="info-card__label">Teléfono</div>
-                <div class="info-card__value"
-                     th:text="${contribuyente.phone} ?: '—'">—</div>
-            </div>
-
-            <!-- Dirección -->
-            <div class="info-card info-card--full">
-                <div class="info-card__label">Dirección</div>
-                <div class="info-card__value"
-                     th:text="${contribuyente.address} ?: '—'">—</div>
-            </div>
-
-            <!-- Gran contribuyente -->
-            <div class="info-card">
-                <div class="info-card__label">Gran contribuyente</div>
-                <div class="info-card__value"
-                     th:text="${contribuyente.granContribuyente ? 'Sí' : 'No'}">—</div>
-            </div>
-
-            <!-- Estado -->
-            <div class="info-card">
-                <div class="info-card__label">Estado</div>
-                <div class="info-card__value">
-                    <span class="status-badge"
-                          th:classappend="${contribuyente.active ? 'status-badge--active' : 'status-badge--inactive'}"
-                          th:text="${contribuyente.active ? 'Activo' : 'Inactivo'}">—</span>
+<body th:replace="~{portal/layout :: layout('Mi perfil', ~{::content})}">
+    <section th:fragment="content" class="page-stack">
+        <section class="panel-card">
+            <div class="panel-header">
+                <div>
+                    <p class="eyebrow">Mi perfil</p>
+                    <h3 th:text="${contribuyente.businessName}">Razón social</h3>
                 </div>
             </div>
 
-            <!-- Fecha de registro -->
-            <div class="info-card">
-                <div class="info-card__label">Fecha de registro</div>
-                <div class="info-card__value"
-                     th:text="${contribuyente.registrationDate != null
-                                 ? #temporals.format(contribuyente.registrationDate, 'dd/MM/yyyy')
-                                 : '—'}">—</div>
+            <div class="metric-grid">
+                <!-- Identificación -->
+                <div class="metric-card">
+                    <h4 class="card-label">Identificación (NIT / CC)</h4>
+                    <p class="card-value" th:text="${contribuyente.identificacion} ?: '—'">—</p>
+                </div>
+
+                <!-- Tipo de contribuyente -->
+                <div class="metric-card">
+                    <h4 class="card-label">Tipo de contribuyente</h4>
+                    <p class="card-value"
+                         th:text="${contribuyente.type != null
+                                     ? #strings.replace(contribuyente.type.name(), '_', ' ')
+                                     : '—'}">—</p>
+                </div>
+
+                <!-- Contacto -->
+                <div class="metric-card">
+                    <h4 class="card-label">Correo electrónico</h4>
+                    <p class="card-value" th:text="${contribuyente.email} ?: '—'">—</p>
+                </div>
+
+                <div class="metric-card">
+                    <h4 class="card-label">Teléfono</h4>
+                    <p class="card-value" th:text="${contribuyente.phone} ?: '—'">—</p>
+                </div>
+
+                <!-- Estado -->
+                <div class="metric-card">
+                    <h4 class="card-label">Estado</h4>
+                    <div style="margin-top:0.5rem;">
+                        <span th:if="${contribuyente.active}" class="pill tone-success">Activo</span>
+                        <span th:if="${!contribuyente.active}" class="pill tone-danger">Inactivo</span>
+                    </div>
+                </div>
+
+                <!-- Fecha de registro -->
+                <div class="metric-card">
+                    <h4 class="card-label">Fecha de registro</h4>
+                    <p class="card-value"
+                         th:text="${contribuyente.registrationDate != null
+                                     ? #temporals.format(contribuyente.registrationDate, 'dd/MM/yyyy')
+                                     : '—'}">—</p>
+                </div>
+                
+                <!-- Dirección -->
+                <div class="metric-card" style="grid-column: 1 / -1;">
+                    <h4 class="card-label">Dirección</h4>
+                    <p class="card-value" th:text="${contribuyente.address} ?: '—'">—</p>
+                </div>
             </div>
-
-        </div><!-- /card-grid -->
-
+        </section>
     </section>
 </body>
 </html>
