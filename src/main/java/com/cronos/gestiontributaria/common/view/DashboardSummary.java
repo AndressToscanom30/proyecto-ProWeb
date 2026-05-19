@@ -137,7 +137,7 @@ public record DashboardSummary(
                         "info",
                         "compliance"));
 
-        List<CalendarDay> calendarDays = buildCalendarDays(safeObligations, today, currentMonth);
+        List<CalendarDay> calendarDays = buildCalendarDays(safeObligations, clientsById, today, currentMonth);
         List<DeadlineItem> upcomingDeadlines = buildUpcomingDeadlines(safeObligations, clientsById, today);
         List<WorkloadBar> weeklyWorkload = buildWeeklyWorkload(safeObligations, today);
         List<MonthlyPoint> monthlyCompliance = buildMonthlyCompliance(safeObligations, today);
@@ -161,7 +161,7 @@ public record DashboardSummary(
                 criticalClients);
     }
 
-    private static List<CalendarDay> buildCalendarDays(List<TaxObligation> obligations, LocalDate today,
+    private static List<CalendarDay> buildCalendarDays(List<TaxObligation> obligations, Map<String, TaxPayer> clientsById, LocalDate today,
             YearMonth month) {
         List<CalendarDay> days = new ArrayList<>();
         LocalDate cursor = month.atDay(1).with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
@@ -173,12 +173,30 @@ public record DashboardSummary(
                 .filter(obligation -> obligation != null && obligation.getDueDate() != null
                     && obligation.getDueDate().isEqual(currentDay))
                     .toList();
+
+            List<PageViewModels.CalendarObligation> details = dayObligations.stream()
+                .map(obl -> new PageViewModels.CalendarObligation(
+                    obl.getId(),
+                    resolveClientName(obl, clientsById),
+                    describeType(obl.getType()),
+                    describeStatus(obl.getStatus(), obl, today),
+                    statusTone(obl, today),
+                    formatDate(obl.getDueDate()),
+                    obl.getFiscalPeriod() != null ? obl.getFiscalPeriod() : "",
+                    obl.getTaxYear(),
+                    priorityLabel(obl, today),
+                    priorityTone(obl, today),
+                    responsibleFor(obl.getType()),
+                    obl.getNotes() != null ? obl.getNotes() : ""))
+                .toList();
+
             days.add(new CalendarDay(
                 currentDay.getDayOfMonth(),
-                    dayObligations.size(),
+                dayObligations.size(),
                 calendarTone(dayObligations, currentDay, today),
                 YearMonth.from(currentDay).equals(month),
-                currentDay.isEqual(today)));
+                currentDay.isEqual(today),
+                details));
             cursor = cursor.plusDays(1);
         }
 
@@ -711,7 +729,7 @@ public record DashboardSummary(
     public record MetricCard(String label, String value, String detail, String tone, String variant) {
     }
 
-    public record CalendarDay(int dayNumber, int taskCount, String tone, boolean currentMonth, boolean today) {
+    public record CalendarDay(int dayNumber, int taskCount, String tone, boolean currentMonth, boolean today, List<PageViewModels.CalendarObligation> obligations) {
     }
 
         public record DeadlineItem(String id, String clientId, String client, String obligation, String dueDateLabel,

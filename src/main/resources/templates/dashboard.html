@@ -92,8 +92,25 @@
                              th:classappend="| tone-${day.tone}|"
                              th:style="${!day.currentMonth} ? 'opacity: 0.42;' : ''">
                         <span class="calendar-number" th:text="${day.dayNumber}">1</span>
-                        <span class="calendar-count" th:if="${day.taskCount > 0}" th:text="${day.taskCount}">2</span>
+                        
+                        <button class="calendar-count" th:if="${day.taskCount > 0}"
+                                th:attr="data-day=${day.dayNumber}"
+                                onclick="openDayPopup(this)"
+                                style="cursor: pointer; font-family: inherit; border: 1px solid var(--tone-border, rgba(59, 91, 255, 0.22)); outline: none;">
+                            <span th:text="${day.taskCount}">2</span>
+                        </button>
+                        
                         <span class="pill tone-info" th:if="${day.today}">Hoy</span>
+
+                        <!-- Hidden data for popup -->
+                        <template th:if="${not #lists.isEmpty(day.obligations)}">
+                            <div class="day-obligations-data" th:attr="data-day=${day.dayNumber}" style="display:none">
+                                <div th:each="obl : ${day.obligations}"
+                                     class="obl-data"
+                                     th:attr="data-id=${obl.id},data-client=${obl.clientName},data-type=${obl.obligationType},data-status=${obl.statusLabel},data-tone=${obl.statusTone},data-duedate=${obl.dueDateLabel},data-period=${obl.fiscalPeriod},data-year=${obl.taxYear},data-priority=${obl.priorityLabel},data-prioritytone=${obl.priorityTone},data-responsible=${obl.responsible},data-notes=${obl.notes}">
+                                </div>
+                            </div>
+                        </template>
                     </article>
                 </div>
             </article>
@@ -145,8 +162,8 @@
 
                 <div class="bar-chart">
                     <article class="bar-column" th:each="bar : ${dashboard.weeklyWorkload}"
-                             th:attr="data-day=${bar.dayIndex}"
-                             th:onclick="${bar.value > 0 ? 'openDayPopup(this)' : ''}"
+                             th:attr="data-day=${bar.dayIndex},data-value=${bar.value}"
+                             onclick="if (this.dataset.value > 0) openDayPopup(this)"
                              th:style="${bar.value > 0 ? 'cursor: pointer;' : ''}">
                         <div class="bar-track">
                             <span class="bar-fill" th:style="|height: ${bar.percent}%|"></span>

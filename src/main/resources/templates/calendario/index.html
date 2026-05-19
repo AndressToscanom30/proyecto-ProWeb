@@ -137,8 +137,8 @@
 
                 <div class="bar-chart">
                     <article class="bar-column" th:each="bar : ${dashboard.weeklyWorkload}"
-                             th:attr="data-day=${bar.dayIndex}"
-                             th:onclick="${bar.value > 0 ? 'openDayPopup(this)' : ''}"
+                             th:attr="data-day=${bar.dayIndex},data-value=${bar.value}"
+                             onclick="if (this.dataset.value > 0) openDayPopup(this)"
                              th:style="${bar.value > 0 ? 'cursor: pointer;' : ''}">
                         <div class="bar-track">
                             <span class="bar-fill" th:style="|height: ${bar.percent}%|"></span>
