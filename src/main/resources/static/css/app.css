@@ -4014,7 +4014,7 @@ textarea {
 .bar-chart { display: flex; align-items: flex-end; justify-content: space-between; height: 140px; width: 100%; margin-top: auto; gap: 0.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); margin-bottom: 1rem; }
 .bar-column { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; flex: 1; height: 100%; transition: transform 0.2s ease; cursor: pointer; }
 .bar-column:hover { transform: translateY(-4px); }
-.bar-track { width: 12px; height: 100%; background: var(--surface-soft); border-radius: 6px; position: relative; overflow: visible; margin-bottom: 0.8rem; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+.bar-track { width: 12px; height: 100%; min-height: 0; padding: 0; border: none; display: block; background: var(--surface-soft); border-radius: 6px; position: relative; overflow: visible; margin-bottom: 0.8rem; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
 .bar-fill { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(180deg, var(--primary) 0%, rgba(0, 102, 255, 0.7) 100%); border-radius: 6px; transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 8px rgba(var(--primary-rgb, 0, 100, 255), 0.3); }
 .bar-column strong { font-size: 0.9rem; color: var(--text-main); margin-bottom: 0.2rem; font-weight: 700; }
 .bar-column small { font-size: 0.75rem; color: var(--text-muted); }
