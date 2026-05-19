@@ -3955,10 +3955,10 @@ textarea {
 
 /* ========== CHARTS CSS FIX ========== */
 .chart-panel { display: flex; flex-direction: column; }
-.line-chart-shell { width: 100%; margin-top: auto; }
-.line-chart { width: 100%; height: 120px; overflow: visible; display: block; }
-.line-chart path { fill: none; stroke: var(--primary); stroke-width: 1.5; }
-.line-chart circle { fill: #fff; stroke: var(--primary); stroke-width: 1.5; }
+.line-chart-shell { width: 100%; margin-top: auto; position: relative; }
+.line-chart { width: 100%; height: 140px; overflow: visible; display: block; filter: drop-shadow(0 8px 12px rgba(var(--primary-rgb, 0, 100, 255), 0.25)); }
+.line-chart path { fill: none; stroke: var(--primary); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; }
+.line-chart circle { fill: #fff; stroke: var(--primary); stroke-width: 2.5; }
 
 .line-legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 0.75rem; width: 100%; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
 .legend-item { border: 1px solid var(--border); padding: 0.6rem 0.85rem; border-radius: var(--radius-md); background: var(--surface); justify-content: flex-start; }
@@ -3971,16 +3971,18 @@ textarea {
   .chart-grid { grid-template-columns: 1fr; }
   .chart-grid > article:nth-child(3) { grid-column: auto; }
 }
-.bar-chart { display: flex; align-items: flex-end; justify-content: space-between; height: 120px; width: 100%; margin-top: auto; gap: 0.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); margin-bottom: 1rem; }
-.bar-column { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; flex: 1; height: 100%; }
-.bar-track { width: 14px; height: 100%; background: var(--surface-soft); border-radius: 4px; position: relative; overflow: hidden; margin-bottom: 0.5rem; }
-.bar-fill { position: absolute; bottom: 0; left: 0; width: 100%; background: var(--primary); border-radius: 4px; transition: height 0.3s ease; }
-.bar-column strong { font-size: 0.85rem; color: var(--text-main); margin-bottom: 0.2rem; }
+.bar-chart { display: flex; align-items: flex-end; justify-content: space-between; height: 140px; width: 100%; margin-top: auto; gap: 0.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); margin-bottom: 1rem; }
+.bar-column { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; flex: 1; height: 100%; transition: transform 0.2s ease; cursor: pointer; }
+.bar-column:hover { transform: translateY(-4px); }
+.bar-track { width: 12px; height: 100%; background: var(--surface-soft); border-radius: 6px; position: relative; overflow: visible; margin-bottom: 0.8rem; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+.bar-fill { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(180deg, var(--primary) 0%, rgba(0, 102, 255, 0.7) 100%); border-radius: 6px; transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 8px rgba(var(--primary-rgb, 0, 100, 255), 0.3); }
+.bar-column strong { font-size: 0.9rem; color: var(--text-main); margin-bottom: 0.2rem; font-weight: 700; }
 .bar-column small { font-size: 0.75rem; color: var(--text-muted); }
 
-.donut-wrap { position: relative; width: 140px; height: 140px; min-height: 140px; max-height: 140px; margin: 1.5rem auto; flex-shrink: 0; }
-.donut-chart { width: 100%; height: 100%; border-radius: 50%; background: var(--distribution, conic-gradient(var(--primary) 100%)); }
-.donut-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100px; height: 100px; background: var(--surface); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
-.donut-center strong { font-size: 1.5rem; color: var(--text-main); line-height: 1.2; }
+.donut-wrap { position: relative; width: 180px; height: 180px; min-height: 180px; max-height: 180px; margin: 1.5rem auto; flex-shrink: 0; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.08)); transition: transform 0.3s ease; }
+.donut-wrap:hover { transform: scale(1.03); }
+.donut-chart { width: 100%; height: 100%; border-radius: 50%; background: var(--distribution, conic-gradient(var(--primary) 100%)); transition: all 0.5s ease; }
+.donut-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 124px; height: 124px; background: #ffffff; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.06), inset 0 2px 4px rgba(255,255,255,0.5); z-index: 2; }
+.donut-center strong { font-size: 1.75rem; color: var(--text-main); line-height: 1.1; font-weight: 800; letter-spacing: -0.02em; }
 .donut-center small { font-size: 0.75rem; color: var(--text-muted); }
 
