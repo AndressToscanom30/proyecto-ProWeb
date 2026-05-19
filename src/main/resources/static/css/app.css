@@ -3906,3 +3906,49 @@ textarea {
   gap: 1rem;
 }
 
+
+/* ========== CHART LEGENDS ========== */
+.line-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.legend-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.legend-item strong {
+  color: var(--text-main);
+}
+
+.legend-swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--border);
+}
+
+.legend-swatch.tone-primary { background: var(--primary); }
+.legend-swatch.tone-success { background: var(--success); }
+.legend-swatch.tone-warning { background: var(--warning); }
+.legend-swatch.tone-danger { background: var(--danger); }
+.legend-swatch.tone-info { background: var(--info, #3b82f6); }
+
