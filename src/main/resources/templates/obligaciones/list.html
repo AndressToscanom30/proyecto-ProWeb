@@ -109,13 +109,13 @@
                             <td th:text="${o.notes}" class="notes-cell">Notas</td>
                             <td>
                                 <div class="action-group">
-                                    <a th:href="@{/obligaciones/{id}(id=${o.id})}" class="action-link">Detalles</a>
+                                    <a th:href="@{/obligaciones/{id}(id=${o.id})}" class="secondary-action btn-sm">Detalles</a>
                                     <form sec:authorize="hasAnyRole('GERENTE', 'ASESOR', 'ADMIN')" th:action="@{/obligaciones/{id}/notificar(id=${o.id})}" method="post" class="inline">
                                         <input type="hidden" name="taxPayerId" th:value="${selectedTaxPayerId}" />
-                                        <button type="submit" class="action-link" style="border:none; background:none; padding:0; cursor:pointer;" data-confirm="¿Enviar correo recordatorio a los responsables de esta obligación?">Notificar</button>
+                                        <button type="submit" class="secondary-action btn-sm" data-confirm="¿Enviar correo recordatorio a los responsables de esta obligación?">Notificar</button>
                                     </form>
-                                    <a sec:authorize="hasRole('GERENTE')" th:href="@{/obligaciones/editar/{id}(id=${o.id}, taxPayerId=${o.taxPayerId})}" class="action-link">Editar</a>
-                                    <a sec:authorize="hasRole('GERENTE')" th:href="@{/obligaciones/eliminar/{id}(id=${o.id}, taxPayerId=${o.taxPayerId})}" class="action-link action-danger"
+                                    <a sec:authorize="hasRole('GERENTE')" th:href="@{/obligaciones/editar/{id}(id=${o.id}, taxPayerId=${o.taxPayerId})}" class="secondary-action btn-sm">Editar</a>
+                                    <a sec:authorize="hasRole('GERENTE')" th:href="@{/obligaciones/eliminar/{id}(id=${o.id}, taxPayerId=${o.taxPayerId})}" class="secondary-action btn-sm action-danger"
                                        data-confirm="¿Eliminar esta obligación?">Eliminar</a>
                                 </div>
                             </td>

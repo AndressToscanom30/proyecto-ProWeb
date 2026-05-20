@@ -24,6 +24,9 @@ import com.cronos.gestiontributaria.notification.model.Notification;
 import com.cronos.gestiontributaria.auth.model.User;
 import com.cronos.gestiontributaria.auth.service.UserService;
 import com.cronos.gestiontributaria.notification.service.NotificationCenterService;
+import com.cronos.gestiontributaria.obligaciones.dto.TaxObligationResponseDTO;
+import com.cronos.gestiontributaria.obligaciones.service.TaxObligationService;
+import com.cronos.gestiontributaria.common.service.EmailService;
 
 @Controller
 @RequestMapping("/notificaciones")
@@ -39,11 +42,17 @@ public class NotificationViewController {
 
     private final UserService userService;
     private final NotificationCenterService notificationCenterService;
+    private final TaxObligationService obligationService;
+    private final EmailService emailService;
 
     public NotificationViewController(UserService userService,
-                                      NotificationCenterService notificationCenterService) {
+                                      NotificationCenterService notificationCenterService,
+                                      TaxObligationService obligationService,
+                                      EmailService emailService) {
         this.userService = userService;
         this.notificationCenterService = notificationCenterService;
+        this.obligationService = obligationService;
+        this.emailService = emailService;
     }
 
     @GetMapping
@@ -130,6 +139,65 @@ public class NotificationViewController {
         notificationCenterService.clearReadNotifications(user);
         redirectAttributes.addFlashAttribute("successMessage", "Se limpiaron las notificaciones leídas.");
         return "redirect:/notificaciones";
+    }
+
+    @PostMapping("/{id}/notificar")
+    @PreAuthorize("hasAnyRole('GERENTE', 'ASESOR', 'ADMIN')")
+    public String notifySingle(@PathVariable String id, RedirectAttributes redirectAttrs) {
+        try {
+            TaxObligationResponseDTO obligacion = obligationService.findById(id);
+            int sent = sendNotificationEmailsForObligation(obligacion);
+            if (sent > 0) {
+                redirectAttrs.addFlashAttribute("successMessage", "Se envió notificación a " + sent + " responsable(s) de la obligación.");
+            } else {
+                redirectAttrs.addFlashAttribute("warningMessage", "No hay responsables con correo asignado para notificar.");
+            }
+        } catch (Exception e) {
+            redirectAttrs.addFlashAttribute("errorMessage", "Error al intentar notificar: " + e.getMessage());
+        }
+        return "redirect:/notificaciones";
+    }
+
+    @PostMapping("/notificar-masivo")
+    @PreAuthorize("hasAnyRole('GERENTE', 'ASESOR', 'ADMIN')")
+    public String notifyMassive(Authentication authentication, RedirectAttributes redirectAttrs) {
+        // Obtenemos las notificaciones activas del usuario actual
+        User user = loadCurrentUser(authentication);
+        List<Notification> notificaciones = user.getNotifications();
+        
+        int totalSent = 0;
+        if (notificaciones != null) {
+            for (Notification n : notificaciones) {
+                if (n.getSourceId() != null && !n.getSourceId().isBlank()) {
+                    try {
+                        TaxObligationResponseDTO obligacion = obligationService.findById(n.getSourceId());
+                        totalSent += sendNotificationEmailsForObligation(obligacion);
+                    } catch (Exception ignored) {
+                        // Ignorar si la obligación ya no existe
+                    }
+                }
+            }
+        }
+
+        if (totalSent > 0) {
+            redirectAttrs.addFlashAttribute("successMessage", "Se enviaron " + totalSent + " notificaciones de forma masiva basadas en tu bandeja.");
+        } else {
+            redirectAttrs.addFlashAttribute("warningMessage", "No se encontraron responsables para notificar en las obligaciones actuales de tu bandeja.");
+        }
+        return "redirect:/notificaciones";
+    }
+
+    private int sendNotificationEmailsForObligation(TaxObligationResponseDTO obligacion) {
+        int count = 0;
+        if (obligacion.counterResponsible() != null && obligacion.counterResponsible().userEmail() != null && !obligacion.counterResponsible().userEmail().isBlank()) {
+            emailService.sendObligationReminder(obligacion.counterResponsible().userEmail(), "Contador", obligacion);
+            count++;
+        }
+        if (obligacion.auxiliaryResponsible() != null && obligacion.auxiliaryResponsible().userEmail() != null && !obligacion.auxiliaryResponsible().userEmail().isBlank()) {
+            emailService.sendObligationReminder(obligacion.auxiliaryResponsible().userEmail(), "Auxiliar Contable", obligacion);
+            count++;
+        }
+        return count;
     }
 
     private User loadCurrentUser(Authentication authentication) {
