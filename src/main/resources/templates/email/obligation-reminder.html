@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body th:replace="~{email/layout :: shell(~{::content})}">
+    <div th:fragment="content">
+        <h2 style="margin-top: 0; color: #1e293b; font-size: 20px;">Recordatorio de Obligación</h2>
+        <p>Hola,</p>
+        <p>Este es un aviso automático sobre una obligación tributaria que tienes asignada en rol de <strong th:text="${roleDescription}">Rol</strong>:</p>
+        
+        <table class="data-table">
+            <tbody>
+                <tr>
+                    <th>Cliente</th>
+                    <td th:text="|${obligation.taxPayerName()} (${obligation.taxPayerIdentificacion()})|">Empresa S.A.S</td>
+                </tr>
+                <tr>
+                    <th>Obligación</th>
+                    <td th:text="${obligation.type() != null ? obligation.type().getDescription() : 'Desconocida'}">IVA</td>
+                </tr>
+                <tr>
+                    <th>Periodo Fiscal</th>
+                    <td th:text="${obligation.fiscalPeriod()}">2026-01</td>
+                </tr>
+                <tr>
+                    <th>Vencimiento</th>
+                    <td th:text="${obligation.dueDate() != null ? #temporals.format(obligation.dueDate(), 'dd/MM/yyyy') : 'No definida'}">01/01/2026</td>
+                </tr>
+                <tr>
+                    <th>Estado Actual</th>
+                    <td>
+                        <span th:if="${obligation.status().name() == 'PENDING'}" style="color: #ca8a04; font-weight: bold;">PENDIENTE</span>
+                        <span th:if="${obligation.status().name() == 'IN_PROGRESS'}" style="color: #2563eb; font-weight: bold;">EN PROGRESO</span>
+                        <span th:if="${obligation.status().name() == 'OVERDUE'}" style="color: #dc2626; font-weight: bold;">VENCIDA</span>
+                        <span th:if="${obligation.status().name() == 'COMPLETED'}" style="color: #16a34a; font-weight: bold;">COMPLETADA</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="alert-box" th:if="${obligation.status().name() == 'OVERDUE' || (obligation.dueDate() != null and obligation.dueDate().isEqual(#temporals.createToday()))}">
+            <p><strong>ATENCIÓN:</strong> Esta obligación requiere tu revisión inmediata.</p>
+        </div>
+
+        <p>Por favor ingresa al sistema ProWeb para gestionar esta obligación y actualizar su estado lo antes posible.</p>
+        
+        <p>Saludos,<br>El equipo de Cronos</p>
+    </div>
+</body>
+</html>
