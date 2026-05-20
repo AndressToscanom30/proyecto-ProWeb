@@ -81,14 +81,22 @@ public class TaxObligationViewController {
     }
 
     @GetMapping("/nuevo")
-    public String createForm(@RequestParam String taxPayerId, Model model, Authentication authentication) {
+    public String createForm(@RequestParam(required = false) String taxPayerId, Model model, Authentication authentication) {
         User user = userService.findByEmail(authentication.getName())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
-        TaxPayer taxPayer = taxPayerService.findById(taxPayerId);
+        
         model.addAttribute("usuario", user);
-        model.addAttribute("contribuyente", taxPayer);
         model.addAttribute("tipos", TaxObligationType.values());
-        model.addAttribute("dto", new CreateTaxObligationDTO(taxPayerId, null, null, 2026, null, null, null));
+        
+        if (taxPayerId != null && !taxPayerId.isBlank()) {
+            TaxPayer taxPayer = taxPayerService.findById(taxPayerId);
+            model.addAttribute("contribuyente", taxPayer);
+            model.addAttribute("dto", new CreateTaxObligationDTO(taxPayerId, null, null, 2026, null, null, null));
+        } else {
+            model.addAttribute("contribuyente", null);
+            model.addAttribute("contribuyentes", taxPayerService.findAll());
+            model.addAttribute("dto", new CreateTaxObligationDTO(null, null, null, 2026, null, null, null));
+        }
         return "obligaciones/form";
     }
 
