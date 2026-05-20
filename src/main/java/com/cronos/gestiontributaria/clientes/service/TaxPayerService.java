@@ -79,9 +79,10 @@ public class TaxPayerService {
     public Page<TaxPayer> findByFilters(String searchTerm,
                                         TaxpayerType type,
                                         Boolean active,
+                                        List<String> allowedClientIds,
                                         Pageable pageable) {
         if (mongoTemplate != null) {
-            return findByFiltersWithTemplate(searchTerm, type, active, pageable);
+            return findByFiltersWithTemplate(searchTerm, type, active, allowedClientIds, pageable);
         }
         // Fallback degradado: si no hay MongoTemplate (no debería pasar en
         // producción), devuelve la página plana del repositorio sin filtros.
@@ -92,9 +93,18 @@ public class TaxPayerService {
     private Page<TaxPayer> findByFiltersWithTemplate(String searchTerm,
                                                      TaxpayerType type,
                                                      Boolean active,
+                                                     List<String> allowedClientIds,
                                                      Pageable pageable) {
         Query query = new Query();
         List<Criteria> criteria = new ArrayList<>();
+
+        if (allowedClientIds != null) {
+            if (allowedClientIds.isEmpty()) {
+                // Return empty page immediately if the user is allowed to see NO clients.
+                return new PageImpl<>(new ArrayList<>(), pageable, 0);
+            }
+            criteria.add(Criteria.where("id").in(allowedClientIds));
+        }
 
         if (searchTerm != null && !searchTerm.isBlank()) {
             String term = searchTerm.trim();

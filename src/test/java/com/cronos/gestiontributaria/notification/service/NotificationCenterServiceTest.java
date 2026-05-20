@@ -57,7 +57,6 @@ class NotificationCenterServiceTest {
                 "/obligaciones/obl-1");
         Notification manual = new Notification(
                 "Mensaje manual",
-                "Aviso interno",
                 "primary",
                 false);
         user.setNotifications(new ArrayList<>(List.of(legacy, manual)));

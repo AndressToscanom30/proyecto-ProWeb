@@ -80,11 +80,6 @@ public class NotificationViewController {
         return "notificaciones/list";
     }
 
-    @PostMapping("/enviar")
-    public String sendEmail() {
-        return "redirect:/notificaciones";
-    }
-
     @PostMapping("/refrescar")
     public String refresh(Authentication authentication, RedirectAttributes redirectAttributes) {
         User user = loadCurrentUser(authentication);

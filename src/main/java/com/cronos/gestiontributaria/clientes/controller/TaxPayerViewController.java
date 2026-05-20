@@ -26,6 +26,10 @@ import com.cronos.gestiontributaria.common.TaxpayerType;
 
 import jakarta.validation.Valid;
 
+import com.cronos.gestiontributaria.obligaciones.repository.TaxObligationRepository;
+import com.cronos.gestiontributaria.obligaciones.model.TaxObligation;
+import java.util.List;
+
 @Controller
 @RequestMapping("/clientes")
 /**
@@ -35,10 +39,12 @@ public class TaxPayerViewController {
 
     private final TaxPayerService taxPayerService;
     private final UserService userService;
+    private final TaxObligationRepository obligationRepository;
 
-    public TaxPayerViewController(TaxPayerService taxPayerService, UserService userService) {
+    public TaxPayerViewController(TaxPayerService taxPayerService, UserService userService, TaxObligationRepository obligationRepository) {
         this.taxPayerService = taxPayerService;
         this.userService = userService;
+        this.obligationRepository = obligationRepository;
     }
 
     @GetMapping
@@ -53,10 +59,22 @@ public class TaxPayerViewController {
         User user = userService.findByEmail(authentication.getName())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
 
+        List<String> allowedClientIds = null;
+        boolean isContador = authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_CONTADOR"));
+        boolean isAuxiliar = authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_AUXILIAR_CONTADOR"));
+        
+        if (isContador) {
+            allowedClientIds = obligationRepository.findByCounterResponsibleUserId(user.getId())
+                .stream().map(TaxObligation::getTaxPayerId).distinct().toList();
+        } else if (isAuxiliar) {
+            allowedClientIds = obligationRepository.findByAuxiliaryResponsibleUserId(user.getId())
+                .stream().map(TaxObligation::getTaxPayerId).distinct().toList();
+        }
+
         Pageable pageable = PageRequest.of(page, size,
                 Sort.by("businessName").ascending());
         Page<TaxPayer> resultado =
-                taxPayerService.findByFilters(q, tipo, activo, pageable);
+                taxPayerService.findByFilters(q, tipo, activo, allowedClientIds, pageable);
 
         model.addAttribute("usuario", user);
         // Alias para no romper la vista actual que itera sobre "contribuyentes".

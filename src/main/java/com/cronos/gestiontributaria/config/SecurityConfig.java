@@ -67,9 +67,9 @@ public class SecurityConfig {
                         .requestMatchers("/", "/login", "/403", "/css/**", "/js/**", "/images/**", "/error")
                         .permitAll()
                         // ── Área de GERENTE: bloquear CONTRIBUYENTE explícitamente ──
-                        // Vistas MVC de gestión de clientes: solo GERENTE y ASESOR.
+                        // Vistas MVC de gestión de clientes: visible para CONTADOR y AUXILIAR_CONTADOR también (pero en read-only).
                         .requestMatchers("/clientes/**")
-                            .hasAnyRole("GERENTE", "ASESOR")
+                            .hasAnyRole("GERENTE", "ASESOR", "CONTADOR", "AUXILIAR_CONTADOR")
                         // ── API REST ──
                         // Listado REST de contribuyentes: GERENTE y ASESOR.
                         .requestMatchers(HttpMethod.GET, "/api/contribuyente")
