@@ -20,15 +20,20 @@ import com.cronos.gestiontributaria.empleados.model.Employee;
 
  */
 
+import java.util.UUID;
+import com.cronos.gestiontributaria.common.service.EmailService;
+
 @Service
 public class EmployeeService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
-    public EmployeeService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public EmployeeService(UserRepository userRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.emailService = emailService;
     }
 
     public List<Employee> findAll() {
@@ -53,14 +58,23 @@ public class EmployeeService {
             throw new IllegalArgumentException("El correo ya está registrado");
         }
 
+        String finalPassword = password;
+        if (finalPassword == null || finalPassword.isBlank()) {
+            finalPassword = UUID.randomUUID().toString().substring(0, 8);
+        }
+
         Employee employee = new Employee(name, email.trim().toLowerCase(),
-                passwordEncoder.encode(password), true,
+                passwordEncoder.encode(finalPassword), true,
                 buildRole(role), new ArrayList<>(),
                 position != null ? position : role.name(),
                 phone, LocalDate.now(),
                 new ArrayList<>(), new ArrayList<>());
 
-        return (Employee) userRepository.save(employee);
+        Employee saved = (Employee) userRepository.save(employee);
+        
+        emailService.sendTemporaryPassword(saved.getEmail(), finalPassword);
+        
+        return saved;
     }
 
     public void delete(String id) {

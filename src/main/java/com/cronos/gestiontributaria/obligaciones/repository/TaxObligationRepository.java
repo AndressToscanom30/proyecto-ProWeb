@@ -32,4 +32,20 @@ public interface TaxObligationRepository extends MongoRepository<TaxObligation, 
     boolean existsByTaxPayerIdAndTypeAndFiscalPeriod(String taxPayerId,
                                                       TaxObligationType type,
                                                       String fiscalPeriod);
+
+    /**
+     * Lista todas las obligaciones donde el contador responsable tiene el ID especificado.
+     *
+     * @param userId ID del usuario contador
+     * @return lista de obligaciones asignadas al contador
+     */
+    List<TaxObligation> findByCounterResponsibleUserId(String userId);
+
+    /**
+     * Lista todas las obligaciones donde el auxiliar responsable tiene el ID especificado.
+     *
+     * @param userId ID del usuario auxiliar
+     * @return lista de obligaciones asignadas al auxiliar
+     */
+    List<TaxObligation> findByAuxiliaryResponsibleUserId(String userId);
 }

@@ -32,10 +32,12 @@
                     <input class="text-input" type="email" name="email" placeholder="correo@ejemplo.com" th:value="${email}" required />
                 </label>
 
-                <label class="field-group">
+                <div class="field-group">
                     <span class="field-label">Contraseña</span>
-                    <input class="text-input" type="password" name="password" placeholder="Minimo 8 caracteres" required />
-                </label>
+                    <p style="font-size: 0.875rem; color: var(--text-tertiary); margin-top: 0.5rem; background: var(--surface-offset); padding: 0.75rem; border-radius: 4px; border: 1px dashed var(--border-color);">
+                        Se generará automáticamente una contraseña aleatoria segura y se enviará al correo del empleado.
+                    </p>
+                </div>
 
                 <div class="form-row">
                     <label class="field-group">

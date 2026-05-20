@@ -87,7 +87,7 @@
                     </svg>
                     <span>Clientes</span>
                 </a>
-                <a th:href="@{/obligaciones}" class="sidebar-link"
+                <a sec:authorize="hasAnyRole('GERENTE', 'ASESOR', 'ADMIN')" th:href="@{/obligaciones}" class="sidebar-link"
                     th:classappend="${activeSection} == 'obligaciones' ? ' is-active' : ''">
                     <svg viewBox="0 0 24 24">
                         <path
@@ -95,6 +95,15 @@
                         <path d="M8 8h8M8 12h8M8 16h5" />
                     </svg>
                     <span>Obligaciones</span>
+                </a>
+                <a sec:authorize="hasAnyRole('CONTADOR', 'AUXILIAR_CONTADOR')" th:href="@{/mis-obligaciones}" class="sidebar-link"
+                    th:classappend="${activeSection} == 'mis-obligaciones' ? ' is-active' : ''">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M7 4.5h10A2.5 2.5 0 0 1 19.5 7v10A2.5 2.5 0 0 1 17 19.5H7A2.5 2.5 0 0 1 4.5 17V7A2.5 2.5 0 0 1 7 4.5z" />
+                        <path d="M8 8h8M8 12h8M8 16h5" />
+                    </svg>
+                    <span>Mis Obligaciones</span>
                 </a>
                 <a th:href="@{/dashboard#documentos}" class="sidebar-link">
                     <svg viewBox="0 0 24 24">

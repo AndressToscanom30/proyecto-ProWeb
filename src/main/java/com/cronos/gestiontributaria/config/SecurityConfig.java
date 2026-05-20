@@ -87,7 +87,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/obligaciones/**")
                             .hasAnyRole("GERENTE", "ASESOR", "ADMIN", "CONTADOR", "AUXILIAR_CONTADOR")
                         // ── Vistas del Administrador / Empleados (Bloqueadas para CONTRIBUYENTE) ──
-                        .requestMatchers("/dashboard", "/calendario-fiscal", "/tareas/**", "/reportes/**", "/empleados/**", "/configuracion/**", "/notificaciones/**", "/obligaciones/**")
+                        .requestMatchers("/dashboard", "/calendario-fiscal", "/tareas/**", "/reportes/**", "/empleados/**", "/configuracion/**", "/notificaciones/**", "/obligaciones/**", "/mis-obligaciones/**")
                             .hasAnyRole("GERENTE", "ASESOR", "ADMIN", "CONTADOR", "AUXILIAR_CONTADOR")
                         // Portal del contribuyente.
                         .requestMatchers("/api/contribuyente/**").hasRole("CONTRIBUYENTE")

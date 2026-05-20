@@ -55,7 +55,7 @@ public class EmployeeViewController {
     @PostMapping("/guardar")
     public String save(@RequestParam String name,
                         @RequestParam String email,
-                        @RequestParam String password,
+                        @RequestParam(required = false) String password,
                         @RequestParam EmployeeRole role,
                         @RequestParam(required = false) String phone,
                         Model model, Authentication authentication) {

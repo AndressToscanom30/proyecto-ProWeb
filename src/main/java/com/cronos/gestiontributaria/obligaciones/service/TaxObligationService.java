@@ -167,6 +167,30 @@ public class TaxObligationService {
     }
 
     /**
+     * Lista las obligaciones asignadas a un contador específico.
+     */
+    public List<TaxObligationResponseDTO> findByCounterResponsibleUserId(String userId) {
+        return repository.findByCounterResponsibleUserId(userId).stream()
+                .map(o -> {
+                    TaxPayer taxpayer = taxPayerRepository.findById(o.getTaxPayerId()).orElse(null);
+                    return toResponseDTO(o, taxpayer);
+                })
+                .toList();
+    }
+
+    /**
+     * Lista las obligaciones asignadas a un auxiliar específico.
+     */
+    public List<TaxObligationResponseDTO> findByAuxiliaryResponsibleUserId(String userId) {
+        return repository.findByAuxiliaryResponsibleUserId(userId).stream()
+                .map(o -> {
+                    TaxPayer taxpayer = taxPayerRepository.findById(o.getTaxPayerId()).orElse(null);
+                    return toResponseDTO(o, taxpayer);
+                })
+                .toList();
+    }
+
+    /**
      * Actualiza una obligación existente.
      */
     public TaxObligationResponseDTO update(String id, CreateTaxObligationDTO dto) {
