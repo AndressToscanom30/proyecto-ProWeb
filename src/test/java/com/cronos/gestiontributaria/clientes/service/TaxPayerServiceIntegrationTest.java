@@ -117,7 +117,7 @@ public class TaxPayerServiceIntegrationTest {
         taxPayerService.create(tp3);
 
         Page<TaxPayer> pagina = taxPayerService.findByFilters(
-                "Global", TaxpayerType.LEGAL_ENTITY, true, PageRequest.of(0, 10));
+                "Global", TaxpayerType.LEGAL_ENTITY, true, null, PageRequest.of(0, 10));
 
         assertEquals(2, pagina.getTotalElements());
         assertTrue(pagina.getContent().stream().allMatch(t -> t.getBusinessName().startsWith("Global")));

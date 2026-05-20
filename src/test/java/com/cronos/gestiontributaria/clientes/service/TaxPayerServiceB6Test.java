@@ -72,7 +72,7 @@ class TaxPayerServiceB6Test {
         mockFind(esperados, 3L);
 
         Page<TaxPayer> resultado =
-                taxPayerService.findByFilters(null, null, null, pageable);
+                taxPayerService.findByFilters(null, null, null, null, pageable);
 
         assertNotNull(resultado);
         assertEquals(3, resultado.getContent().size());
@@ -83,7 +83,7 @@ class TaxPayerServiceB6Test {
     void filtroSearchTerm_construyeQueryConRegex() {
         mockFind(List.of(new TaxPayer()), 1L);
 
-        taxPayerService.findByFilters("empresa", null, null, pageable);
+        taxPayerService.findByFilters("empresa", null, null, null, pageable);
 
         ArgumentCaptor<Query> captor = ArgumentCaptor.forClass(Query.class);
         verify(mongoTemplate).count(captor.capture(), eq(TaxPayer.class));
@@ -98,7 +98,7 @@ class TaxPayerServiceB6Test {
     void filtroPorType_agregaCriteriaDeTipo() {
         mockFind(List.of(new TaxPayer()), 1L);
 
-        taxPayerService.findByFilters(null, TaxpayerType.LEGAL_ENTITY, null, pageable);
+        taxPayerService.findByFilters(null, TaxpayerType.LEGAL_ENTITY, null, null, pageable);
 
         ArgumentCaptor<Query> captor = ArgumentCaptor.forClass(Query.class);
         verify(mongoTemplate).count(captor.capture(), eq(TaxPayer.class));
@@ -140,7 +140,7 @@ class TaxPayerServiceB6Test {
     void filtroPorActiveFalse_agregaCriteriaDeEstado() {
         mockFind(List.of(), 0L);
 
-        taxPayerService.findByFilters(null, null, Boolean.FALSE, pageable);
+        taxPayerService.findByFilters(null, null, Boolean.FALSE, null, pageable);
 
         ArgumentCaptor<Query> captor = ArgumentCaptor.forClass(Query.class);
         verify(mongoTemplate).count(captor.capture(), eq(TaxPayer.class));
@@ -155,7 +155,7 @@ class TaxPayerServiceB6Test {
     void searchTermEnBlanco_seTrataComoNull() {
         mockFind(List.of(), 0L);
 
-        taxPayerService.findByFilters("   ", null, null, pageable);
+        taxPayerService.findByFilters("   ", null, null, null, pageable);
 
         ArgumentCaptor<Query> captor = ArgumentCaptor.forClass(Query.class);
         verify(mongoTemplate).count(captor.capture(), eq(TaxPayer.class));

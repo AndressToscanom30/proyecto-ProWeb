@@ -81,7 +81,7 @@ public class TaxPayerRestController {
         Pageable pageable = PageRequest.of(page, size,
                 Sort.by("businessName").ascending());
         Page<TaxPayer> resultado =
-                taxPayerService.findByFilters(q, tipo, activo, pageable);
+                taxPayerService.findByFilters(q, tipo, activo, null, pageable);
         return ResponseEntity.ok(resultado);
     }
 

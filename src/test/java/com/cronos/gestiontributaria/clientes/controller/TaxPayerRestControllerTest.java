@@ -328,7 +328,7 @@ class TaxPayerRestControllerTest {
         tp2.setId("tp-002");
         Page<TaxPayer> pagina = new PageImpl<>(List.of(tp1, tp2),
                 PageRequest.of(0, 20), 2);
-        when(taxPayerService.findByFilters(any(), any(), any(), any()))
+        when(taxPayerService.findByFilters(any(), any(), any(), any(), any()))
                 .thenReturn(pagina);
 
         mockMvc.perform(get("/api/contribuyente"))
@@ -340,7 +340,7 @@ class TaxPayerRestControllerTest {
     @Test
     @WithMockUser(username = "asesor@test.com", roles = "ASESOR")
     void listar_comoAsesor_retorna200() throws Exception {
-        when(taxPayerService.findByFilters(any(), any(), any(), any()))
+        when(taxPayerService.findByFilters(any(), any(), any(), any(), any()))
                 .thenReturn(new PageImpl<>(List.of(), PageRequest.of(0, 20), 0));
 
         mockMvc.perform(get("/api/contribuyente"))
@@ -353,13 +353,13 @@ class TaxPayerRestControllerTest {
         mockMvc.perform(get("/api/contribuyente"))
                 .andExpect(status().isForbidden());
 
-        verify(taxPayerService, never()).findByFilters(any(), any(), any(), any());
+        verify(taxPayerService, never()).findByFilters(any(), any(), any(), any(), any());
     }
 
     @Test
     @WithMockUser(username = "gerente@test.com", roles = "GERENTE")
     void listar_conParametros_qYActivo_pasaAlServicio() throws Exception {
-        when(taxPayerService.findByFilters(any(), any(), any(), any()))
+        when(taxPayerService.findByFilters(any(), any(), any(), any(), any()))
                 .thenReturn(new PageImpl<>(List.of(), PageRequest.of(0, 20), 0));
 
         mockMvc.perform(get("/api/contribuyente")
@@ -368,6 +368,6 @@ class TaxPayerRestControllerTest {
                 .andExpect(status().isOk());
 
         verify(taxPayerService).findByFilters(
-                eq("empresa"), isNull(), eq(Boolean.TRUE), any());
+                eq("empresa"), isNull(), eq(Boolean.TRUE), isNull(), any());
     }
 }
