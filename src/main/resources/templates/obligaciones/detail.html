@@ -29,6 +29,49 @@
             <!-- Left Column: Details & Notes -->
             <div style="display: flex; flex-direction: column; gap: 2rem;">
                 <section class="panel-card" style="padding: 2rem;">
+                    <h3 style="margin-top: 0; margin-bottom: 1.5rem; font-size: 1.25rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem;">Responsables internos</h3>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem;">
+                        <article style="padding: 1rem; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface-soft);">
+                            <p style="margin: 0 0 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.8rem; color: var(--text-muted);">Contador responsable</p>
+                            <strong style="display:block; font-size:1rem;" th:text="${obligacion.counterResponsible() != null ? obligacion.counterResponsible().userName() : 'Sin asignar'}">Sin asignar</strong>
+                            <small style="color: var(--text-muted); display:block; margin-top:0.35rem;" th:text="${obligacion.counterResponsible() != null ? obligacion.counterResponsible().userEmail() : ''}"></small>
+                            <small style="color: var(--text-muted); display:block; margin-top:0.35rem;" th:if="${obligacion.counterResponsible() != null}" th:text="|Asignado por ${obligacion.counterResponsible().assignedByName()} el ${#temporals.format(obligacion.counterResponsible().assignedAt, 'dd/MM/yyyy HH:mm')}|"></small>
+
+                            <form th:action="@{/obligaciones/{id}/contador(id=${obligacion.id})}" method="post" style="margin-top: 1rem; display:flex; gap:0.5rem; flex-direction:column;">
+                                <input type="hidden" name="taxPayerId" th:value="${obligacion.taxPayerId}" />
+                                <select class="text-input" name="counterResponsibleId" required>
+                                    <option value="">Seleccionar contador...</option>
+                                    <option th:each="contador : ${contadores}"
+                                            th:value="${contador.id}"
+                                            th:text="${contador.name + ' (' + contador.email + ')'}"
+                                            th:selected="${obligacion.counterResponsible() != null and obligacion.counterResponsible().userId() == contador.id}"></option>
+                                </select>
+                                <button type="submit" class="secondary-action">Reasignar contador</button>
+                            </form>
+                        </article>
+
+                        <article style="padding: 1rem; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface-soft);">
+                            <p style="margin: 0 0 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.8rem; color: var(--text-muted);">Auxiliar responsable</p>
+                            <strong style="display:block; font-size:1rem;" th:text="${obligacion.auxiliaryResponsible() != null ? obligacion.auxiliaryResponsible().userName() : 'Sin asignar'}">Sin asignar</strong>
+                            <small style="color: var(--text-muted); display:block; margin-top:0.35rem;" th:text="${obligacion.auxiliaryResponsible() != null ? obligacion.auxiliaryResponsible().userEmail() : ''}"></small>
+                            <small style="color: var(--text-muted); display:block; margin-top:0.35rem;" th:if="${obligacion.auxiliaryResponsible() != null}" th:text="|Asignado por ${obligacion.auxiliaryResponsible().assignedByName()} el ${#temporals.format(obligacion.auxiliaryResponsible().assignedAt, 'dd/MM/yyyy HH:mm')}|"></small>
+
+                            <form th:action="@{/obligaciones/{id}/auxiliar(id=${obligacion.id})}" method="post" style="margin-top: 1rem; display:flex; gap:0.5rem; flex-direction:column;">
+                                <select class="text-input" name="auxiliaryResponsibleId">
+                                    <option value="">Sin auxiliar</option>
+                                    <option th:each="aux : ${auxiliares}"
+                                            th:value="${aux.id}"
+                                            th:text="${aux.name + ' (' + aux.email + ')'}"
+                                            th:selected="${obligacion.auxiliaryResponsible() != null and obligacion.auxiliaryResponsible().userId() == aux.id}"></option>
+                                </select>
+                                <button type="submit" class="secondary-action">Guardar auxiliar</button>
+                            </form>
+                        </article>
+                    </div>
+                </section>
+
+                <section class="panel-card" style="padding: 2rem;">
                     <h3 style="margin-top: 0; margin-bottom: 1.5rem; font-size: 1.25rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem;">Detalles del Periodo</h3>
                     
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1.5rem;">

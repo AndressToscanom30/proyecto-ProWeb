@@ -36,6 +36,22 @@ public interface UserRepository extends MongoRepository<User, String> {
     List<User> findAllByOrderByNameAsc();
 
     /**
+     * Busca usuarios por el nombre exacto del rol persistido.
+     *
+     * @param roleName nombre persistido del rol, por ejemplo {@code ROLE_CONTADOR}
+     * @return usuarios que tienen ese rol
+     */
+    List<User> findByRole_Name(String roleName);
+
+    /**
+     * Busca usuarios cuyos roles estén dentro de la lista recibida.
+     *
+     * @param roleNames nombres persistidos de los roles
+     * @return usuarios con alguno de los roles indicados
+     */
+    List<User> findByRole_NameIn(List<String> roleNames);
+
+    /**
      * Busca el usuario asociado a un contribuyente.
      *
      * @param taxPayerId ID del {@code TaxPayer}

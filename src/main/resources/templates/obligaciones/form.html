@@ -42,6 +42,25 @@
                     </select>
                 </label>
 
+                <label class="field-group" th:if="${editId == null}">
+                    <span class="field-label">Contador responsable</span>
+                    <select class="text-input" name="counterResponsibleId" required>
+                        <option value="">Seleccionar contador...</option>
+                        <option th:each="contador : ${contadores}"
+                                th:value="${contador.id}"
+                                th:text="${contador.name + ' (' + contador.email + ')'}"></option>
+                    </select>
+                    <small class="field-hint">Solo usuarios con rol CONTADOR.</small>
+                </label>
+
+                <div class="field-group" th:if="${editId != null}">
+                    <span class="field-label">Contador responsable</span>
+                    <div class="panel-card" style="padding: 1rem; margin: 0; border: 1px dashed var(--border); background: var(--surface-soft);">
+                        <strong th:text="${dto != null && dto.counterResponsibleId() != null ? dto.counterResponsibleId() : 'Se mantiene el contador asignado desde el detalle'}">Contador</strong>
+                        <p style="margin: 0.35rem 0 0; color: var(--text-muted); font-size: 0.9rem;">La reasignación de contador se gestiona desde el detalle de la obligación.</p>
+                    </div>
+                </div>
+
                 <label class="field-group">
                     <span class="field-label">Período fiscal</span>
                     <select class="text-input" name="fiscalPeriod" id="fiscal-period-select" required disabled>
@@ -59,13 +78,14 @@
                 <label class="field-group">
                     <span class="field-label">Fecha de vencimiento (opcional)</span>
                     <input class="text-input" type="date" name="dueDateOverride"
-                           th:value="${dto != null && dto.dueDateOverride() != null ? dto.dueDateOverride() : ''}" />
+                           th:value="${currentDueDate != null ? currentDueDate : (dto != null && dto.dueDateOverride() != null ? dto.dueDateOverride() : '')}"
+                           th:attr="data-edit-mode=${editId != null}, data-original-due-date=${currentDueDate != null ? currentDueDate : ''}" />
                     <small class="field-hint">Dejar vacío para calcular automáticamente según el calendario tributario</small>
                 </label>
 
-                <label class="field-group override-reason" style="display:none">
+                <label class="field-group override-reason" th:if="${editId != null}" style="display:none">
                     <span class="field-label">Motivo / Notas del cambio de fecha</span>
-                    <input class="text-input" type="text" name="dueDateOverrideReason" id="dueDateOverrideReason" placeholder="Requerido si ingresas fecha manual" th:value="${dto != null ? dto.dueDateOverrideReason() : ''}"/>
+                    <input class="text-input" type="text" name="dueDateOverrideReason" id="dueDateOverrideReason" placeholder="Requerido si cambias la fecha" th:value="${dto != null ? dto.dueDateOverrideReason() : ''}"/>
                 </label>
 
                 <label class="field-group">
@@ -85,9 +105,18 @@
                     const overrideInput = document.querySelector('input[name="dueDateOverride"]');
                     const overrideReason = document.querySelector('.override-reason');
                     const reasonInput = document.getElementById('dueDateOverrideReason');
+                    const isEditMode = overrideInput && overrideInput.dataset.editMode === 'true';
+                    const originalDueDate = overrideInput ? (overrideInput.dataset.originalDueDate || '') : '';
 
                     function toggleReason() {
-                        if (overrideInput.value) {
+                        if (!isEditMode || !overrideReason || !reasonInput) {
+                            return;
+                        }
+
+                        const currentDueDate = overrideInput.value || '';
+                        const hasChanged = currentDueDate !== '' && currentDueDate !== originalDueDate;
+
+                        if (hasChanged) {
                             overrideReason.style.display = 'block';
                             reasonInput.setAttribute('required', 'required');
                         } else {
@@ -98,7 +127,8 @@
 
                     if (overrideInput) {
                         overrideInput.addEventListener('change', toggleReason);
-                        toggleReason(); // Check initial state (e.g. for edit mode)
+                        overrideInput.addEventListener('input', toggleReason);
+                        toggleReason();
                     }
 
                     // ... resto del JS de form.html

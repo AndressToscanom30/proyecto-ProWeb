@@ -17,6 +17,7 @@ import com.cronos.gestiontributaria.auth.model.User;
 import com.cronos.gestiontributaria.auth.service.UserService;
 import com.cronos.gestiontributaria.clientes.model.TaxPayer;
 import com.cronos.gestiontributaria.clientes.service.TaxPayerService;
+import com.cronos.gestiontributaria.common.EmployeeRole;
 import com.cronos.gestiontributaria.common.TaxObligationStatus;
 import com.cronos.gestiontributaria.common.TaxObligationType;
 import com.cronos.gestiontributaria.obligaciones.dto.CreateTaxObligationDTO;
@@ -87,15 +88,17 @@ public class TaxObligationViewController {
         
         model.addAttribute("usuario", user);
         model.addAttribute("tipos", TaxObligationType.values());
+        model.addAttribute("contadores", userService.findByRoleName(roleName(EmployeeRole.CONTADOR)));
+        model.addAttribute("auxiliares", userService.findByRoleName(roleName(EmployeeRole.AUXILIAR_CONTADOR)));
         
         if (taxPayerId != null && !taxPayerId.isBlank()) {
             TaxPayer taxPayer = taxPayerService.findById(taxPayerId);
             model.addAttribute("contribuyente", taxPayer);
-            model.addAttribute("dto", new CreateTaxObligationDTO(taxPayerId, null, null, 2026, null, null, null));
+            model.addAttribute("dto", new CreateTaxObligationDTO(taxPayerId, null, null, 2026, null, null, null, null, null, null));
         } else {
             model.addAttribute("contribuyente", null);
             model.addAttribute("contribuyentes", taxPayerService.findAll());
-            model.addAttribute("dto", new CreateTaxObligationDTO(null, null, null, 2026, null, null, null));
+            model.addAttribute("dto", new CreateTaxObligationDTO(null, null, null, 2026, null, null, null, null, null, null));
         }
         return "obligaciones/form";
     }
@@ -106,6 +109,7 @@ public class TaxObligationViewController {
             @RequestParam String fiscalPeriod,
             @RequestParam(required = false, defaultValue = "2026") int taxYear,
             @RequestParam(required = false) String notes,
+            @RequestParam String counterResponsibleId,
             @RequestParam(required = false) String dueDateOverride,
             @RequestParam(required = false) String dueDateOverrideReason,
             Model model, Authentication authentication) {
@@ -115,7 +119,8 @@ public class TaxObligationViewController {
                 overrideDate = java.time.LocalDate.parse(dueDateOverride);
             }
             CreateTaxObligationDTO dto = new CreateTaxObligationDTO(
-                    taxPayerId, type, fiscalPeriod, taxYear, notes, overrideDate, dueDateOverrideReason);
+                    taxPayerId, type, fiscalPeriod, taxYear, notes, overrideDate, dueDateOverrideReason,
+                    counterResponsibleId, null, null);
             obligationService.create(dto);
             return "redirect:/obligaciones?taxPayerId=" + taxPayerId;
         } catch (IllegalArgumentException | java.util.NoSuchElementException e) {
@@ -125,8 +130,10 @@ public class TaxObligationViewController {
             model.addAttribute("usuario", user);
             model.addAttribute("contribuyente", taxPayer);
             model.addAttribute("tipos", TaxObligationType.values());
-            model.addAttribute("dto", new CreateTaxObligationDTO(taxPayerId, type, fiscalPeriod, taxYear, notes,
-                    overrideDate, dueDateOverrideReason));
+                model.addAttribute("contadores", userService.findByRoleName(roleName(EmployeeRole.CONTADOR)));
+                model.addAttribute("auxiliares", userService.findByRoleName(roleName(EmployeeRole.AUXILIAR_CONTADOR)));
+                model.addAttribute("dto", new CreateTaxObligationDTO(taxPayerId, type, fiscalPeriod, taxYear, notes,
+                    overrideDate, dueDateOverrideReason, counterResponsibleId, null, null));
             model.addAttribute("error", e.getMessage());
             return "obligaciones/form";
         }
@@ -143,11 +150,18 @@ public class TaxObligationViewController {
                 obligacion.taxPayerId(), obligacion.type(), obligacion.fiscalPeriod(), 
                 obligacion.taxYear(), obligacion.notes(), 
                 obligacion.dueDateOverridden() ? obligacion.dueDate() : null, 
-                obligacion.dueDateOverrideReason());
+            obligacion.dueDateOverrideReason(),
+            obligacion.counterResponsible() != null ? obligacion.counterResponsible().userId() : null,
+            obligacion.dueDate(),
+            obligacion.dueDateOverridden());
 
         model.addAttribute("usuario", user);
         model.addAttribute("contribuyente", taxPayer);
         model.addAttribute("tipos", TaxObligationType.values());
+        model.addAttribute("contadores", userService.findByRoleName(roleName(EmployeeRole.CONTADOR)));
+        model.addAttribute("auxiliares", userService.findByRoleName(roleName(EmployeeRole.AUXILIAR_CONTADOR)));
+        model.addAttribute("currentDueDate", obligacion.dueDate());
+        model.addAttribute("currentDueDateOverridden", obligacion.dueDateOverridden());
         model.addAttribute("dto", dto);
         model.addAttribute("editId", id);
         return "obligaciones/form";
@@ -168,8 +182,12 @@ public class TaxObligationViewController {
             if (dueDateOverride != null && !dueDateOverride.isBlank()) {
                 overrideDate = java.time.LocalDate.parse(dueDateOverride);
             }
+            TaxObligationResponseDTO original = obligationService.findById(id);
             CreateTaxObligationDTO dto = new CreateTaxObligationDTO(
-                    taxPayerId, type, fiscalPeriod, taxYear, notes, overrideDate, dueDateOverrideReason);
+                taxPayerId, type, fiscalPeriod, taxYear, notes, overrideDate, dueDateOverrideReason,
+                original.counterResponsible() != null ? original.counterResponsible().userId() : null,
+                original.dueDate(),
+                original.dueDateOverridden());
             obligationService.update(id, dto);
             return "redirect:/obligaciones?taxPayerId=" + taxPayerId;
         } catch (IllegalArgumentException | java.util.NoSuchElementException e) {
@@ -179,8 +197,10 @@ public class TaxObligationViewController {
             model.addAttribute("usuario", user);
             model.addAttribute("contribuyente", taxPayer);
             model.addAttribute("tipos", TaxObligationType.values());
+            model.addAttribute("contadores", userService.findByRoleName(roleName(EmployeeRole.CONTADOR)));
+            model.addAttribute("auxiliares", userService.findByRoleName(roleName(EmployeeRole.AUXILIAR_CONTADOR)));
             model.addAttribute("dto", new CreateTaxObligationDTO(taxPayerId, type, fiscalPeriod, taxYear, notes,
-                    overrideDate, dueDateOverrideReason));
+                overrideDate, dueDateOverrideReason, null, null, null));
             model.addAttribute("editId", id);
             model.addAttribute("error", e.getMessage());
             return "obligaciones/form";
@@ -201,6 +221,23 @@ public class TaxObligationViewController {
         return "redirect:/obligaciones?taxPayerId=" + taxPayerId;
     }
 
+    @PostMapping("/{id}/contador")
+    public String assignCounter(@PathVariable String id,
+            @RequestParam String counterResponsibleId,
+            @RequestParam(required = false) String taxPayerId) {
+        obligationService.assignCounter(id, counterResponsibleId);
+        return taxPayerId != null && !taxPayerId.isBlank()
+                ? "redirect:/obligaciones/" + id
+                : "redirect:/obligaciones/" + id;
+    }
+
+    @PostMapping("/{id}/auxiliar")
+    public String assignAuxiliary(@PathVariable String id,
+            @RequestParam(required = false) String auxiliaryResponsibleId) {
+        obligationService.assignAuxiliary(id, auxiliaryResponsibleId);
+        return "redirect:/obligaciones/" + id;
+    }
+
     @PostMapping("/{id}/requirements")
     public String addRequirement(@PathVariable String id,
             @RequestParam String requirementName,
@@ -218,6 +255,8 @@ public class TaxObligationViewController {
         try {
             TaxObligationResponseDTO dto = obligationService.findById(id);
             model.addAttribute("obligacion", dto);
+            model.addAttribute("contadores", userService.findByRoleName(roleName(EmployeeRole.CONTADOR)));
+            model.addAttribute("auxiliares", userService.findByRoleName(roleName(EmployeeRole.AUXILIAR_CONTADOR)));
             return "obligaciones/detail";
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Obligación no encontrada");
@@ -263,5 +302,9 @@ public class TaxObligationViewController {
                 .contentType(contentType)
                 .header(HttpHeaders.CONTENT_DISPOSITION, disposition.toString())
                 .body(resource);
+    }
+
+    private static String roleName(EmployeeRole role) {
+        return "ROLE_" + role.name();
     }
 }

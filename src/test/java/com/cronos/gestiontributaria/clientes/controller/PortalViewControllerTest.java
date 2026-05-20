@@ -32,6 +32,7 @@ import com.cronos.gestiontributaria.clientes.service.TaxPayerService;
 import com.cronos.gestiontributaria.common.TaxObligationStatus;
 import com.cronos.gestiontributaria.common.TaxObligationType;
 import com.cronos.gestiontributaria.obligaciones.dto.TaxObligationResponseDTO;
+import com.cronos.gestiontributaria.obligaciones.model.DocumentRequirement;
 import com.cronos.gestiontributaria.obligaciones.service.DocumentService;
 import com.cronos.gestiontributaria.obligaciones.service.TaxObligationService;
 
@@ -125,10 +126,11 @@ class PortalViewControllerTest {
     }
 
     private TaxObligationResponseDTO ejemploObligacion(String id) {
+        DocumentRequirement requirement = new DocumentRequirement("Soporte contable");
         return new TaxObligationResponseDTO(
                 id, "tp-001", "Empresa Test S.A.S", "900100200-1",
                 null, TaxObligationType.INCOME_TAX, "2026", 2026,
-                null, false, null, TaxObligationStatus.PENDING, null, new java.util.ArrayList<>());
+                null, false, null, TaxObligationStatus.PENDING, null, null, null, List.of(requirement));
     }
 
     // ─── D-2: vista de perfil ───────────────────────────────────────────
@@ -265,7 +267,7 @@ class PortalViewControllerTest {
 
         mockMvc.perform(get("/portal/obligaciones/ob-001"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Subir documento")));
+                .andExpect(content().string(containsString("Subir Documento")));
     }
 
     @Test
@@ -290,6 +292,8 @@ class PortalViewControllerTest {
     @Test
     @WithMockUser(username = "contribuyente@test.com", roles = "CONTRIBUYENTE")
     void documentos_renderizaSeccionDeSubida() throws Exception {
+        when(userService.findByEmail("contribuyente@test.com"))
+                .thenReturn(Optional.of(userConTaxPayer("contribuyente@test.com", "tp-001")));
         mockMvc.perform(get("/portal/documentos"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Subir documento")));

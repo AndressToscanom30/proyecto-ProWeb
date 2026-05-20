@@ -84,9 +84,11 @@ public class SecurityConfig {
                             .hasRole("GERENTE")
                         .requestMatchers(HttpMethod.DELETE, "/api/clientes/**")
                             .hasRole("GERENTE")
+                        .requestMatchers("/api/obligaciones/**")
+                            .hasAnyRole("GERENTE", "ASESOR", "ADMIN", "CONTADOR", "AUXILIAR_CONTADOR")
                         // ── Vistas del Administrador / Empleados (Bloqueadas para CONTRIBUYENTE) ──
                         .requestMatchers("/dashboard", "/calendario-fiscal", "/tareas/**", "/reportes/**", "/empleados/**", "/configuracion/**", "/notificaciones/**", "/obligaciones/**")
-                            .hasAnyRole("GERENTE", "ASESOR", "ADMIN", "AUXILIAR")
+                            .hasAnyRole("GERENTE", "ASESOR", "ADMIN", "CONTADOR", "AUXILIAR_CONTADOR")
                         // Portal del contribuyente.
                         .requestMatchers("/api/contribuyente/**").hasRole("CONTRIBUYENTE")
                         .requestMatchers("/portal/**").hasRole("CONTRIBUYENTE")

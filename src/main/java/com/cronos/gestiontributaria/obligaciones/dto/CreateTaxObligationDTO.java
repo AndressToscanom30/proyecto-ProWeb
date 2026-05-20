@@ -27,5 +27,8 @@ public record CreateTaxObligationDTO(
     Integer taxYear,
     String notes,
     LocalDate dueDateOverride,
-    String dueDateOverrideReason
+    String dueDateOverrideReason,
+    String counterResponsibleId,
+    LocalDate originalDueDate,
+    Boolean originalDueDateOverridden
 ) {}

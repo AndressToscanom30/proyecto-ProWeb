@@ -1,6 +1,7 @@
 package com.cronos.gestiontributaria.auth.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -82,6 +83,39 @@ public class UserService {
     }
 
     /**
+     * Lista usuarios por rol persistido exacto.
+     *
+     * @param roleName nombre persistido del rol
+     * @return usuarios con el rol solicitado
+     */
+    public List<User> findByRoleName(String roleName) {
+        if (roleName == null || roleName.isBlank()) {
+            return List.of();
+        }
+        return repository.findByRole_Name(roleName.trim().toUpperCase(Locale.ROOT));
+    }
+
+    /**
+     * Lista usuarios por conjunto de roles persistidos.
+     *
+     * @param roleNames nombres persistidos de los roles
+     * @return usuarios con cualquiera de los roles solicitados
+     */
+    public List<User> findByRoleNames(Collection<String> roleNames) {
+        if (roleNames == null || roleNames.isEmpty()) {
+            return List.of();
+        }
+        List<String> normalized = roleNames.stream()
+                .filter(roleName -> roleName != null && !roleName.isBlank())
+                .map(roleName -> roleName.trim().toUpperCase(Locale.ROOT))
+                .toList();
+        if (normalized.isEmpty()) {
+            return List.of();
+        }
+        return repository.findByRole_NameIn(normalized);
+    }
+
+    /**
      * Busca un usuario por correo.
      *
      * @param email correo a consultar
@@ -128,9 +162,7 @@ public class UserService {
             return;
         }
         repository.findByEmail(normalizeEmail(email)).ifPresent(user -> {
-            if (user.getRole() == null || "ROLE_USER".equals(user.getRole().getName())) {
-                user.setRole(Role.contribuyente());
-            }
+            user.setRole(Role.contribuyente());
             user.setTaxPayerId(taxPayerId);
             repository.save(user);
         });

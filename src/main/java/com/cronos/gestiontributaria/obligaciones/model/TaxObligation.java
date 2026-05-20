@@ -1,6 +1,7 @@
 package com.cronos.gestiontributaria.obligaciones.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +26,8 @@ public class TaxObligation {
     private LocalDate dueDate;
     private boolean dueDateOverridden;      // true si la dueDate fue ingresada manualmente
     private String dueDateOverrideReason;   // obligatorio si dueDateOverridden=true (auditoría)
+    private ObligationAssignment counterResponsible;
+    private ObligationAssignment auxiliaryResponsible;
     private TaxObligationStatus status;
     private String notes;
     /**
@@ -60,6 +63,8 @@ public class TaxObligation {
         this.alerts = alerts != null ? alerts : new ArrayList<>();
         this.indicators = indicators != null ? indicators : new ArrayList<>();
         this.tasks = tasks != null ? tasks : new ArrayList<>();
+        this.counterResponsible = null;
+        this.auxiliaryResponsible = null;
     }
 
     public LocalDate calculateDueDate() {
@@ -149,6 +154,22 @@ public class TaxObligation {
 
     public void setDueDateOverrideReason(String dueDateOverrideReason) {
         this.dueDateOverrideReason = dueDateOverrideReason;
+    }
+
+    public ObligationAssignment getCounterResponsible() {
+        return counterResponsible;
+    }
+
+    public void setCounterResponsible(ObligationAssignment counterResponsible) {
+        this.counterResponsible = counterResponsible;
+    }
+
+    public ObligationAssignment getAuxiliaryResponsible() {
+        return auxiliaryResponsible;
+    }
+
+    public void setAuxiliaryResponsible(ObligationAssignment auxiliaryResponsible) {
+        this.auxiliaryResponsible = auxiliaryResponsible;
     }
 
     public TaxObligationStatus getStatus() {

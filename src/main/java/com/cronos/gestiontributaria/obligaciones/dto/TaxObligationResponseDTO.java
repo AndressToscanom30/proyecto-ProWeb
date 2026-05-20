@@ -7,6 +7,7 @@ import java.util.List;
 import com.cronos.gestiontributaria.common.TaxObligationStatus;
 import com.cronos.gestiontributaria.common.TaxObligationType;
 import com.cronos.gestiontributaria.common.TaxpayerType;
+import com.cronos.gestiontributaria.obligaciones.dto.ObligationAssignmentDTO;
 import com.cronos.gestiontributaria.obligaciones.model.DocumentRequirement;
 
 /**
@@ -43,5 +44,7 @@ public record TaxObligationResponseDTO(
     String dueDateOverrideReason,
     TaxObligationStatus status,
     String notes,
+    ObligationAssignmentDTO counterResponsible,
+    ObligationAssignmentDTO auxiliaryResponsible,
     List<DocumentRequirement> documentRequirements
 ) {}
