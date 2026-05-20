@@ -89,7 +89,10 @@ public class PasswordController {
 
     @GetMapping("/profile/change-password")
     @PreAuthorize("isAuthenticated()")
-    public String showChangePasswordForm() {
+    public String showChangePasswordForm(Authentication authentication, Model model) {
+        String email = authentication.getName();
+        Optional<User> optionalUser = userService.findByEmail(email);
+        optionalUser.ifPresent(user -> model.addAttribute("usuario", user));
         return "auth/change-password";
     }
 
