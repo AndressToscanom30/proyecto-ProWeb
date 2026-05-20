@@ -17,13 +17,13 @@
 
             <div class="metric-grid">
                 <!-- Identificación -->
-                <div class="metric-card">
+                <div class="info-card">
                     <h4 class="card-label">Identificación (NIT / CC)</h4>
                     <p class="card-value" style="word-wrap: break-word; overflow-wrap: break-word; word-break: break-all;" th:text="${contribuyente.identificacion} ?: '—'">—</p>
                 </div>
 
                 <!-- Tipo de contribuyente -->
-                <div class="metric-card">
+                <div class="info-card">
                     <h4 class="card-label">Tipo de contribuyente</h4>
                     <p class="card-value" style="word-wrap: break-word; overflow-wrap: break-word; word-break: break-all;"
                          th:text="${contribuyente.type != null
@@ -32,18 +32,18 @@
                 </div>
 
                 <!-- Contacto -->
-                <div class="metric-card">
+                <div class="info-card">
                     <h4 class="card-label">Correo electrónico</h4>
                     <p class="card-value" style="word-wrap: break-word; overflow-wrap: break-word; word-break: break-all;" th:text="${contribuyente.email} ?: '—'">—</p>
                 </div>
 
-                <div class="metric-card">
+                <div class="info-card">
                     <h4 class="card-label">Teléfono</h4>
                     <p class="card-value" style="word-wrap: break-word; overflow-wrap: break-word; word-break: break-all;" th:text="${contribuyente.phone} ?: '—'">—</p>
                 </div>
 
                 <!-- Estado -->
-                <div class="metric-card">
+                <div class="info-card">
                     <h4 class="card-label">Estado</h4>
                     <div style="margin-top:0.5rem;">
                         <span th:if="${contribuyente.active}" class="pill tone-success">Activo</span>
@@ -52,7 +52,7 @@
                 </div>
 
                 <!-- Fecha de registro -->
-                <div class="metric-card">
+                <div class="info-card">
                     <h4 class="card-label">Fecha de registro</h4>
                     <p class="card-value"
                          th:text="${contribuyente.registrationDate != null
@@ -61,7 +61,7 @@
                 </div>
                 
                 <!-- Dirección -->
-                <div class="metric-card" style="grid-column: 1 / -1;">
+                <div class="info-card" style="grid-column: 1 / -1;">
                     <h4 class="card-label">Dirección</h4>
                     <p class="card-value" style="word-wrap: break-word; overflow-wrap: break-word; word-break: break-all;" th:text="${contribuyente.address} ?: '—'">—</p>
                 </div>

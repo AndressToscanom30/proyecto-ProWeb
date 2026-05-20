@@ -23,17 +23,17 @@
 
             <!-- Datos de la obligación -->
             <div class="metric-grid">
-                <div class="metric-card">
+                <div class="info-card">
                     <h4 class="card-label">Período fiscal</h4>
                     <p class="card-value" th:text="${obligacion.fiscalPeriod()} ?: '—'">—</p>
                 </div>
 
-                <div class="metric-card">
+                <div class="info-card">
                     <h4 class="card-label">Año gravable</h4>
                     <p class="card-value" th:text="${obligacion.taxYear()}">—</p>
                 </div>
 
-                <div class="metric-card">
+                <div class="info-card">
                     <h4 class="card-label">Fecha de vencimiento</h4>
                     <p class="card-value"
                          th:text="${obligacion.dueDate() != null
@@ -41,7 +41,7 @@
                                      : '—'}">—</p>
                 </div>
 
-                <div class="metric-card">
+                <div class="info-card">
                     <h4 class="card-label">Estado</h4>
                     <div style="margin-top:0.5rem;">
                         <span class="pill"
@@ -54,12 +54,12 @@
                     </div>
                 </div>
 
-                <div class="metric-card" th:if="${obligacion.dueDateOverridden()}">
+                <div class="info-card" th:if="${obligacion.dueDateOverridden()}">
                     <h4 class="card-label">Fecha sobrescrita</h4>
                     <p class="card-value" th:text="${obligacion.dueDateOverrideReason()} ?: '—'">—</p>
                 </div>
 
-                <div class="metric-card" style="grid-column: 1 / -1;">
+                <div class="info-card" style="grid-column: 1 / -1;">
                     <h4 class="card-label">Observaciones</h4>
                     <p class="card-value" th:text="${obligacion.notes()} ?: '—'">—</p>
                 </div>
