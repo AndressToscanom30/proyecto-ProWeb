@@ -36,9 +36,9 @@
 
                 <label class="field-group">
                     <span class="field-label">Tipo de obligación</span>
-                    <select class="text-input" name="type" id="type-select" required>
+                    <select class="text-input" name="type" id="type-select" required onchange="updateFiscalPeriods()">
                         <option value="">Seleccionar...</option>
-                        <option th:each="t : ${tipos}" th:value="${t}" th:text="${t.description}" th:selected="${dto != null && dto.type() == t}"></option>
+                        <option th:each="t : ${tipos}" th:value="${t.name()}" th:text="${t.description}" th:selected="${dto != null && dto.type() == t}"></option>
                     </select>
                 </label>
 
@@ -53,7 +53,7 @@
 
                 <label class="field-group">
                     <span class="field-label">Año gravable</span>
-                    <input class="text-input" type="number" name="taxYear" th:value="${dto != null ? dto.taxYear() : 2026}" min="2020" max="2035" required />
+                    <input class="text-input" type="number" name="taxYear" th:value="${dto != null ? dto.taxYear() : 2026}" min="2020" max="2035" required onchange="updateFiscalPeriods()" oninput="updateFiscalPeriods()" />
                 </label>
 
                 <label class="field-group">
@@ -103,74 +103,146 @@
                 toggleReason(); // Check initial state (e.g. for edit mode)
             }
 
-            // Lógica para el selector dinámico de período fiscal
-            const typeSelect = document.getElementById('type-select');
-            const periodSelect = document.getElementById('fiscal-period-select');
-            const initialPeriod = document.getElementById('initialFiscalPeriod').value;
+            // ... resto del JS de form.html
+        });
+    </script>
+    
+    <!-- Script independiente y global para asegurar la ejecución -->
+    <script>
+        function updateFiscalPeriods() {
+            try {
+                const typeSelect = document.getElementById('type-select');
+                const periodSelect = document.getElementById('fiscal-period-select');
+                const initialPeriodEl = document.getElementById('initialFiscalPeriod');
+                const initialPeriod = initialPeriodEl ? initialPeriodEl.value : '';
+                const yearInput = document.querySelector('input[name="taxYear"]');
 
-            function updateFiscalPeriods() {
+                if (!typeSelect || !periodSelect) return;
+                
                 const type = typeSelect.value;
+                const year = yearInput && yearInput.value ? yearInput.value : (new Date().getFullYear() + 2);
+                
                 periodSelect.innerHTML = '';
                 
-                if (!type) {
-                    periodSelect.innerHTML = '<option value="">Seleccione primero un tipo de obligación...</option>';
+                if (!type || type === '') {
+                    const defaultOpt = document.createElement('option');
+                    defaultOpt.value = "";
+                    defaultOpt.textContent = "Seleccione primero un tipo de obligación...";
+                    periodSelect.appendChild(defaultOpt);
                     periodSelect.disabled = true;
                     return;
                 }
                 
                 periodSelect.disabled = false;
-                
-                const year = new Date().getFullYear() + 2; // asumiendo 2026 como predeterminado en el sistema
                 let options = [];
 
+                const anualOptions = [{ value: `${year}`, text: `Anual` }];
+                const bimestralOptions = [
+                    { value: `${year}-B1`, text: `Bimestre 1 (Enero – Febrero)` },
+                    { value: `${year}-B2`, text: `Bimestre 2 (Marzo – Abril)` },
+                    { value: `${year}-B3`, text: `Bimestre 3 (Mayo – Junio)` },
+                    { value: `${year}-B4`, text: `Bimestre 4 (Julio – Agosto)` },
+                    { value: `${year}-B5`, text: `Bimestre 5 (Septiembre – Octubre)` },
+                    { value: `${year}-B6`, text: `Bimestre 6 (Noviembre – Diciembre)` }
+                ];
+                const cuatrimestralOptions = [
+                    { value: `${year}-Q1`, text: `Cuatrimestre 1 (Enero – Abril)` },
+                    { value: `${year}-Q2`, text: `Cuatrimestre 2 (Mayo – Agosto)` },
+                    { value: `${year}-Q3`, text: `Cuatrimestre 3 (Septiembre – Diciembre)` }
+                ];
+                const trimestralOptions = [
+                    { value: `${year}-T1`, text: `Trimestre 1 (Enero – Marzo)` },
+                    { value: `${year}-T2`, text: `Trimestre 2 (Abril – Junio)` },
+                    { value: `${year}-T3`, text: `Trimestre 3 (Julio – Septiembre)` },
+                    { value: `${year}-T4`, text: `Trimestre 4 (Octubre – Diciembre)` }
+                ];
+                const semestralOptions = [
+                    { value: `${year}-S1`, text: `Semestre 1 (Enero – Junio)` },
+                    { value: `${year}-S2`, text: `Semestre 2 (Julio – Diciembre)` }
+                ];
+                const mensualNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+                const mensualOptions = mensualNames.map((name, i) => {
+                    const monthStr = (i + 1).toString().padStart(2, '0');
+                    return { value: `${year}-${monthStr}`, text: name };
+                });
+
                 if (type === 'WITHHOLDING') {
-                    // Mensual
-                    options.push({ value: '', text: 'Seleccione un mes...' });
-                    for (let i = 1; i <= 12; i++) {
-                        const monthStr = i.toString().padStart(2, '0');
-                        options.push({ value: `${year}-${monthStr}`, text: `Mes ${i} (${year}-${monthStr})` });
-                    }
+                    options = [{ value: '', text: 'Seleccione un mes...' }, ...mensualOptions];
                 } else if (type === 'VAT') {
-                    // Bimestral y Cuatrimestral
-                    options.push({ value: '', text: 'Seleccione un período...' });
-                    for (let i = 1; i <= 6; i++) {
-                        options.push({ value: `${year}-B${i}`, text: `Bimestre ${i} (${year}-B${i})` });
-                    }
-                    for (let i = 1; i <= 3; i++) {
-                        options.push({ value: `${year}-Q${i}`, text: `Cuatrimestre ${i} (${year}-Q${i})` });
-                    }
+                    options = [
+                        { value: '', text: 'Seleccione un período...' },
+                        { label: 'Bimestral', opts: bimestralOptions },
+                        { label: 'Cuatrimestral', opts: cuatrimestralOptions }
+                    ];
                 } else if (type === 'INCOME_TAX' || type === 'PATRIMONY') {
-                    // Anual
-                    options.push({ value: `${year}`, text: `Anual (${year})` });
-                    options.push({ value: `${year - 1}`, text: `Anual (${year - 1})` });
+                    options = [...anualOptions];
                 } else if (type === 'INDUSTRY_COMMERCE') {
-                    // Anual o Bimestral
-                    options.push({ value: '', text: 'Seleccione un período...' });
-                    options.push({ value: `${year}`, text: `Anual (${year})` });
-                    options.push({ value: `${year - 1}`, text: `Anual (${year - 1})` });
-                    for (let i = 1; i <= 6; i++) {
-                        options.push({ value: `${year}-B${i}`, text: `Bimestre ${i} (${year}-B${i})` });
-                    }
+                    options = [
+                        { value: '', text: 'Seleccione un período...' },
+                        { label: 'Anual', opts: anualOptions },
+                        { label: 'Semestral', opts: semestralOptions },
+                        { label: 'Cuatrimestral', opts: cuatrimestralOptions },
+                        { label: 'Trimestral', opts: trimestralOptions },
+                        { label: 'Bimestral', opts: bimestralOptions }
+                    ];
                 }
 
-                options.forEach(opt => {
+                let totalSelectable = 0;
+
+                const appendOpt = (opt, parent) => {
                     const el = document.createElement('option');
                     el.value = opt.value;
                     el.textContent = opt.text;
+                    
+                    if (opt.value && opt.value !== '') totalSelectable++;
+                    
                     if (opt.value === initialPeriod) {
                         el.selected = true;
                     }
-                    periodSelect.appendChild(el);
+                    parent.appendChild(el);
+                };
+
+                options.forEach(item => {
+                    if (item.opts) {
+                        const group = document.createElement('optgroup');
+                        group.label = item.label;
+                        item.opts.forEach(opt => appendOpt(opt, group));
+                        periodSelect.appendChild(group);
+                    } else {
+                        appendOpt(item, periodSelect);
+                    }
+                });
+
+                if (totalSelectable === 1) {
+                    const singleOpt = periodSelect.querySelector('option[value]:not([value=""])');
+                    if (singleOpt) {
+                        singleOpt.selected = true;
+                    }
+                } else {
+                    if (!periodSelect.value) {
+                        const emptyOpt = periodSelect.querySelector('option[value=""]');
+                        if (emptyOpt) emptyOpt.selected = true;
+                    }
+                }
+            } catch (e) {
+                console.error("Error actualizando periodos fiscales:", e);
+                alert("Hubo un error configurando los periodos fiscales. Revisa la consola.");
+            }
+        }
+
+        // Ejecutar inmediatamente al cargar y asegurarse de adjuntarlo
+        document.addEventListener('DOMContentLoaded', () => {
+            updateFiscalPeriods();
+            
+            const form = document.querySelector('#fiscal-period-select') ? document.querySelector('#fiscal-period-select').closest('form') : null;
+            if (form) {
+                form.addEventListener('submit', () => {
+                    const periodSelect = document.getElementById('fiscal-period-select');
+                    if (periodSelect) periodSelect.disabled = false;
                 });
             }
-
-            typeSelect.addEventListener('change', updateFiscalPeriods);
-            
-            // Inicializar al cargar si hay un tipo ya seleccionado (ej. modo edición)
-            if (typeSelect.value) {
-                updateFiscalPeriods();
-            }
         });
+    </script>
     </script>
 </body>
 </html>
