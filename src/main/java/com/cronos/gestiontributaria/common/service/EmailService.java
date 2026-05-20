@@ -29,7 +29,7 @@ public class EmailService {
     }
 
     public void sendTemporaryPassword(String to, String temporaryPassword) {
-        String subject = "Bienvenido a ProWeb - Tus credenciales de acceso";
+        String subject = "Bienvenido a Cronos - Tus credenciales de acceso";
         
         Context context = new Context();
         context.setVariable("email", to);
