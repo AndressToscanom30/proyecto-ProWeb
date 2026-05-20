@@ -5,103 +5,78 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recordatorio de Obligación - Cronos</title>
 </head>
-<body style="margin: 0; padding: 0; background-color: #f0f0f5; font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; -webkit-font-smoothing: antialiased;">
+<body style="margin: 0; padding: 0; background-color: #f8f9fa; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased;">
 
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f0f0f5; padding: 40px 16px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f8f9fa; padding: 40px 16px;">
         <tr>
             <td align="center">
 
-                <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; width: 100%; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 24px rgba(99, 102, 241, 0.08), 0 1px 4px rgba(0,0,0,0.04);">
+                <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; width: 100%; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
 
-                    <!-- Header -->
+                    <!-- Header Minimalista -->
                     <tr>
-                        <td style="background-color: #6366f1; padding: 32px 40px; text-align: center;">
-                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                                <tr>
-                                    <td style="text-align: center;">
-                                        <div style="display: inline-block; width: 48px; height: 48px; background-color: rgba(255,255,255,0.2); border-radius: 12px; line-height: 48px; text-align: center; margin-bottom: 12px;">
-                                            <span style="font-size: 24px; color: #ffffff; font-weight: 700;">C</span>
-                                        </div>
-                                        <h1 style="margin: 8px 0 0 0; font-size: 28px; font-weight: 700; color: #ffffff; letter-spacing: -0.5px;">Cronos</h1>
-                                        <p style="margin: 4px 0 0 0; font-size: 13px; color: rgba(255,255,255,0.75); font-weight: 400; letter-spacing: 1px; text-transform: uppercase;">Gestión Tributaria</p>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-
-                    <!-- Barra de tipo -->
-                    <tr>
-                        <td style="background-color: rgba(99, 102, 241, 0.06); padding: 14px 40px; border-bottom: 1px solid rgba(99, 102, 241, 0.12);">
-                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                                <tr>
-                                    <td>
-                                        <span style="display: inline-block; font-size: 11px; font-weight: 600; color: #6366f1; letter-spacing: 1.5px; text-transform: uppercase;">Recordatorio de Obligación</span>
-                                    </td>
-                                    <td style="text-align: right;">
-                                        <span th:text="${obligation.dueDate() != null ? #temporals.format(obligation.dueDate(), 'dd/MM/yyyy') : ''}" style="font-size: 12px; color: #6b7280; font-weight: 500;">29/05/2026</span>
-                                    </td>
-                                </tr>
-                            </table>
+                        <td style="padding: 32px 40px 24px 40px; text-align: left; border-bottom: 1px solid #f3f4f6;">
+                            <h1 style="margin: 0; font-size: 24px; font-weight: 700; color: #0b0b0e; letter-spacing: -0.5px;">Cronos</h1>
+                            <p style="margin: 4px 0 0 0; font-size: 13px; color: #6b6b7f; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Gestión Tributaria</p>
                         </td>
                     </tr>
 
                     <!-- Body -->
                     <tr>
-                        <td style="padding: 36px 40px 24px 40px;">
-                            <h2 style="margin: 0 0 8px 0; font-size: 22px; font-weight: 700; color: #1e1b4b; letter-spacing: -0.3px;">Hola,</h2>
-                            <p style="margin: 0 0 24px 0; font-size: 15px; color: #4b5563; line-height: 1.6;">
-                                Este es un aviso automático sobre una obligación tributaria que tienes asignada como
-                                <span th:text="${roleDescription}" style="font-weight: 700; color: #6366f1;">Contador</span>:
+                        <td style="padding: 32px 40px 16px 40px;">
+                            <h2 style="margin: 0 0 16px 0; font-size: 18px; font-weight: 600; color: #18181d;">Recordatorio de Obligación</h2>
+                            <p style="margin: 0 0 24px 0; font-size: 15px; color: #35353f; line-height: 1.6;">
+                                Hola, este es un aviso automático sobre una obligación tributaria que tienes asignada como
+                                <strong th:text="${roleDescription}" style="color: #0b0b0e;">Contador</strong>:
                             </p>
                         </td>
                     </tr>
 
-                    <!-- Data Card -->
+                    <!-- Data List -->
                     <tr>
-                        <td style="padding: 0 40px 28px 40px;">
-                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #fafafe; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden;">
+                        <td style="padding: 0 40px 32px 40px;">
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;">
                                 <tr>
-                                    <td style="padding: 14px 20px; border-bottom: 1px solid #f3f4f6; width: 140px; vertical-align: top;">
-                                        <span style="font-size: 12px; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px;">Cliente</span>
+                                    <td style="padding: 12px 0; border-bottom: 1px solid #f1f1f3; width: 140px; vertical-align: top;">
+                                        <span style="font-size: 13px; font-weight: 600; color: #6b6b7f;">Cliente</span>
                                     </td>
-                                    <td style="padding: 14px 20px; border-bottom: 1px solid #f3f4f6;">
-                                        <span th:text="|${obligation.taxPayerName()} (${obligation.taxPayerIdentificacion()})|" style="font-size: 14px; font-weight: 600; color: #1e1b4b;">Empresa S.A.S (123456)</span>
+                                    <td style="padding: 12px 0; border-bottom: 1px solid #f1f1f3;">
+                                        <span th:text="|${obligation.taxPayerName()} (${obligation.taxPayerIdentificacion()})|" style="font-size: 14px; font-weight: 500; color: #0b0b0e;">Empresa S.A.S</span>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="padding: 14px 20px; border-bottom: 1px solid #f3f4f6; vertical-align: top;">
-                                        <span style="font-size: 12px; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px;">Obligación</span>
+                                    <td style="padding: 12px 0; border-bottom: 1px solid #f1f1f3; vertical-align: top;">
+                                        <span style="font-size: 13px; font-weight: 600; color: #6b6b7f;">Obligación</span>
                                     </td>
-                                    <td style="padding: 14px 20px; border-bottom: 1px solid #f3f4f6;">
-                                        <span th:text="${obligation.type() != null ? obligation.type().getDescription() : 'Desconocida'}" style="font-size: 14px; font-weight: 500; color: #374151;">IVA</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="padding: 14px 20px; border-bottom: 1px solid #f3f4f6; vertical-align: top;">
-                                        <span style="font-size: 12px; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px;">Periodo Fiscal</span>
-                                    </td>
-                                    <td style="padding: 14px 20px; border-bottom: 1px solid #f3f4f6;">
-                                        <span th:text="${obligation.fiscalPeriod()}" style="font-size: 14px; font-weight: 500; color: #374151;">2026-01</span>
+                                    <td style="padding: 12px 0; border-bottom: 1px solid #f1f1f3;">
+                                        <span th:text="${obligation.type() != null ? obligation.type().getDescription() : 'Desconocida'}" style="font-size: 14px; font-weight: 500; color: #0b0b0e;">IVA</span>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="padding: 14px 20px; border-bottom: 1px solid #f3f4f6; vertical-align: top;">
-                                        <span style="font-size: 12px; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px;">Vencimiento</span>
+                                    <td style="padding: 12px 0; border-bottom: 1px solid #f1f1f3; vertical-align: top;">
+                                        <span style="font-size: 13px; font-weight: 600; color: #6b6b7f;">Periodo Fiscal</span>
                                     </td>
-                                    <td style="padding: 14px 20px; border-bottom: 1px solid #f3f4f6;">
-                                        <span th:text="${obligation.dueDate() != null ? #temporals.format(obligation.dueDate(), 'dd/MM/yyyy') : 'No definida'}" style="font-size: 14px; font-weight: 600; color: #1e1b4b;">01/01/2026</span>
+                                    <td style="padding: 12px 0; border-bottom: 1px solid #f1f1f3;">
+                                        <span th:text="${obligation.fiscalPeriod()}" style="font-size: 14px; font-weight: 500; color: #0b0b0e;">2026-01</span>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="padding: 14px 20px; vertical-align: top;">
-                                        <span style="font-size: 12px; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px;">Estado</span>
+                                    <td style="padding: 12px 0; border-bottom: 1px solid #f1f1f3; vertical-align: top;">
+                                        <span style="font-size: 13px; font-weight: 600; color: #6b6b7f;">Vencimiento</span>
                                     </td>
-                                    <td style="padding: 14px 20px;">
-                                        <span th:if="${obligation.status().name() == 'PENDING'}" style="display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; background-color: rgba(245, 158, 11, 0.1); color: #92400e; border: 1px solid rgba(245, 158, 11, 0.3);">PENDIENTE</span>
-                                        <span th:if="${obligation.status().name() == 'IN_PROGRESS'}" style="display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; background-color: rgba(99, 102, 241, 0.1); color: #4338ca; border: 1px solid rgba(99, 102, 241, 0.3);">EN PROGRESO</span>
-                                        <span th:if="${obligation.status().name() == 'OVERDUE'}" style="display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; background-color: rgba(239, 68, 68, 0.1); color: #991b1b; border: 1px solid rgba(239, 68, 68, 0.3);">VENCIDA</span>
-                                        <span th:if="${obligation.status().name() == 'COMPLETED'}" style="display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; background-color: rgba(34, 197, 94, 0.1); color: #166534; border: 1px solid rgba(34, 197, 94, 0.3);">COMPLETADA</span>
+                                    <td style="padding: 12px 0; border-bottom: 1px solid #f1f1f3;">
+                                        <span th:text="${obligation.dueDate() != null ? #temporals.format(obligation.dueDate(), 'dd/MM/yyyy') : 'No definida'}" style="font-size: 14px; font-weight: 600; color: #0b0b0e;">01/01/2026</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 12px 0; vertical-align: top;">
+                                        <span style="font-size: 13px; font-weight: 600; color: #6b6b7f;">Estado</span>
+                                    </td>
+                                    <td style="padding: 12px 0;">
+                                        <span th:if="${obligation.status().name() == 'PENDING'}" style="font-size: 13px; font-weight: 600; color: #f59e0b;">PENDIENTE</span>
+                                        <span th:if="${obligation.status().name() == 'IN_PROGRESS'}" style="font-size: 13px; font-weight: 600; color: #6366f1;">EN PROGRESO</span>
+                                        <span th:if="${obligation.status().name() == 'OVERDUE'}" style="font-size: 13px; font-weight: 600; color: #ef4444;">VENCIDA</span>
+                                        <span th:if="${obligation.status().name() == 'COMPLETED'}" style="font-size: 13px; font-weight: 600; color: #22c55e;">COMPLETADA</span>
                                     </td>
                                 </tr>
                             </table>
@@ -111,10 +86,10 @@
                     <!-- Alert si vencida -->
                     <tr th:if="${obligation.status().name() == 'OVERDUE'}">
                         <td style="padding: 0 40px 24px 40px;">
-                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: rgba(239, 68, 68, 0.06); border: 1px solid rgba(239, 68, 68, 0.2); border-left: 4px solid #ef4444; border-radius: 8px;">
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #fef2f2; border-left: 3px solid #ef4444; border-radius: 4px;">
                                 <tr>
-                                    <td style="padding: 16px 20px;">
-                                        <p style="margin: 0; font-size: 14px; font-weight: 600; color: #991b1b;">ATENCIÓN: Esta obligación está vencida y requiere tu revisión inmediata.</p>
+                                    <td style="padding: 12px 16px;">
+                                        <p style="margin: 0; font-size: 13px; font-weight: 500; color: #991b1b;">Esta obligación está vencida y requiere revisión inmediata.</p>
                                     </td>
                                 </tr>
                             </table>
@@ -123,37 +98,29 @@
 
                     <!-- CTA -->
                     <tr>
-                        <td style="padding: 0 40px 36px 40px;">
-                            <p style="margin: 0; font-size: 15px; color: #4b5563; line-height: 1.6;">
-                                Por favor ingresa al sistema Cronos para gestionar esta obligación y actualizar su estado.
+                        <td style="padding: 0 40px 32px 40px;">
+                            <p style="margin: 0; font-size: 14px; color: #35353f; line-height: 1.6;">
+                                Ingresa al sistema para gestionar esta obligación y actualizar su estado.
                             </p>
-                        </td>
-                    </tr>
-
-                    <!-- Divider -->
-                    <tr>
-                        <td style="padding: 0 40px;">
-                            <div style="height: 1px; background-color: #e5e7eb;"></div>
                         </td>
                     </tr>
 
                     <!-- Sign off -->
                     <tr>
-                        <td style="padding: 24px 40px 8px 40px;">
-                            <p style="margin: 0; font-size: 14px; color: #6b7280;">Saludos,</p>
-                            <p style="margin: 4px 0 0 0; font-size: 14px; font-weight: 600; color: #4b5563;">El equipo de Cronos</p>
+                        <td style="padding: 0 40px 32px 40px;">
+                            <p style="margin: 0; font-size: 14px; color: #6b6b7f;">Atentamente,</p>
+                            <p style="margin: 4px 0 0 0; font-size: 14px; font-weight: 600; color: #0b0b0e;">El equipo de Cronos</p>
                         </td>
                     </tr>
 
                     <!-- Footer -->
                     <tr>
-                        <td style="padding: 24px 40px 32px 40px; background-color: #f9fafb; border-top: 1px solid #f3f4f6;">
+                        <td style="padding: 24px 40px; background-color: #f1f1f3; border-top: 1px solid #e5e7eb;">
                             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                                 <tr>
-                                    <td style="text-align: center;">
-                                        <p style="margin: 0 0 6px 0; font-size: 12px; color: #9ca3af;">Este es un mensaje automático del sistema Cronos.</p>
-                                        <p style="margin: 0 0 6px 0; font-size: 11px; color: #d1d5db;">Por favor, no respondas a este correo.</p>
-                                        <p style="margin: 8px 0 0 0; font-size: 11px; color: #d1d5db;">© 2026 Cronos. Todos los derechos reservados.</p>
+                                    <td style="text-align: left;">
+                                        <p style="margin: 0 0 4px 0; font-size: 12px; color: #6b6b7f;">Mensaje automático del sistema.</p>
+                                        <p style="margin: 0; font-size: 11px; color: #a1a1b5;">&copy; 2026 Cronos. Todos los derechos reservados.</p>
                                     </td>
                                 </tr>
                             </table>
