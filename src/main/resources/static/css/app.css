@@ -552,7 +552,10 @@ p {
 }
 
 .table-wrap {
+  width: 100%;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 1rem;
 }
 
 .data-table {
@@ -713,6 +716,10 @@ p {
 
 @media (max-width: 600px) {
   .dashboard-shell {
+    padding: 1rem;
+  }
+
+  .panel-card {
     padding: 1rem;
   }
 
@@ -4070,6 +4077,30 @@ textarea {
   color: var(--danger);
 }
 
+.action-grid-2x2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  width: 100%;
+  min-width: 140px;
+}
+
+.action-grid-2x2 .secondary-action {
+  width: 100%;
+  justify-content: center;
+  padding-left: 0.25rem !important;
+  padding-right: 0.25rem !important;
+}
+
+.action-grid-2x2 form {
+  display: flex;
+  width: 100%;
+}
+
+.action-grid-2x2 form button {
+  width: 100%;
+}
+
 
 /* ========== MISSING UTILITY CLASSES ========== */
 .panel-card {
@@ -4168,10 +4199,45 @@ textarea {
 .bar-column strong { font-size: 0.9rem; color: var(--text-main); margin-bottom: 0.2rem; font-weight: 700; }
 .bar-column small { font-size: 0.75rem; color: var(--text-muted); }
 
+.donut-center strong { display: block; font-size: 1.6rem; font-family: var(--font-heading); color: var(--text-main); font-weight: 800; line-height: 1.1; margin-bottom: 0.1rem; }
+.donut-center span { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+
+/* ========== GLOBAL RESPONSIVE FIXES ========== */
+@media (max-width: 640px) {
+  /* Enforces 1 column for filters if they get squished */
+  .filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Reduces gap in forms to save vertical space */
+  .form-grid, .form-row {
+    gap: 12px;
+  }
+
+  /* Reduce panel padding */
+  .panel-card {
+    padding: 1.25rem 1rem;
+  }
+
+  /* Ensure pagination wraps gracefully */
+  .pagination-bar {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  /* Make sure data tables don't stretch the screen */
+  .table-wrap {
+    margin-right: -1rem;
+    margin-left: -1rem;
+    padding: 0 1rem;
+    width: calc(100% + 2rem);
+  }
+}
+
 .donut-wrap { position: relative; width: 180px; height: 180px; min-height: 180px; max-height: 180px; margin: 1.5rem auto; flex-shrink: 0; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.08)); transition: transform 0.3s ease; }
 .donut-wrap:hover { transform: scale(1.03); }
 .donut-chart { width: 100%; height: 100%; border-radius: 50%; background: var(--distribution, conic-gradient(var(--primary) 100%)); transition: all 0.5s ease; }
 .donut-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 124px; height: 124px; background: #ffffff; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.06), inset 0 2px 4px rgba(255,255,255,0.5); z-index: 2; }
-.donut-center strong { font-size: 1.75rem; color: var(--text-main); line-height: 1.1; font-weight: 800; letter-spacing: -0.02em; }
 .donut-center small { font-size: 0.75rem; color: var(--text-muted); }
 
