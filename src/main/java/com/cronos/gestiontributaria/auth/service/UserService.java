@@ -1,10 +1,12 @@
 package com.cronos.gestiontributaria.auth.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -166,5 +168,59 @@ public class UserService {
             user.setTaxPayerId(taxPayerId);
             repository.save(user);
         });
+    }
+
+    /**
+     * Genera un token de recuperación para un usuario y establece su expiración a 24 horas.
+     * @param user usuario al que se le genera el token
+     * @return el token generado
+     */
+    public String createPasswordResetTokenForUser(User user) {
+        String token = UUID.randomUUID().toString();
+        user.setResetToken(token);
+        user.setResetTokenExpiry(LocalDateTime.now().plusHours(24));
+        repository.save(user);
+        return token;
+    }
+
+    /**
+     * Valida un token de recuperación.
+     * @param token el token a validar
+     * @return el usuario si el token es válido y no ha expirado, Optional.empty() en caso contrario.
+     */
+    public Optional<User> validatePasswordResetToken(String token) {
+        if (token == null || token.isBlank()) {
+            return Optional.empty();
+        }
+        Optional<User> optionalUser = repository.findByResetToken(token);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            if (user.getResetTokenExpiry() != null && user.getResetTokenExpiry().isAfter(LocalDateTime.now())) {
+                return Optional.of(user);
+            }
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Cambia la contraseña de un usuario, la cifra y elimina el token de recuperación si existe.
+     * @param user usuario al que se le cambiará la clave
+     * @param newPassword la nueva contraseña en texto plano
+     */
+    public void changeUserPassword(User user, String newPassword) {
+        if (newPassword == null || newPassword.isBlank()) {
+            throw new IllegalArgumentException("La nueva contraseña no puede estar vacía");
+        }
+        user.setPasswordHash(passwordEncoder.encode(newPassword));
+        user.setResetToken(null);
+        user.setResetTokenExpiry(null);
+        repository.save(user);
+    }
+    
+    /**
+     * Verifica si una contraseña coincide con el hash del usuario.
+     */
+    public boolean checkIfValidOldPassword(User user, String oldPassword) {
+        return passwordEncoder.matches(oldPassword, user.getPasswordHash());
     }
 }

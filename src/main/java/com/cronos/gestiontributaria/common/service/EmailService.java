@@ -57,6 +57,40 @@ public class EmailService {
             log.info("\n=== INICIO DE CORREO HTML ===\nPara: {}\nAsunto: {}\n\n{}\n=== FIN DE CORREO ===", to, subject, htmlContent);
         }
     }
+    
+    public void sendPasswordResetMail(String to, String token) {
+        String subject = "Recuperación de Contraseña - Cronos";
+        String resetUrl = "http://localhost:8080/reset-password?token=" + token; // En producción usar URL configurada
+
+        Context context = new Context();
+        context.setVariable("email", to);
+        context.setVariable("resetUrl", resetUrl);
+
+        String htmlBody = templateEngine.process("email/password-reset", context);
+
+        sendHtmlEmail(to, subject, htmlBody);
+    }
+
+    private void sendHtmlEmail(String to, String subject, String htmlBody) {
+        if (emailSender != null) {
+            try {
+                MimeMessage message = emailSender.createMimeMessage();
+                MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+                helper.setTo(to);
+                helper.setSubject(subject);
+                helper.setText(htmlBody, true);
+                
+                emailSender.send(message);
+                log.info("Email HTML enviado exitosamente a {}", to);
+            } catch (Exception e) {
+                log.error("Error al enviar el correo a {}: {}", to, e.getMessage());
+            }
+        } else {
+            log.warn("JavaMailSender no configurado. Logueando contenido en consola:");
+            log.info("\n=== INICIO DE CORREO HTML ===\nPara: {}\nAsunto: {}\n\n{}\n=== FIN DE CORREO ===", to, subject, htmlBody);
+        }
+    }
+    
     public void sendObligationReminder(String to, String roleDescription, com.cronos.gestiontributaria.obligaciones.dto.TaxObligationResponseDTO obligation) {
         String subject = "Recordatorio de Obligación: " + obligation.taxPayerName();
         

@@ -1,5 +1,6 @@
 package com.cronos.gestiontributaria.auth.model;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +47,9 @@ public class User {
      * es CONTRIBUYENTE. Es {@code null} para usuarios GERENTE y ASESOR.
      */
     private String taxPayerId;
+
+    private String resetToken;
+    private LocalDateTime resetTokenExpiry;
 
     private List<Notification> notifications = new ArrayList<>();
 
@@ -169,6 +173,22 @@ public class User {
 
     public void setNotifications(List<Notification> notifications) {
         this.notifications = notifications != null ? notifications : new ArrayList<>();
+    }
+
+    public String getResetToken() {
+        return resetToken;
+    }
+
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
+    }
+
+    public LocalDateTime getResetTokenExpiry() {
+        return resetTokenExpiry;
+    }
+
+    public void setResetTokenExpiry(LocalDateTime resetTokenExpiry) {
+        this.resetTokenExpiry = resetTokenExpiry;
     }
 
 }

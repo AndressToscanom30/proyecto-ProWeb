@@ -64,7 +64,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers("/api/**"))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login", "/403", "/css/**", "/js/**", "/images/**", "/error")
+                        .requestMatchers("/", "/login", "/forgot-password", "/reset-password", "/403", "/css/**", "/js/**", "/images/**", "/error")
                         .permitAll()
                         // ── Área de GERENTE: bloquear CONTRIBUYENTE explícitamente ──
                         // Vistas MVC de gestión de clientes: visible para CONTADOR y AUXILIAR_CONTADOR también (pero en read-only).

@@ -58,4 +58,12 @@ public interface UserRepository extends MongoRepository<User, String> {
      * @return usuario encontrado, si existe
      */
     Optional<User> findByTaxPayerId(String taxPayerId);
+
+    /**
+     * Busca un usuario por su token de recuperación de contraseña.
+     *
+     * @param resetToken token a buscar
+     * @return usuario encontrado, si existe
+     */
+    Optional<User> findByResetToken(String resetToken);
 }

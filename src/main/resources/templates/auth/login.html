@@ -36,6 +36,10 @@
                     <input class="text-input" type="password" name="password" placeholder="Ingresa tu contraseña" autocomplete="current-password" required />
                 </label>
 
+                <div style="text-align: right; margin-top: -8px; margin-bottom: 24px;">
+                    <a th:href="@{/forgot-password}" style="font-size: 13px; color: var(--accent); text-decoration: none;">¿Olvidaste tu contraseña?</a>
+                </div>
+
                 <button class="primary-action" type="submit">Entrar</button>
             </form>
         </div>
