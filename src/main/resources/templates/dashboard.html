@@ -91,16 +91,20 @@
                     <article class="calendar-day" th:each="day : ${dashboard.calendarDays}"
                              th:classappend="| tone-${day.tone}|"
                              th:style="${!day.currentMonth} ? 'opacity: 0.42;' : ''">
-                        <span class="calendar-number" th:text="${day.dayNumber}">1</span>
-                        
-                        <button class="calendar-count" th:if="${day.taskCount > 0}"
-                                th:attr="data-day=${day.dayNumber}"
-                                onclick="openDayPopup(this)"
-                                style="cursor: pointer; font-family: inherit; border: 1px solid var(--tone-border, rgba(59, 91, 255, 0.22)); outline: none;">
-                            <span th:text="${day.taskCount}">2</span>
-                        </button>
-                        
-                        <span class="pill tone-info" th:if="${day.today}">Hoy</span>
+                        <div class="day-top">
+                            <span class="calendar-number" th:text="${day.dayNumber}">1</span>
+                            <span class="pill tone-info pill-today" th:if="${day.today}">Hoy</span>
+                        </div>
+
+                        <div class="day-bottom" th:if="${day.taskCount > 0}">
+                            <button class="day-view-btn"
+                                    th:classappend="| tone-${day.tone}|"
+                                    th:attr="data-day=${day.dayNumber}"
+                                    onclick="openDayPopup(this)">
+                                <span class="day-view-count" th:text="${day.taskCount}">2</span>
+                                <span class="day-view-label" th:text="${day.taskCount == 1 ? 'tarea' : 'tareas'}">tareas</span>
+                            </button>
+                        </div>
 
                         <!-- Hidden data for popup -->
                         <template th:if="${not #lists.isEmpty(day.obligations)}">
