@@ -50,4 +50,36 @@ public class EmailService {
             log.info("\n=== INICIO DE CORREO ===\nPara: {}\nAsunto: {}\n\n{}\n=== FIN DE CORREO ===", to, subject, text);
         }
     }
+    public void sendObligationReminder(String to, String roleDescription, com.cronos.gestiontributaria.obligaciones.dto.TaxObligationResponseDTO obligation) {
+        String subject = "Recordatorio de Obligación: " + obligation.taxPayerName();
+        String dueDateStr = obligation.dueDate() != null ? obligation.dueDate().toString() : "No definida";
+        String typeStr = obligation.type() != null ? obligation.type().getDescription() : "Desconocido";
+
+        String text = "Hola,\n\n"
+                + "Este es un recordatorio para la siguiente obligación tributaria asignada a ti como " + roleDescription + ":\n\n"
+                + "- Cliente: " + obligation.taxPayerName() + " (" + obligation.taxPayerIdentificacion() + ")\n"
+                + "- Obligación: " + typeStr + "\n"
+                + "- Periodo Fiscal: " + obligation.fiscalPeriod() + "\n"
+                + "- Vencimiento: " + dueDateStr + "\n"
+                + "- Estado Actual: " + obligation.status().name() + "\n\n"
+                + "Por favor ingresa al sistema ProWeb para gestionar esta obligación lo antes posible.\n\n"
+                + "Saludos,\nEl equipo de Cronos";
+
+        if (emailSender != null) {
+            try {
+                SimpleMailMessage message = new SimpleMailMessage();
+                message.setTo(to);
+                message.setSubject(subject);
+                message.setText(text);
+                emailSender.send(message);
+                log.info("Email de recordatorio enviado a {}", to);
+            } catch (Exception e) {
+                log.error("Error al enviar recordatorio a {}: {}", to, e.getMessage());
+                log.info("FALLBACK EMAIL CONTENT:\nSubject: {}\nTo: {}\n{}", subject, to, text);
+            }
+        } else {
+            log.warn("JavaMailSender no configurado. Imprimiendo recordatorio en consola:");
+            log.info("\n=== INICIO DE CORREO ===\nPara: {}\nAsunto: {}\n\n{}\n=== FIN DE CORREO ===", to, subject, text);
+        }
+    }
 }

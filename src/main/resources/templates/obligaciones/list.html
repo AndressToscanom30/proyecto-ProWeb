@@ -22,6 +22,14 @@
                 </div>
             </div>
 
+            <!-- Flash messages -->
+            <div th:if="${successMessage}" class="alert tone-success mb-lg">
+                <p th:text="${successMessage}"></p>
+            </div>
+            <div th:if="${warningMessage}" class="alert tone-warning mb-lg">
+                <p th:text="${warningMessage}"></p>
+            </div>
+
             <form class="form-grid mb-lg" th:action="@{/obligaciones}" method="get">
                 <label class="field-group">
                     <span class="field-label">Filtrar por contribuyente</span>
@@ -40,6 +48,12 @@
                     <a sec:authorize="hasRole('GERENTE')" th:href="${selectedTaxPayerId != null and !#strings.isEmpty(selectedTaxPayerId)} ? @{/obligaciones/nuevo(taxPayerId=${selectedTaxPayerId})} : @{/obligaciones/nuevo}" class="secondary-action">+ Nueva obligación</a>
                 </div>
             </form>
+            <div class="form-actions" style="margin-bottom: 1.5rem;" sec:authorize="hasAnyRole('GERENTE', 'ASESOR', 'ADMIN')">
+                <form th:action="@{/obligaciones/notificar-masivo}" method="post" style="display:inline">
+                    <input type="hidden" name="taxPayerId" th:value="${selectedTaxPayerId}" />
+                    <button type="submit" class="secondary-action" data-confirm="¿Enviar recordatorio a todos los responsables de las obligaciones listadas?">Notificar a responsables</button>
+                </form>
+            </div>
 
             <div class="empty-state" th:if="${#lists.isEmpty(obligaciones)}">
                 <div class="empty-icon">
@@ -96,6 +110,10 @@
                             <td>
                                 <div class="action-group">
                                     <a th:href="@{/obligaciones/{id}(id=${o.id})}" class="action-link">Detalles</a>
+                                    <form sec:authorize="hasAnyRole('GERENTE', 'ASESOR', 'ADMIN')" th:action="@{/obligaciones/{id}/notificar(id=${o.id})}" method="post" class="inline">
+                                        <input type="hidden" name="taxPayerId" th:value="${selectedTaxPayerId}" />
+                                        <button type="submit" class="action-link" style="border:none; background:none; padding:0; cursor:pointer;" data-confirm="¿Enviar correo recordatorio a los responsables de esta obligación?">Notificar</button>
+                                    </form>
                                     <a sec:authorize="hasRole('GERENTE')" th:href="@{/obligaciones/editar/{id}(id=${o.id}, taxPayerId=${o.taxPayerId})}" class="action-link">Editar</a>
                                     <a sec:authorize="hasRole('GERENTE')" th:href="@{/obligaciones/eliminar/{id}(id=${o.id}, taxPayerId=${o.taxPayerId})}" class="action-link action-danger"
                                        data-confirm="¿Eliminar esta obligación?">Eliminar</a>

@@ -48,6 +48,7 @@ public class TaxObligationViewController {
     private final TaxPayerService taxPayerService;
     private final UserService userService;
     private final DocumentService documentService;
+    private final com.cronos.gestiontributaria.common.service.EmailService emailService;
 
     @Value("${cronos.storage.upload-dir}")
     private String uploadDir;
@@ -55,11 +56,13 @@ public class TaxObligationViewController {
     public TaxObligationViewController(TaxObligationService obligationService,
             TaxPayerService taxPayerService,
             UserService userService,
-            DocumentService documentService) {
+            DocumentService documentService,
+            com.cronos.gestiontributaria.common.service.EmailService emailService) {
         this.obligationService = obligationService;
         this.taxPayerService = taxPayerService;
         this.userService = userService;
         this.documentService = documentService;
+        this.emailService = emailService;
     }
 
     @GetMapping
@@ -261,6 +264,55 @@ public class TaxObligationViewController {
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Obligación no encontrada");
         }
+    }
+
+    @PostMapping("/{id}/notificar")
+    @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('GERENTE', 'ASESOR', 'ADMIN')")
+    public String notifySingle(@PathVariable String id, @RequestParam(required = false) String taxPayerId, org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttrs) {
+        TaxObligationResponseDTO obligacion = obligationService.findById(id);
+        int sent = sendNotificationEmailsForObligation(obligacion);
+        if (sent > 0) {
+            redirectAttrs.addFlashAttribute("successMessage", "Se envió notificación a " + sent + " responsable(s) de esta obligación.");
+        } else {
+            redirectAttrs.addFlashAttribute("warningMessage", "No hay responsables con correo asignado para notificar en esta obligación.");
+        }
+        return "redirect:/obligaciones?taxPayerId=" + (taxPayerId != null ? taxPayerId : "");
+    }
+
+    @PostMapping("/notificar-masivo")
+    @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('GERENTE', 'ASESOR', 'ADMIN')")
+    public String notifyMassive(@RequestParam(required = false) String taxPayerId, org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttrs) {
+        List<TaxObligationResponseDTO> obligaciones;
+        if (taxPayerId != null && !taxPayerId.isBlank()) {
+            obligaciones = obligationService.findByTaxPayerId(taxPayerId);
+        } else {
+            obligaciones = obligationService.findAll();
+        }
+
+        int totalSent = 0;
+        for (TaxObligationResponseDTO o : obligaciones) {
+            totalSent += sendNotificationEmailsForObligation(o);
+        }
+
+        if (totalSent > 0) {
+            redirectAttrs.addFlashAttribute("successMessage", "Se enviaron " + totalSent + " notificaciones de forma masiva.");
+        } else {
+            redirectAttrs.addFlashAttribute("warningMessage", "No se encontraron responsables asignados para notificar en las obligaciones actuales.");
+        }
+        return "redirect:/obligaciones?taxPayerId=" + (taxPayerId != null ? taxPayerId : "");
+    }
+
+    private int sendNotificationEmailsForObligation(TaxObligationResponseDTO obligacion) {
+        int count = 0;
+        if (obligacion.counterResponsible() != null && obligacion.counterResponsible().userEmail() != null && !obligacion.counterResponsible().userEmail().isBlank()) {
+            emailService.sendObligationReminder(obligacion.counterResponsible().userEmail(), "Contador", obligacion);
+            count++;
+        }
+        if (obligacion.auxiliaryResponsible() != null && obligacion.auxiliaryResponsible().userEmail() != null && !obligacion.auxiliaryResponsible().userEmail().isBlank()) {
+            emailService.sendObligationReminder(obligacion.auxiliaryResponsible().userEmail(), "Auxiliar Contable", obligacion);
+            count++;
+        }
+        return count;
     }
 
     @GetMapping("/documentos/{id}/descargar")
