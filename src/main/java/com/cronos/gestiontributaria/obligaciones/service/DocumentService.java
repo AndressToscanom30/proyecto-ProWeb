@@ -173,17 +173,6 @@ public class DocumentService {
                             + maxFileSizeMb + " MB.");
         }
 
-        // Validar tipo MIME
-        String tipo = file.getContentType();
-        boolean tipoPermitido = Arrays.asList(allowedTypes).contains(tipo);
-        if (!tipoPermitido) {
-            log.warn("Archivo rechazado por tipo MIME: {} — nombre: {}",
-                    tipo, file.getOriginalFilename());
-            throw new IllegalArgumentException(
-                    "Tipo de archivo no permitido: " + tipo
-                            + ". Solo se aceptan PDF, JPG, PNG y XLSX.");
-        }
-
         // Validar extensión del nombre de archivo (defensa en profundidad)
         String nombreOriginal = file.getOriginalFilename();
         if (nombreOriginal != null && !nombreOriginal.isBlank()) {
@@ -191,11 +180,21 @@ public class DocumentService {
                     nombreOriginal.lastIndexOf('.')).toLowerCase();
             if (!ALLOWED_EXTENSIONS.contains(extensionLower)) {
                 log.warn("Archivo rechazado por extensión: {} — MIME declarado: {}",
-                        nombreOriginal, tipo);
+                nombreOriginal, file.getContentType());
                 throw new IllegalArgumentException(
-                        "Extensión de archivo no permitida. "
-                                + "Solo se aceptan: PDF, JPG, PNG y XLSX.");
+                    "Extensión de archivo no permitida.");
             }
+        }
+
+        // Validar tipo MIME
+        String tipo = file.getContentType();
+        boolean tipoPermitido = Arrays.asList(allowedTypes).contains(tipo);
+        if (!tipoPermitido) {
+            log.warn("Archivo rechazado por tipo MIME: {} — nombre: {}",
+                tipo, file.getOriginalFilename());
+            throw new IllegalArgumentException(
+                "Tipo de archivo no permitido: " + tipo
+                    + ". Solo se aceptan PDF, JPG, PNG y XLSX.");
         }
     }
 }

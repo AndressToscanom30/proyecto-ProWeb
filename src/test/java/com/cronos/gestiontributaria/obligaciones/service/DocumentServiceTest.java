@@ -136,7 +136,7 @@ class DocumentServiceTest {
     @Test
     void uploadDocument_tipoMimeNoPermitido_lanzaIllegalArgument() {
         MockMultipartFile file = new MockMultipartFile(
-                "file", "video.mp4", "video/mp4",
+                                "file", "video.pdf", "video/mp4",
                 new byte[1024]);
 
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
