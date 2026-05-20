@@ -100,9 +100,9 @@ public class AuthController {
             @org.springframework.web.bind.annotation.RequestParam(required = false) Integer year,
             @org.springframework.web.bind.annotation.RequestParam(required = false) Integer month,
             Model model, Authentication authentication) {
-        populateWorkspaceModel(model, authentication);
+        User user = populateWorkspaceModel(model, authentication);
 
-        List<TaxObligation> obligations = obligationRepository.findAll();
+        List<TaxObligation> obligations = getObligationsForUser(user, authentication);
         List<TaxPayer> payers = taxPayerService.findAll();
         Map<String, TaxPayer> clientsById = payers.stream()
             .filter(p -> p != null && p.getId() != null)
@@ -130,9 +130,9 @@ public class AuthController {
 
     @GetMapping("/tareas")
     public String tasksPage(Model model, Authentication authentication) {
-        populateWorkspaceModel(model, authentication);
+        User user = populateWorkspaceModel(model, authentication);
 
-        List<TaxObligation> obligations = obligationRepository.findAll();
+        List<TaxObligation> obligations = getObligationsForUser(user, authentication);
         List<TaxPayer> payers = taxPayerService.findAll();
         Map<String, TaxPayer> clientsById = payers.stream()
             .filter(p -> p != null && p.getId() != null)
@@ -147,9 +147,9 @@ public class AuthController {
 
     @GetMapping("/reportes")
     public String reportsPage(Model model, Authentication authentication) {
-        populateWorkspaceModel(model, authentication);
+        User user = populateWorkspaceModel(model, authentication);
 
-        List<TaxObligation> obligations = obligationRepository.findAll();
+        List<TaxObligation> obligations = getObligationsForUser(user, authentication);
         LocalDate today = LocalDate.now();
 
         ReportsPageData reportsData = PageViewModels.buildReportsPageData(obligations, today);
@@ -191,14 +191,32 @@ public class AuthController {
 
     private User populateWorkspaceModel(Model model, Authentication authentication) {
         User user = loadCurrentUser(authentication);
+        List<TaxObligation> userObligations = getObligationsForUser(user, authentication);
+        
         model.addAttribute("usuario", user);
         model.addAttribute("roles", authentication.getAuthorities());
-        model.addAttribute("dashboard", DashboardSummary.build(taxPayerService.findAll(), obligationRepository.findAll()));
+        model.addAttribute("dashboard", DashboardSummary.build(taxPayerService.findAll(), userObligations));
         model.addAttribute("totalContribuyentes", taxPayerService.count());
-        model.addAttribute("totalObligaciones", obligationRepository.count());
+        model.addAttribute("totalObligaciones", userObligations.size());
         model.addAttribute("totalEmpleados", employeeService.count());
         model.addAttribute("totalUsuarios", userService.findAll().size());
         return user;
+    }
+
+    private List<TaxObligation> getObligationsForUser(User user, Authentication authentication) {
+        boolean isContador = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_CONTADOR"));
+        boolean isAuxiliar = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_AUXILIAR_CONTADOR"));
+
+        if (isContador) {
+            return obligationRepository.findByCounterResponsibleUserId(user.getId());
+        } else if (isAuxiliar) {
+            return obligationRepository.findByAuxiliaryResponsibleUserId(user.getId());
+        }
+        
+        // Para GERENTE, ADMIN, ASESOR, etc., retornamos todas.
+        return obligationRepository.findAll();
     }
 
     private User loadCurrentUser(Authentication authentication) {

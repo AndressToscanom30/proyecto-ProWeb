@@ -1,13 +1,12 @@
 package com.cronos.gestiontributaria.notification.controller;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -16,19 +15,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.cronos.gestiontributaria.notification.model.Notification;
 import com.cronos.gestiontributaria.auth.model.User;
 import com.cronos.gestiontributaria.auth.service.UserService;
-import com.cronos.gestiontributaria.clientes.model.TaxPayer;
-import com.cronos.gestiontributaria.clientes.service.TaxPayerService;
-import com.cronos.gestiontributaria.common.TaxObligationStatus;
-import com.cronos.gestiontributaria.notification.service.NotificationMailService;
-import com.cronos.gestiontributaria.notification.view.NotificationAlert;
-import com.cronos.gestiontributaria.obligaciones.dto.TaxObligationResponseDTO;
-import com.cronos.gestiontributaria.obligaciones.service.TaxObligationService;
+import com.cronos.gestiontributaria.notification.service.NotificationCenterService;
 
 @Controller
 @RequestMapping("/notificaciones")
@@ -38,38 +32,45 @@ import com.cronos.gestiontributaria.obligaciones.service.TaxObligationService;
 public class NotificationViewController {
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter
-            .ofLocalizedDate(FormatStyle.MEDIUM)
+            .ofPattern("dd MMM yyyy, HH:mm", new Locale("es", "CO"))
             .withLocale(new Locale("es", "CO"));
 
     private final UserService userService;
-    private final TaxObligationService obligationService;
-    private final TaxPayerService taxPayerService;
-    private final NotificationMailService notificationMailService;
+    private final NotificationCenterService notificationCenterService;
 
     public NotificationViewController(UserService userService,
-                                      TaxObligationService obligationService,
-                                      TaxPayerService taxPayerService,
-                                      NotificationMailService notificationMailService) {
+                                      NotificationCenterService notificationCenterService) {
         this.userService = userService;
-        this.obligationService = obligationService;
-        this.taxPayerService = taxPayerService;
-        this.notificationMailService = notificationMailService;
+        this.notificationCenterService = notificationCenterService;
     }
 
     @GetMapping
     public String index(Model model, Authentication authentication) {
-        User user = loadCurrentUser(authentication);
-        List<NotificationAlert> alerts = buildAlerts();
-        long overdueCount = alerts.stream().filter(alert -> "danger".equals(alert.tone())).count();
-        long soonCount = alerts.stream().filter(alert -> "warning".equals(alert.tone())).count();
+        User user = notificationCenterService.refreshInbox(loadCurrentUser(authentication));
+        List<Notification> notifications = sortedNotifications(user.getNotifications());
+        long unreadCount = notifications.stream().filter(notification -> !notification.isRead()).count();
+        long urgentCount = notifications.stream().filter(notification -> "danger".equals(notification.getType())).count();
+        long upcomingCount = notifications.stream().filter(notification -> "warning".equals(notification.getType())).count();
+        long readCount = notifications.stream().filter(Notification::isRead).count();
+        String lastSync = notifications.stream()
+                .map(Notification::getCreatedAt)
+                .filter(Objects::nonNull)
+                .max(LocalDateTime::compareTo)
+                .map(dateTime -> dateTime.format(DATE_FORMATTER))
+                .orElse("Sin sincronizar");
         String successMessage = (String) model.asMap().get("successMessage");
         String errorMessage = (String) model.asMap().get("errorMessage");
 
         model.addAttribute("usuario", user);
-        model.addAttribute("alertas", alerts);
-        model.addAttribute("alertasVencidas", overdueCount);
-        model.addAttribute("alertasProximas", soonCount);
-        model.addAttribute("correoPrueba", user.getEmail());
+        model.addAttribute("notificaciones", notifications);
+        model.addAttribute("notificacionesNoLeidas", unreadCount);
+        model.addAttribute("notificacionesUrgentes", urgentCount);
+        model.addAttribute("notificacionesProximas", upcomingCount);
+        model.addAttribute("notificacionesLeidas", readCount);
+        model.addAttribute("ultimaSincronizacion", lastSync);
+        model.addAttribute("alcanceBandeja", user.getTaxPayerId() != null && !user.getTaxPayerId().isBlank()
+                ? "Solo tu contribuyente vinculado"
+                : "Toda la cartera fiscal");
         if (successMessage != null && !successMessage.isBlank()) {
             model.addAttribute("successMessage", successMessage);
         }
@@ -80,23 +81,59 @@ public class NotificationViewController {
     }
 
     @PostMapping("/enviar")
-    public String sendEmail(@RequestParam String recipientEmail,
-                            @RequestParam String subject,
-                            @RequestParam String message,
-                            Authentication authentication,
-                            RedirectAttributes redirectAttributes) {
+    public String sendEmail() {
+        return "redirect:/notificaciones";
+    }
+
+    @PostMapping("/refrescar")
+    public String refresh(Authentication authentication, RedirectAttributes redirectAttributes) {
         User user = loadCurrentUser(authentication);
+        notificationCenterService.refreshInbox(user);
+        redirectAttributes.addFlashAttribute("successMessage", "La bandeja se sincronizó con las obligaciones activas.");
+        return "redirect:/notificaciones";
+    }
 
+    @PostMapping("/{id}/leer")
+    public String markAsRead(@PathVariable String id,
+                             Authentication authentication,
+                             RedirectAttributes redirectAttributes) {
+        User user = loadCurrentUser(authentication);
         try {
-            notificationMailService.sendReminderEmail(user, recipientEmail, subject, message);
-            redirectAttributes.addFlashAttribute("successMessage", "Correo enviado a " + recipientEmail.trim());
-        } catch (IllegalArgumentException exception) {
-            redirectAttributes.addFlashAttribute("errorMessage", exception.getMessage());
+            notificationCenterService.markAsRead(user, id);
+            redirectAttributes.addFlashAttribute("successMessage", "Notificación marcada como leída.");
         } catch (RuntimeException exception) {
-            redirectAttributes.addFlashAttribute("errorMessage",
-                    "No se pudo enviar el correo. Revisa la configuración SMTP.");
+            redirectAttributes.addFlashAttribute("errorMessage", exception.getMessage());
         }
+        return "redirect:/notificaciones";
+    }
 
+    @PostMapping("/{id}/eliminar")
+    public String delete(@PathVariable String id,
+                         Authentication authentication,
+                         RedirectAttributes redirectAttributes) {
+        User user = loadCurrentUser(authentication);
+        try {
+            notificationCenterService.deleteNotification(user, id);
+            redirectAttributes.addFlashAttribute("successMessage", "Notificación eliminada.");
+        } catch (RuntimeException exception) {
+            redirectAttributes.addFlashAttribute("errorMessage", exception.getMessage());
+        }
+        return "redirect:/notificaciones";
+    }
+
+    @PostMapping("/marcar-todas")
+    public String markAllAsRead(Authentication authentication, RedirectAttributes redirectAttributes) {
+        User user = loadCurrentUser(authentication);
+        notificationCenterService.markAllAsRead(user);
+        redirectAttributes.addFlashAttribute("successMessage", "Todas las notificaciones quedaron leídas.");
+        return "redirect:/notificaciones";
+    }
+
+    @PostMapping("/limpiar-leidas")
+    public String clearRead(Authentication authentication, RedirectAttributes redirectAttributes) {
+        User user = loadCurrentUser(authentication);
+        notificationCenterService.clearReadNotifications(user);
+        redirectAttributes.addFlashAttribute("successMessage", "Se limpiaron las notificaciones leídas.");
         return "redirect:/notificaciones";
     }
 
@@ -105,84 +142,14 @@ public class NotificationViewController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
     }
 
-    private List<NotificationAlert> buildAlerts() {
-        Map<String, TaxPayer> taxpayersById = taxPayerService.findAll().stream()
-                .filter(taxpayer -> taxpayer.getId() != null)
-                .collect(Collectors.toMap(TaxPayer::getId, taxpayer -> taxpayer, (left, right) -> left));
-
-        LocalDate limitDate = LocalDate.now().plusDays(7);
-        return obligationService.findAll().stream()
-                .filter(this::isRelevant)
-                .map(obligation -> toAlert(obligation, taxpayersById.get(obligation.taxPayerId()), limitDate))
+    private List<Notification> sortedNotifications(List<Notification> notifications) {
+        if (notifications == null) {
+            return List.of();
+        }
+        return notifications.stream()
                 .filter(Objects::nonNull)
+                .sorted(Comparator.comparing(Notification::getCreatedAt,
+                        Comparator.nullsLast(Comparator.reverseOrder())))
                 .toList();
-    }
-
-    private boolean isRelevant(TaxObligationResponseDTO obligation) {
-        if (obligation.dueDate() == null) {
-            return false;
-        }
-        return obligation.status() == TaxObligationStatus.PENDING
-                || obligation.status() == TaxObligationStatus.IN_PROGRESS
-                || obligation.status() == TaxObligationStatus.OVERDUE;
-    }
-
-    private NotificationAlert toAlert(TaxObligationResponseDTO obligation, TaxPayer taxpayer, LocalDate limitDate) {
-        if (taxpayer == null || taxpayer.getEmail() == null || taxpayer.getEmail().isBlank()) {
-            return null;
-        }
-
-        String dueDateLabel = obligation.dueDate() != null ? obligation.dueDate().format(DATE_FORMATTER) : "Sin fecha";
-        String statusLabel = statusLabel(obligation.status());
-        String tone = toneFor(obligation, limitDate);
-        String obligationLabel = obligation.type() + " · " + obligation.fiscalPeriod();
-        String subject = "Recordatorio de obligación " + obligationLabel;
-        String body = buildEmailBody(taxpayer, obligation, dueDateLabel, statusLabel);
-
-        return new NotificationAlert(
-                taxpayer.getBusinessName(),
-                taxpayer.getIdentificacion(),
-                taxpayer.getEmail(),
-                obligationLabel,
-                dueDateLabel,
-                statusLabel,
-                tone,
-                subject,
-                body);
-    }
-
-    private String statusLabel(TaxObligationStatus status) {
-        return switch (status) {
-            case PENDING -> "Pendiente";
-            case IN_PROGRESS -> "En progreso";
-            case COMPLETED -> "Completado";
-            case OVERDUE -> "Vencido";
-            case CANCELLED -> "Cancelado";
-        };
-    }
-
-    private String toneFor(TaxObligationResponseDTO obligation, LocalDate limitDate) {
-        if (obligation.dueDate().isBefore(LocalDate.now())) {
-            return "danger";
-        }
-        if (!obligation.dueDate().isAfter(limitDate)) {
-            return "warning";
-        }
-        return "primary";
-    }
-
-    private String buildEmailBody(TaxPayer taxpayer, TaxObligationResponseDTO obligation, String dueDateLabel,
-                                  String statusLabel) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Hola ").append(taxpayer.getBusinessName()).append(",\n\n");
-        builder.append("Este es un recordatorio de TaxControl.\n\n");
-        builder.append("Cliente: ").append(taxpayer.getBusinessName()).append("\n");
-        builder.append("Identificación: ").append(taxpayer.getIdentificacion()).append("\n");
-        builder.append("Obligación: ").append(obligation.type()).append("\n");
-        builder.append("Periodo: ").append(obligation.fiscalPeriod()).append("\n");
-        builder.append("Vencimiento: ").append(dueDateLabel).append("\n");
-        builder.append("Estado: ").append(statusLabel).append("\n\n");
-        builder.append("Ingresa a TaxControl para revisar el detalle y actualizar el seguimiento.");
-        return builder.toString();
     }
 }
