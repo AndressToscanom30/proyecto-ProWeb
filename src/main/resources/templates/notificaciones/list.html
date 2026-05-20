@@ -10,10 +10,10 @@
     <section th:fragment="content" class="page-stack">
         <section class="page-hero">
             <div>
-                <p class="eyebrow">Centro de notificaciones</p>
+                <p class="eyebrow">Centro de trabajo</p>
                 <h2>Bandeja interna de alertas</h2>
                 <p>
-                    La bandeja se sincroniza con las obligaciones reales del sistema. Desde aquí puedes revisar
+                    La bandeja se sincroniza con las obligaciones asignadas al equipo. Desde aquí puedes revisar
                     vencimientos, abrir el detalle, marcar como leídas o limpiar el histórico leído.
                 </p>
             </div>
@@ -33,7 +33,7 @@
                 <div class="panel-header">
                     <div>
                         <p class="eyebrow">Bandeja activa</p>
-                        <h3>Notificaciones del usuario</h3>
+                        <h3>Notificaciones del empleado</h3>
                         <small>Última sincronización: <span th:text="${ultimaSincronizacion}">Sin sincronizar</span></small>
                     </div>
                     <span class="pill tone-neutral" th:text="${alcanceBandeja}">Toda la cartera fiscal</span>
@@ -86,9 +86,9 @@
                                 <span th:text="${notificacion.createdAt != null ? #temporals.format(notificacion.createdAt, 'dd MMM yyyy, HH:mm') : 'Sin fecha'}">
                                     20 may 2026, 08:30
                                 </span>
-                                <span th:if="${notificacion.sourceId != null and !#strings.isEmpty(notificacion.sourceId)}"
-                                      th:text="|Origen: ${notificacion.sourceId}|">
-                                    Origen: obl-1
+                                <span th:if="${notificacion.contextLabel != null and !#strings.isEmpty(notificacion.contextLabel)}"
+                                      th:text="|Contexto: ${notificacion.contextLabel}|">
+                                    Contexto: Cliente · IVA · 2026-01
                                 </span>
                             </div>
 
@@ -160,8 +160,9 @@
                 <div class="notification-note">
                     <h4>Qué hace esta vista</h4>
                     <p>
-                        Sincroniza las obligaciones activas, genera alertas por vencimiento y conserva el estado
-                        leído o eliminado dentro del usuario. No se usa para mandar correos manuales a clientes.
+                        Sincroniza las obligaciones activas del personal interno, genera alertas por vencimiento y
+                        conserva el estado leído o eliminado dentro del usuario. No se usa para mandar correos
+                        manuales a clientes.
                     </p>
                 </div>
             </aside>

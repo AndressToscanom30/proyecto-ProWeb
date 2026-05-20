@@ -48,31 +48,32 @@ class NotificationCenterServiceTest {
     void refreshInbox_sincronizaAlertasYPreservaLeidas() {
         User user = buildUser();
         Notification legacy = new Notification(
-                "Vencida · IVA",
+                "Obligación vencida",
                 "Mensaje histórico",
                 "warning",
                 true,
                 LocalDateTime.now().minusDays(5),
                 "obl-1",
-                "/obligaciones/obl-1");
+                "/obligaciones/obl-1",
+                "Cliente Uno · Impuesto al Valor Agregado (IVA) · 2026-B1");
         Notification manual = new Notification(
                 "Mensaje manual",
                 "primary",
                 false);
         user.setNotifications(new ArrayList<>(List.of(legacy, manual)));
 
-        when(userRepository.findByEmail("gerente@cronos.com"))
+        when(userRepository.findByEmail("contador@cronos.com"))
                 .thenReturn(Optional.of(user));
         when(userRepository.save(any(User.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
-        when(obligationService.findByTaxPayerId("tp-001"))
+        when(obligationService.findByCounterResponsibleUserId("user-1"))
                 .thenReturn(List.of(
                         obligation("obl-1", "tp-001", "Cliente Uno", LocalDate.now().plusDays(3), TaxObligationStatus.PENDING),
                         obligation("obl-2", "tp-001", "Cliente Dos", LocalDate.now().minusDays(1), TaxObligationStatus.OVERDUE)));
 
         User refreshed = notificationCenterService.refreshInbox(user);
 
-        verify(obligationService).findByTaxPayerId("tp-001");
+        verify(obligationService).findByCounterResponsibleUserId("user-1");
         verify(userRepository).save(any(User.class));
 
         assertEquals(3, refreshed.getNotifications().size());
@@ -83,6 +84,7 @@ class NotificationCenterServiceTest {
                 .orElseThrow();
         assertTrue(updated.isRead(), "La notificación existente debe conservar el estado leído");
         assertEquals("warning", updated.getType());
+        assertEquals("Cliente Uno · Impuesto al Valor Agregado (IVA) · 2026-B1", updated.getContextLabel());
 
         Notification urgent = refreshed.getNotifications().stream()
                 .filter(notification -> "obl-2".equals(notification.getSourceId()))
@@ -112,7 +114,7 @@ class NotificationCenterServiceTest {
         notification.setId("note-1");
         user.setNotifications(new ArrayList<>(List.of(notification)));
 
-        when(userRepository.findByEmail("gerente@cronos.com"))
+        when(userRepository.findByEmail("contador@cronos.com"))
                 .thenReturn(Optional.of(user));
         when(userRepository.save(any(User.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
@@ -128,11 +130,10 @@ class NotificationCenterServiceTest {
     private User buildUser() {
         User user = new User();
         user.setId("user-1");
-        user.setName("Gerente");
-        user.setEmail("gerente@cronos.com");
+                user.setName("Contador Principal");
+        user.setEmail("contador@cronos.com");
         user.setActive(true);
-        user.setRole(new Role("ROLE_GERENTE", "Gerente", new ArrayList<>()));
-        user.setTaxPayerId("tp-001");
+                user.setRole(new Role("ROLE_CONTADOR", "Contador Principal", new ArrayList<>()));
         user.setNotifications(new ArrayList<>());
         return user;
     }

@@ -18,6 +18,7 @@ public class Notification {
     private LocalDateTime createdAt;
     private String sourceId;
     private String targetUrl;
+    private String contextLabel;
 
     public Notification(){
         this.id = UUID.randomUUID().toString();
@@ -34,6 +35,12 @@ public class Notification {
 
     public Notification(String title, String message, String type, boolean read,
                         LocalDateTime createdAt, String sourceId, String targetUrl) {
+        this(title, message, type, read, createdAt, sourceId, targetUrl, null);
+    }
+
+    public Notification(String title, String message, String type, boolean read,
+                        LocalDateTime createdAt, String sourceId, String targetUrl,
+                        String contextLabel) {
         this();
         this.title = title;
         this.message = message;
@@ -42,6 +49,7 @@ public class Notification {
         this.createdAt = createdAt;
         this.sourceId = sourceId;
         this.targetUrl = targetUrl;
+        this.contextLabel = contextLabel;
     }
 
     public void markAsRead() {
@@ -59,6 +67,7 @@ public class Notification {
         this.read = true;
         this.sourceId = "";
         this.targetUrl = "";
+        this.contextLabel = "";
     }
 
     public String getId() {
@@ -123,5 +132,13 @@ public class Notification {
 
     public void setTargetUrl(String targetUrl) {
         this.targetUrl = targetUrl;
+    }
+
+    public String getContextLabel() {
+        return contextLabel;
+    }
+
+    public void setContextLabel(String contextLabel) {
+        this.contextLabel = contextLabel;
     }
 }

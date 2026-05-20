@@ -53,7 +53,7 @@
                     </svg>
                     <span>Dashboard</span>
                 </a>
-                <a th:href="@{/notificaciones}" class="sidebar-link"
+                <a sec:authorize="hasAnyRole('GERENTE', 'ASESOR', 'CONTADOR', 'AUXILIAR_CONTADOR')" th:href="@{/notificaciones}" class="sidebar-link"
                     th:classappend="${activeSection} == 'notificaciones' ? ' is-active' : ''">
                     <svg viewBox="0 0 24 24">
                         <path d="M15 17.5H9" />
@@ -207,13 +207,13 @@
                                 </svg>
                                 Configuración
                             </a>
-                            <a class="user-dropdown-item" th:href="@{/notificaciones}" aria-label="Notificaciones">
+                            <a sec:authorize="hasAnyRole('GERENTE', 'ASESOR', 'CONTADOR', 'AUXILIAR_CONTADOR')" class="user-dropdown-item" th:href="@{/notificaciones}" aria-label="Notificaciones internas">
                                 <svg viewBox="0 0 24 24">
                                     <path d="M15 17.5H9" />
                                     <path
                                         d="M17 17.5H7a2 2 0 0 0 1.7-2l.3-4.2A3.9 3.9 0 0 1 13 7.8v-.8a1 1 0 1 1 2 0v.8a3.9 3.9 0 0 1 4 3.5l.3 4.2a2 2 0 0 0 1.7 2z" />
                                 </svg>
-                                Notificaciones
+                                Notificaciones internas
                             </a>
                             <form th:action="@{/logout}" method="post" style="margin:0">
                                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />

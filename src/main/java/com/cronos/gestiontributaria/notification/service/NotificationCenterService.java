@@ -13,6 +13,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -105,6 +106,16 @@ public class NotificationCenterService {
         return userRepository.save(persisted);
     }
 
+    public String describeInboxScope(User user) {
+        String roleName = normalizedRoleName(user);
+        return switch (roleName) {
+            case "ROLE_CONTADOR" -> "Obligaciones asignadas";
+            case "ROLE_AUXILIAR_CONTADOR" -> "Apoyo operativo";
+            case "ROLE_GERENTE", "ROLE_ASESOR", "ROLE_ADMIN" -> "Cartera completa";
+            default -> "Bandeja interna";
+        };
+    }
+
     private User requireUser(User user) {
         if (user == null) {
             throw new IllegalArgumentException("Usuario no disponible");
@@ -140,10 +151,13 @@ public class NotificationCenterService {
     }
 
     private List<TaxObligationResponseDTO> loadRelevantObligations(User user) {
-        if (user.getTaxPayerId() != null && !user.getTaxPayerId().isBlank()) {
-            return obligationService.findByTaxPayerId(user.getTaxPayerId());
-        }
-        return obligationService.findAll();
+        String roleName = normalizedRoleName(user);
+        return switch (roleName) {
+            case "ROLE_CONTADOR" -> obligationService.findByCounterResponsibleUserId(user.getId());
+            case "ROLE_AUXILIAR_CONTADOR" -> obligationService.findByAuxiliaryResponsibleUserId(user.getId());
+            case "ROLE_GERENTE", "ROLE_ASESOR", "ROLE_ADMIN" -> obligationService.findAll();
+            default -> List.of();
+        };
     }
 
     private boolean isRelevant(TaxObligationResponseDTO obligation) {
@@ -162,36 +176,45 @@ public class NotificationCenterService {
         boolean dueSoon = !overdue && !dueDate.isAfter(windowEnd);
 
         String tone = overdue ? "danger" : dueSoon ? "warning" : "primary";
+        String contextLabel = buildContextLabel(obligation);
         String title;
         String message;
 
         if (overdue) {
             title = "Obligación vencida";
-            message = obligation.taxPayerName() + " tiene " + obligation.type().getDescription()
-                    + " vencido desde el " + dueDate.format(DATE_FORMATTER) + ".";
+            message = "Tienes pendiente la revisión de " + contextLabel
+                + ". Venció el " + dueDate.format(DATE_FORMATTER) + ".";
         } else if (daysUntilDue == 0) {
             title = "Vence hoy";
-            message = obligation.taxPayerName() + " vence hoy con " + obligation.type().getDescription()
-                    + " del periodo " + obligation.fiscalPeriod() + ".";
+            message = "Revisa " + contextLabel + ". Vence hoy.";
         } else if (dueSoon) {
             title = "Vence pronto";
-            message = obligation.taxPayerName() + " vence en " + daysUntilDue + " días con "
-                    + obligation.type().getDescription() + ".";
+            message = "Tienes una obligación próxima: " + contextLabel
+                + " vence en " + daysUntilDue + " días.";
         } else {
-            title = "Seguimiento fiscal";
-            message = obligation.taxPayerName() + " tiene seguimiento activo para "
-                    + obligation.type().getDescription() + " del periodo " + obligation.fiscalPeriod() + ".";
+            title = "Seguimiento interno";
+            message = "Mantén seguimiento a " + contextLabel + ".";
         }
 
         return new Notification(
-                title + " · " + obligation.type().name().replace('_', ' '),
+            title,
                 message,
                 tone,
                 false,
                 LocalDateTime.now(),
                 obligation.id(),
-                obligation.id() != null ? "/obligaciones/" + obligation.id() : null);
+            obligation.id() != null ? "/obligaciones/" + obligation.id() : null,
+            contextLabel);
     }
+
+        private String buildContextLabel(TaxObligationResponseDTO obligation) {
+        String client = obligation.taxPayerName() != null && !obligation.taxPayerName().isBlank()
+            ? obligation.taxPayerName()
+            : "Contribuyente";
+        String type = obligation.type() != null ? obligation.type().getDescription() : "Obligación";
+        String period = obligation.fiscalPeriod() != null ? obligation.fiscalPeriod() : "sin periodo";
+        return client + " · " + type + " · " + period;
+        }
 
     private List<Notification> mergeNotifications(List<Notification> existing, List<Notification> generated) {
         Map<String, Notification> generatedBySource = generated.stream()
@@ -242,12 +265,16 @@ public class NotificationCenterService {
         if (user.getNotifications() == null) {
             user.setNotifications(new ArrayList<>());
         }
-        return user.getNotifications();
+        return user.getNotifications().stream()
+                .filter(Objects::nonNull)
+                .map(this::normalizeNotification)
+                .toList();
     }
 
     private List<Notification> sortedCopy(List<Notification> notifications) {
         return notifications == null ? new ArrayList<>() : notifications.stream()
                 .filter(Objects::nonNull)
+                .map(this::normalizeNotification)
                 .sorted(Comparator.comparing(Notification::getCreatedAt,
                         Comparator.nullsLast(Comparator.reverseOrder())))
                 .toList();
@@ -263,5 +290,22 @@ public class NotificationCenterService {
 
     private String normalizeEmail(String email) {
         return email.trim().toLowerCase(Locale.ROOT);
+    }
+
+    private String normalizedRoleName(User user) {
+        if (user == null || user.getRole() == null || user.getRole().getName() == null) {
+            return "";
+        }
+        return user.getRole().getName().trim().toUpperCase(Locale.ROOT);
+    }
+
+    private Notification normalizeNotification(Notification notification) {
+        if (notification.getId() == null || notification.getId().isBlank()) {
+            notification.setId(UUID.randomUUID().toString());
+        }
+        if (notification.getCreatedAt() == null) {
+            notification.setCreatedAt(LocalDateTime.now());
+        }
+        return notification;
     }
 }

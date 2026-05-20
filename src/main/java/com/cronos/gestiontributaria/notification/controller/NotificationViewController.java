@@ -9,6 +9,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +27,7 @@ import com.cronos.gestiontributaria.notification.service.NotificationCenterServi
 
 @Controller
 @RequestMapping("/notificaciones")
+@PreAuthorize("hasAnyRole('GERENTE','ASESOR','CONTADOR','AUXILIAR_CONTADOR')")
 /**
  * Documentación de la entidad NotificationViewController.
  */
@@ -68,9 +70,7 @@ public class NotificationViewController {
         model.addAttribute("notificacionesProximas", upcomingCount);
         model.addAttribute("notificacionesLeidas", readCount);
         model.addAttribute("ultimaSincronizacion", lastSync);
-        model.addAttribute("alcanceBandeja", user.getTaxPayerId() != null && !user.getTaxPayerId().isBlank()
-                ? "Solo tu contribuyente vinculado"
-                : "Toda la cartera fiscal");
+        model.addAttribute("alcanceBandeja", notificationCenterService.describeInboxScope(user));
         if (successMessage != null && !successMessage.isBlank()) {
             model.addAttribute("successMessage", successMessage);
         }

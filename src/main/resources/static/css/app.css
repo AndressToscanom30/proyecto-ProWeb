@@ -2172,7 +2172,7 @@ textarea {
   gap: 0.9rem;
   padding: 1rem;
   border-radius: var(--radius-lg);
-  background: var(--bg-soft);
+  background: var(--surface);
   border: 1px solid var(--border);
   transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
 }
@@ -2249,7 +2249,7 @@ textarea {
 .notification-summary-card {
   padding: 0.95rem;
   border-radius: var(--radius-lg);
-  background: var(--bg-soft);
+  background: linear-gradient(180deg, var(--surface-strong), var(--surface));
   border: 1px solid var(--border);
 }
 
@@ -2281,7 +2281,7 @@ textarea {
   padding: 1rem;
   border-radius: var(--radius-lg);
   border: 1px solid var(--accent-border);
-  background: linear-gradient(180deg, var(--accent-soft), transparent);
+  background: linear-gradient(180deg, var(--surface-soft), transparent);
 }
 
 .notification-note h4 {
