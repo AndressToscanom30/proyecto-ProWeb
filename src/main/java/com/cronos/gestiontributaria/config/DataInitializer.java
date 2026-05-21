@@ -65,5 +65,21 @@ public class DataInitializer implements CommandLineRunner {
             userRepository.save(contribuyente);
             System.out.println(">>> CONTRIBUYENTE por defecto creado: contribuyente@cronos.com / test1234");
         }
+
+        // Usuario de prueba con rol AUXILIAR_CONTADOR para validar el flujo
+        // de obligaciones asignadas (/mis-obligaciones) y notificaciones.
+        boolean hasAuxiliar = userRepository.findByEmail("auxiliar@cronos.com").isPresent();
+        if (!hasAuxiliar) {
+            User auxiliar = new User();
+            auxiliar.setName("Auxiliar Contable");
+            auxiliar.setEmail("auxiliar@cronos.com");
+            auxiliar.setPasswordHash(passwordEncoder.encode("admin123"));
+            auxiliar.setActive(true);
+            auxiliar.setRole(new Role("ROLE_AUXILIAR_CONTADOR",
+                    "Auxiliar Contable", new ArrayList<>()));
+            auxiliar.setNotifications(new ArrayList<>());
+            userRepository.save(auxiliar);
+            System.out.println(">>> AUXILIAR_CONTADOR por defecto creado: auxiliar@cronos.com / admin123");
+        }
     }
 }
