@@ -93,6 +93,13 @@ public class SecurityConfig {
                         .requestMatchers("/api/contribuyente/**").hasRole("CONTRIBUYENTE")
                         .requestMatchers("/portal/**").hasRole("CONTRIBUYENTE")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        // ── Módulo 1: Mensajes Internos (requiere autenticación) ──
+                        .requestMatchers("/api/mensajes/**").authenticated()
+                        // ── Módulo 2: Solicitudes con Flujo de Estados ──
+                        .requestMatchers(HttpMethod.GET, "/api/solicitudes").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/solicitudes/*/aprobar").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/solicitudes/*/rechazar").hasRole("ADMIN")
+                        .requestMatchers("/api/solicitudes/**").authenticated()
                         // Resto de la API REST queda como estaba antes: público.
                         .requestMatchers("/api/**").permitAll()
                         .anyRequest().authenticated())
