@@ -4,14 +4,11 @@ import java.util.Collections;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.cronos.gestiontributaria.mensajes.controller.MensajeController;
@@ -19,6 +16,7 @@ import com.cronos.gestiontributaria.mensajes.service.MensajeService;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -28,30 +26,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * <p>Carga únicamente la capa web (MensajeController) sin levantar el
  * contexto completo de Spring ni conectarse a la base de datos.
- * La capa de servicio se simula con un bean mock.</p>
+ * La capa de servicio se simula con {@code @MockitoBean}.</p>
  *
- * <p>Ejecutar con: {@code ./mvnw test -Dtest=MensajeControllerTest}</p>
+ * <p>Ejecutar con: {@code mvn test -Dtest=MensajeControllerTest}</p>
  */
 @WebMvcTest(MensajeController.class)
-@Import(MensajeControllerTest.MockConfig.class)
 class MensajeControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
+    @MockitoBean
     private MensajeService mensajeService;
-
-    /**
-     * Configuración interna que provee el mock de MensajeService.
-     */
-    @Configuration
-    static class MockConfig {
-        @Bean
-        public MensajeService mensajeService() {
-            return Mockito.mock(MensajeService.class);
-        }
-    }
 
     /**
      * Test 1: GET /api/mensajes/bandeja-entrada con usuario autenticado
@@ -88,6 +74,7 @@ class MensajeControllerTest {
     @WithMockUser(username = "usuario@test.com")
     void enviarMensaje_conCuerpoVacio_retorna400() throws Exception {
         mockMvc.perform(post("/api/mensajes")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
                 .andExpect(status().isBadRequest());
