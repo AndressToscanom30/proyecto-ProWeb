@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Solicitudes — Administración</title>
+    <style>
+        /* ── Reset y base ────────────────────────────────────────────── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            color: #1a1a2e;
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        /* ── Encabezado ──────────────────────────────────────────────── */
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .page-header h1 {
+            font-size: 1.8rem;
+            color: #16213e;
+            font-weight: 700;
+        }
+        .page-header p {
+            color: #6c757d;
+            font-size: 0.95rem;
+        }
+
+        /* ── Tarjetas KPI ────────────────────────────────────────────── */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.2rem;
+            margin-bottom: 2.5rem;
+        }
+        .kpi-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-left: 5px solid #adb5bd;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .kpi-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+        }
+        .kpi-card .kpi-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+        .kpi-card .kpi-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+        }
+
+        /* Colores por tipo de KPI */
+        .kpi-total   { border-left-color: #0d6efd; }
+        .kpi-total .kpi-value   { color: #0d6efd; }
+
+        .kpi-pending { border-left-color: #ffc107; }
+        .kpi-pending .kpi-value { color: #e6a800; }
+
+        .kpi-approved { border-left-color: #198754; }
+        .kpi-approved .kpi-value { color: #198754; }
+
+        .kpi-rejected { border-left-color: #dc3545; }
+        .kpi-rejected .kpi-value { color: #dc3545; }
+
+        /* ── Tabla ───────────────────────────────────────────────────── */
+        .table-container {
+            background: #fff;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow-x: auto;
+        }
+        .table-container h2 {
+            font-size: 1.3rem;
+            color: #16213e;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        thead th {
+            background: #16213e;
+            color: #fff;
+            padding: 0.85rem 1rem;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.03em;
+        }
+        thead th:first-child { border-radius: 8px 0 0 0; }
+        thead th:last-child  { border-radius: 0 8px 0 0; }
+
+        tbody tr {
+            border-bottom: 1px solid #e9ecef;
+            transition: background 0.15s ease;
+        }
+        tbody tr:hover { background: #f8f9fa; }
+        tbody td {
+            padding: 0.75rem 1rem;
+            vertical-align: middle;
+        }
+
+        /* ── Badges de estado ────────────────────────────────────────── */
+        .badge {
+            display: inline-block;
+            padding: 0.3em 0.75em;
+            border-radius: 50px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .badge-pendiente {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .badge-aprobada {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+        .badge-rechazada {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+        /* ── Enlace de regreso ───────────────────────────────────────── */
+        .back-link {
+            display: inline-block;
+            margin-top: 1.5rem;
+            color: #0d6efd;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .back-link:hover { text-decoration: underline; }
+
+        /* ── Mensaje vacío ───────────────────────────────────────────── */
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: #6c757d;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Encabezado -->
+    <div class="page-header">
+        <h1>📋 Panel de Solicitudes</h1>
+        <p>Estado general del módulo de solicitudes — datos en tiempo real</p>
+    </div>
+
+    <!-- Tarjetas KPI -->
+    <div class="kpi-grid">
+        <div class="kpi-card kpi-total">
+            <span class="kpi-value" th:text="${totalSolicitudes}">0</span>
+            <span class="kpi-label">Total General</span>
+        </div>
+        <div class="kpi-card kpi-pending">
+            <span class="kpi-value" th:text="${pendientes}">0</span>
+            <span class="kpi-label">Pendientes</span>
+        </div>
+        <div class="kpi-card kpi-approved">
+            <span class="kpi-value" th:text="${aprobadas}">0</span>
+            <span class="kpi-label">Aprobadas</span>
+        </div>
+        <div class="kpi-card kpi-rejected">
+            <span class="kpi-value" th:text="${rechazadas}">0</span>
+            <span class="kpi-label">Rechazadas</span>
+        </div>
+    </div>
+
+    <!-- Tabla de solicitudes -->
+    <div class="table-container">
+        <h2>Listado Completo de Solicitudes</h2>
+
+        <table th:if="${not #lists.isEmpty(solicitudes)}">
+            <thead>
+                <tr>
+                    <th>Solicitante</th>
+                    <th>Tipo</th>
+                    <th>Estado</th>
+                    <th>Fecha de Creación</th>
+                    <th>Observación</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="sol : ${solicitudes}">
+                    <td th:text="${sol.solicitanteUsername}">usuario@correo.com</td>
+                    <td th:text="${sol.tipo}">SOPORTE</td>
+                    <td>
+                        <span class="badge badge-pendiente"
+                              th:if="${sol.estado.name() == 'PENDIENTE'}"
+                              th:text="${sol.estado}">PENDIENTE</span>
+                        <span class="badge badge-aprobada"
+                              th:if="${sol.estado.name() == 'APROBADA'}"
+                              th:text="${sol.estado}">APROBADA</span>
+                        <span class="badge badge-rechazada"
+                              th:if="${sol.estado.name() == 'RECHAZADA'}"
+                              th:text="${sol.estado}">RECHAZADA</span>
+                    </td>
+                    <td th:text="${#temporals.format(sol.fechaCreacion, 'dd/MM/yyyy HH:mm')}">01/01/2026 10:00</td>
+                    <td th:text="${sol.observacion != null ? sol.observacion : '—'}">—</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="empty-state" th:if="${#lists.isEmpty(solicitudes)}">
+            No hay solicitudes registradas en el sistema.
+        </div>
+    </div>
+
+    <a href="/dashboard" class="back-link">← Volver al Dashboard</a>
+
+</body>
+</html>
