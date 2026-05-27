@@ -692,12 +692,9 @@ proyecto-ProWeb/
 
 ## Autores
 
-| Nombre | Rol |
-|--------|-----|
-| **Keiver** | Desarrollador Principal |
+| Nombre |
+|--------|
+| **Keiver Castellanos - 02230131035** |
 
 ---
 
-<p align="center">
-  <sub>Hecho con y Spring Boot — Universidad del Norte, 2026</sub>
-</p>
