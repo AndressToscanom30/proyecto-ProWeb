@@ -90,7 +90,7 @@
                                     <span class="status-pill tone-warning" th:if="${!msg.leido}">NUEVO</span>
                                     <span class="status-pill tone-neutral" th:if="${msg.leido}">Leído</span>
                                     
-                                    <button th:if="${!msg.leido}" class="secondary-action btn-sm" style="margin-left: 0.5rem;" th:onclick="|marcarLeido('${msg.id}')|">✓</button>
+                                    <button th:if="${!msg.leido}" class="secondary-action btn-sm" style="margin-left: 0.5rem;" th:data-id="${msg.id}" onclick="marcarLeido(this.getAttribute('data-id'))">✓</button>
                                 </td>
                             </tr>
                         </tbody>
