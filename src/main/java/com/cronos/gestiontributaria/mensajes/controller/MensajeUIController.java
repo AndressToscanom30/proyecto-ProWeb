@@ -10,6 +10,9 @@ import com.cronos.gestiontributaria.auth.model.User;
 import com.cronos.gestiontributaria.auth.service.UserService;
 import com.cronos.gestiontributaria.mensajes.service.MensajeService;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Controller
 @RequestMapping("/ui/mensajes")
 public class MensajeUIController {
@@ -35,8 +38,11 @@ public class MensajeUIController {
         model.addAttribute("enviados", mensajeService.obtenerEnviados(authentication.getName()));
         model.addAttribute("noLeidos", mensajeService.contarNoLeidos(authentication.getName()));
         
-        // Lista de usuarios para el select del destinatario
-        model.addAttribute("usuarios", userService.findAll());
+        // Lista de usuarios para el select del destinatario (excluyendo al usuario actual)
+        List<User> destinatarios = userService.findAll().stream()
+                .filter(u -> !u.getEmail().equalsIgnoreCase(authentication.getName()))
+                .collect(Collectors.toList());
+        model.addAttribute("usuarios", destinatarios);
         
         return "admin/mensajes/panel"; // We'll create this template
     }

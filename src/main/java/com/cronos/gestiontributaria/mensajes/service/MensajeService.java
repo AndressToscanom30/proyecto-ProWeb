@@ -40,6 +40,10 @@ public class MensajeService {
      * @throws IllegalArgumentException si el destinatario no existe
      */
     public Mensaje enviarMensaje(MensajeRequest request, String emisorUsername) {
+        if (emisorUsername.equalsIgnoreCase(request.getDestinatarioUsername())) {
+            throw new IllegalArgumentException("No puedes enviarte un mensaje a ti mismo");
+        }
+
         // Verificar que el destinatario exista en el sistema
         if (userRepository.findByEmail(request.getDestinatarioUsername()).isEmpty()) {
             throw new IllegalArgumentException("El destinatario no existe en el sistema");

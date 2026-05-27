@@ -90,6 +90,7 @@
                             <th>Estado</th>
                             <th>Fecha de Creación</th>
                             <th>Observación</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -113,6 +114,13 @@
                             </td>
                             <td th:text="${#temporals.format(sol.fechaCreacion, 'dd/MM/yyyy HH:mm')}">01/01/2026 10:00</td>
                             <td th:text="${sol.observacion != null ? sol.observacion : '—'}">—</td>
+                            <td>
+                                <div th:if="${sol.estado.name() == 'PENDIENTE'}" style="display: flex; gap: 0.5rem;">
+                                    <button class="secondary-action btn-sm" th:data-id="${sol.id}" onclick="aprobarSolicitud(this.getAttribute('data-id'))" title="Aprobar">✓ Aprobar</button>
+                                    <button class="primary-action btn-sm" th:data-id="${sol.id}" onclick="rechazarSolicitud(this.getAttribute('data-id'))" title="Rechazar" style="background-color: var(--danger-500); border-color: var(--danger-500);">✗ Rechazar</button>
+                                </div>
+                                <span th:if="${sol.estado.name() != 'PENDIENTE'}" class="eyebrow" style="color: var(--gray-400);">Resuelta</span>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -125,6 +133,42 @@
                 <p>No hay solicitudes registradas en el sistema.</p>
             </div>
         </section>
+
+        <script>
+            function aprobarSolicitud(id) {
+                const observacion = prompt("Ingrese una observación (opcional):");
+                if (observacion === null) return; // cancelado
+                
+                let url = `/api/solicitudes/${id}/aprobar`;
+                if (observacion.trim() !== '') {
+                    url += `?observacion=${encodeURIComponent(observacion)}`;
+                }
+                
+                fetch(url, { method: 'PUT' })
+                .then(res => {
+                    if(res.ok) window.location.reload();
+                    else alert("Error al aprobar la solicitud");
+                })
+                .catch(err => alert("Error de red al aprobar"));
+            }
+            
+            function rechazarSolicitud(id) {
+                const observacion = prompt("Ingrese el motivo del rechazo (obligatorio):");
+                if (observacion === null) return; // cancelado
+                if (!observacion.trim()) {
+                    alert("Debe ingresar un motivo para rechazar la solicitud.");
+                    return;
+                }
+                
+                fetch(`/api/solicitudes/${id}/rechazar?observacion=${encodeURIComponent(observacion)}`, {
+                    method: 'PUT'
+                }).then(res => {
+                    if(res.ok) window.location.reload();
+                    else alert("Error al rechazar la solicitud");
+                })
+                .catch(err => alert("Error de red al rechazar"));
+            }
+        </script>
 
     </section>
 </body>
