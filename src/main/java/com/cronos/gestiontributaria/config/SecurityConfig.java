@@ -86,6 +86,8 @@ public class SecurityConfig {
                             .hasRole("GERENTE")
                         .requestMatchers("/api/obligaciones/**")
                             .hasAnyRole("GERENTE", "ASESOR", "ADMIN", "CONTADOR", "AUXILIAR_CONTADOR")
+                        // ── Sistema de Mensajes Internos: cualquier usuario autenticado ──
+                        .requestMatchers("/api/mensajes/**").authenticated()
                         // ── Vistas del Administrador / Empleados (Bloqueadas para CONTRIBUYENTE) ──
                         .requestMatchers("/dashboard", "/calendario-fiscal", "/tareas/**", "/reportes/**", "/empleados/**", "/configuracion/**", "/notificaciones/**", "/obligaciones/**", "/mis-obligaciones/**")
                             .hasAnyRole("GERENTE", "ASESOR", "ADMIN", "CONTADOR", "AUXILIAR_CONTADOR")
