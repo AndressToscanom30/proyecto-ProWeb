@@ -6,7 +6,7 @@
   <img src="https://img.shields.io/badge/Spring%20Security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white" />
 </p>
 
-<h1 align="center">🏛️ Cronos — Sistema de Gestión Tributaria</h1>
+<h1 align="center">Cronos — Sistema de Gestión Tributaria</h1>
 
 <p align="center">
   <strong>Plataforma web empresarial para la gestión integral de obligaciones tributarias, contribuyentes, empleados, notificaciones, mensajería interna y solicitudes con flujo de estados.</strong>
@@ -18,7 +18,7 @@
 
 ---
 
-## 📋 Tabla de Contenidos
+## Tabla de Contenidos
 
 - [Descripción General](#-descripción-general)
 - [Arquitectura del Proyecto](#-arquitectura-del-proyecto)
@@ -35,7 +35,7 @@
 
 ---
 
-## 🏗️ Descripción General
+## Descripción General
 
 **Cronos** es un sistema de gestión tributaria que permite a una firma contable administrar sus contribuyentes, obligaciones fiscales, empleados y comunicaciones internas desde una única plataforma web.
 
@@ -90,7 +90,7 @@ modulo/
 
 ---
 
-## 🛠️ Stack Tecnológico
+## Stack Tecnológico
 
 | Categoría | Tecnología | Versión |
 |-----------|-----------|---------|
@@ -106,9 +106,9 @@ modulo/
 
 ---
 
-## 📦 Módulos del Sistema
+## Módulos del Sistema
 
-### 🔐 Autenticación y Usuarios (`auth`)
+### Autenticación y Usuarios (`auth`)
 
 | Característica | Detalle |
 |----------------|---------|
@@ -120,7 +120,7 @@ modulo/
 
 ---
 
-### 👥 Gestión de Contribuyentes (`clientes`)
+### Gestión de Contribuyentes (`clientes`)
 
 | Característica | Detalle |
 |----------------|---------|
@@ -131,7 +131,7 @@ modulo/
 
 ---
 
-### 📊 Obligaciones Tributarias (`obligaciones`)
+### Obligaciones Tributarias (`obligaciones`)
 
 | Característica | Detalle |
 |----------------|---------|
@@ -142,7 +142,7 @@ modulo/
 
 ---
 
-### 👔 Gestión de Empleados (`empleados`)
+### Gestión de Empleados (`empleados`)
 
 | Característica | Detalle |
 |----------------|---------|
@@ -152,7 +152,7 @@ modulo/
 
 ---
 
-### 🔔 Notificaciones (`notification`)
+### Notificaciones (`notification`)
 
 | Característica | Detalle |
 |----------------|---------|
@@ -163,7 +163,7 @@ modulo/
 
 ---
 
-### ✉️ Módulo 1 — Mensajería Interna (`mensajes`)
+### Módulo 1 — Mensajería Interna (`mensajes`)
 
 Sistema de comunicación directa entre usuarios del sistema.
 
@@ -190,7 +190,7 @@ Sistema de comunicación directa entre usuarios del sistema.
 
 ---
 
-### 📄 Módulo 2 — Solicitudes con Flujo de Estados (`solicitudes`)
+### Módulo 2 — Solicitudes con Flujo de Estados (`solicitudes`)
 
 Sistema para radicar solicitudes de soporte, acceso o información con flujo de aprobación.
 
@@ -219,7 +219,7 @@ Sistema para radicar solicitudes de soporte, acceso o información con flujo de 
 
 ---
 
-### 📊 Módulo 3 — Panel Administrativo de Solicitudes
+### Módulo 3 — Panel Administrativo de Solicitudes
 
 Dashboard visual con KPIs y tabla de gestión para el administrador.
 
@@ -232,7 +232,7 @@ Dashboard visual con KPIs y tabla de gestión para el administrador.
 
 ---
 
-### 🧪 Módulos 4 y 5 — Pruebas Unitarias
+### Módulos 4 y 5 — Pruebas Unitarias
 
 Suite de pruebas con JUnit 5 y Spring MockMvc.
 
@@ -244,7 +244,7 @@ Suite de pruebas con JUnit 5 y Spring MockMvc.
 
 ---
 
-## 🗃️ Modelo de Datos
+## Modelo de Datos
 
 ```mermaid
 erDiagram
@@ -307,7 +307,7 @@ erDiagram
 
 ---
 
-## 🔒 Roles y Permisos
+## Roles y Permisos
 
 | Rol | Permisos principales |
 |-----|---------------------|
@@ -321,7 +321,7 @@ erDiagram
 
 ---
 
-## 🌐 API REST — Endpoints
+## API REST — Endpoints
 
 ### Mensajería Interna (`/api/mensajes`)
 
@@ -415,7 +415,7 @@ PUT /api/solicitudes/{id}/aprobar?observacion=Solicitud aprobada, se habilitará
 
 ---
 
-## 🎨 Interfaz de Usuario
+## Interfaz de Usuario
 
 ### Vistas MVC (Thymeleaf)
 
@@ -442,20 +442,20 @@ PUT /api/solicitudes/{id}/aprobar?observacion=Solicitud aprobada, se habilitará
 
 El sidebar incluye enlaces a todos los módulos, con visibilidad controlada por rol:
 
-- 🏠 **Dashboard** — todos los empleados
-- 📅 **Calendario Fiscal** — todos los empleados
-- 📋 **Mis Obligaciones** — todos los empleados
-- 📄 **Documentos** — todos
-- ✉️ **Mensajes** — todos los autenticados
-- 📝 **Mis Solicitudes** — todos los autenticados
-- 🔧 **Admin Solicitudes** — solo `ADMIN`
-- 📊 **Reportes** — todos los empleados
-- 👥 **Equipo** — GERENTE, ASESOR, ADMIN
-- ⚙️ **Configuración** — GERENTE, ASESOR, ADMIN
+- **Dashboard** — todos los empleados
+- **Calendario Fiscal** — todos los empleados
+- **Mis Obligaciones** — todos los empleados
+- **Documentos** — todos
+- **Mensajes** — todos los autenticados
+- **Mis Solicitudes** — todos los autenticados
+- **Admin Solicitudes** — solo `ADMIN`
+- **Reportes** — todos los empleados
+- **Equipo** — GERENTE, ASESOR, ADMIN
+- **Configuración** — GERENTE, ASESOR, ADMIN
 
 ---
 
-## ⚙️ Configuración y Ejecución
+## Configuración y Ejecución
 
 ### Prerrequisitos
 
@@ -487,7 +487,7 @@ EMAIL_PASSWORD=tu_app_password
 EMAIL_FROM=tu_correo@gmail.com
 ```
 
-> ⚠️ **Nota:** Si usas Gmail, necesitas una [App Password](https://myaccount.google.com/apppasswords), no tu contraseña regular.
+> **Nota:** Si usas Gmail, necesitas una [App Password](https://myaccount.google.com/apppasswords), no tu contraseña regular.
 
 ### 3. Compilar y ejecutar
 
@@ -519,7 +519,7 @@ El `DataInitializer` crea automáticamente los siguientes usuarios al arrancar:
 
 ---
 
-## 🧪 Testing
+## Testing
 
 ### Ejecutar todos los tests
 
@@ -560,7 +560,7 @@ proyecto-ProWeb/
 ├── src/main/java/com/cronos/gestiontributaria/
 │   ├── GestionTributariaApplication.java      # Clase principal
 │   │
-│   ├── auth/                                  # 🔐 Autenticación y Usuarios
+│   ├── auth/                                  # Autenticación y Usuarios
 │   │   ├── controller/
 │   │   │   ├── AuthController.java            #   Login, registro, dashboard
 │   │   │   └── PasswordController.java        #   Recuperación de contraseña
@@ -573,7 +573,7 @@ proyecto-ProWeb/
 │   │       ├── UserService.java               #   Lógica de negocio de usuarios
 │   │       └── CustomUserDetailsService.java  #   Integración Spring Security
 │   │
-│   ├── clientes/                              # 👥 Contribuyentes
+│   ├── clientes/                              # Contribuyentes
 │   │   ├── controller/
 │   │   │   ├── TaxPayerViewController.java    #   Vistas MVC
 │   │   │   ├── TaxPayerRestController.java    #   API REST
@@ -585,7 +585,7 @@ proyecto-ProWeb/
 │   │   └── service/
 │   │       └── TaxPayerService.java
 │   │
-│   ├── obligaciones/                          # 📊 Obligaciones Tributarias
+│   ├── obligaciones/                          # Obligaciones Tributarias
 │   │   ├── controller/
 │   │   │   ├── TaxObligationViewController.java
 │   │   │   └── MyObligationsViewController.java
@@ -598,14 +598,14 @@ proyecto-ProWeb/
 │   │   └── service/
 │   │       └── TaxObligationService.java
 │   │
-│   ├── empleados/                             # 👔 Gestión de Empleados
+│   ├── empleados/                             # Gestión de Empleados
 │   │   ├── controller/
 │   │   │   └── EmployeeViewController.java
 │   │   ├── model/
 │   │   ├── repository/
 │   │   └── service/
 │   │
-│   ├── mensajes/                              # ✉️ Módulo 1 — Mensajería
+│   ├── mensajes/                              # Módulo 1 — Mensajería
 │   │   ├── controller/
 │   │   │   ├── MensajeController.java         #   API REST (/api/mensajes)
 │   │   │   └── MensajeUIController.java       #   Vista MVC (/ui/mensajes)
@@ -618,7 +618,7 @@ proyecto-ProWeb/
 │   │   └── service/
 │   │       └── MensajeService.java            #   Lógica de envío y consulta
 │   │
-│   ├── solicitudes/                           # 📄 Módulo 2 — Solicitudes
+│   ├── solicitudes/                           # Módulo 2 — Solicitudes
 │   │   ├── controller/
 │   │   │   ├── SolicitudController.java       #   API REST (/api/solicitudes)
 │   │   │   ├── SolicitudPanelController.java  #   Panel admin (Módulo 3)
@@ -634,7 +634,7 @@ proyecto-ProWeb/
 │   │   └── service/
 │   │       └── SolicitudService.java          #   Lógica de flujo de estados
 │   │
-│   ├── notification/                          # 🔔 Notificaciones
+│   ├── notification/                          # Notificaciones
 │   │   ├── controller/
 │   │   │   └── NotificationViewController.java
 │   │   ├── model/
@@ -643,11 +643,11 @@ proyecto-ProWeb/
 │   │   │   └── NotificationService.java
 │   │   └── view/
 │   │
-│   ├── calendarios/                           # 📅 Calendario Fiscal
+│   ├── calendarios/                           # Calendario Fiscal
 │   │
-│   ├── common/                                # 🔧 Utilidades comunes
+│   ├── common/                                # Utilidades comunes
 │   │
-│   └── config/                                # ⚙️ Configuración
+│   └── config/                                # Configuración
 │       ├── SecurityConfig.java                #   Cadena de filtros de seguridad
 │       └── DataInitializer.java               #   Seed de datos (usuarios default)
 │
@@ -690,15 +690,14 @@ proyecto-ProWeb/
 
 ---
 
-## 👨‍💻 Autores
+## Autores
 
 | Nombre | Rol |
 |--------|-----|
-| **Andress Toscano** | Desarrollador principal |
-| **Keiver** | Desarrollador — Módulos 1-5 (Mensajería, Solicitudes, Panel, Tests) |
+| **Keiver** | Desarrollador Principal |
 
 ---
 
 <p align="center">
-  <sub>Hecho con ☕ y Spring Boot — Universidad del Norte, 2026</sub>
+  <sub>Hecho con y Spring Boot — Universidad del Norte, 2026</sub>
 </p>
