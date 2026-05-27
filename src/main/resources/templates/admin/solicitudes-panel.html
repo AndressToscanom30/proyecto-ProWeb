@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Solicitudes | Cronos</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}" />
+</head>
+<body th:replace="~{fragments/layout :: shell('Solicitudes', 'Panel de administración de solicitudes', 'solicitudes', ~{::content})}">
+    <section th:fragment="content" class="page-stack">
+        <section class="metric-grid">
+            <article class="metric-card">
+                <div class="metric-icon tone-info">
+                    <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
+                </div>
+                <div class="metric-copy">
+                    <span>Total</span>
+                    <strong th:text="${total}">0</strong>
+                    <small>Solicitudes registradas</small>
+                </div>
+            </article>
+            <article class="metric-card">
+                <div class="metric-icon tone-warning">
+                    <svg viewBox="0 0 24 24"><path d="M12 4.5 4.8 18h14.4L12 4.5z"/><path d="M12 9v4.2M12 15.8h.01"/></svg>
+                </div>
+                <div class="metric-copy">
+                    <span>Pendientes</span>
+                    <strong th:text="${pendientes}">0</strong>
+                    <small>Esperando resolución</small>
+                </div>
+            </article>
+            <article class="metric-card">
+                <div class="metric-icon tone-success">
+                    <svg viewBox="0 0 24 24"><path d="M7 12.5l3 3 7-8"/><circle cx="12" cy="12" r="8.5"/></svg>
+                </div>
+                <div class="metric-copy">
+                    <span>Aprobadas</span>
+                    <strong th:text="${aprobadas}">0</strong>
+                    <small>Solicitudes aceptadas</small>
+                </div>
+            </article>
+            <article class="metric-card">
+                <div class="metric-icon tone-danger">
+                    <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                </div>
+                <div class="metric-copy">
+                    <span>Rechazadas</span>
+                    <strong th:text="${rechazadas}">0</strong>
+                    <small>Solicitudes denegadas</small>
+                </div>
+            </article>
+        </section>
+
+        <section class="panel-card">
+            <div class="panel-header">
+                <div>
+                    <p class="eyebrow">Administración</p>
+                    <h3>Todas las solicitudes <small th:text="|${total} registros|">0 registros</small></h3>
+                </div>
+            </div>
+
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Solicitante</th>
+                            <th>Tipo</th>
+                            <th>Estado</th>
+                            <th>Fecha de creación</th>
+                            <th>Observación</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="sol : ${solicitudes}" th:classappend="|row-${sol.estado.name().toLowerCase()}|">
+                            <td th:text="${sol.solicitanteEmail}">correo@ejemplo.com</td>
+                            <td><span class="chip" th:text="${sol.tipo}">SOPORTE</span></td>
+                            <td>
+                                <span class="pill tone-warning" th:if="${sol.estado.name() == 'PENDIENTE'}">PENDIENTE</span>
+                                <span class="pill tone-success" th:if="${sol.estado.name() == 'APROBADA'}">APROBADA</span>
+                                <span class="pill tone-danger" th:if="${sol.estado.name() == 'RECHAZADA'}">RECHAZADA</span>
+                            </td>
+                            <td th:text="${#temporals.format(sol.fechaCreacion, 'dd/MM/yyyy HH:mm')}">01/01/2026 00:00</td>
+                            <td th:text="${sol.observacion}">—</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </section>
+</body>
+</html>

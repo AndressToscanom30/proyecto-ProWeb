@@ -140,6 +140,13 @@
                     </svg>
                     <span>Configuración</span>
                 </a>
+                <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/solicitudes/panel}" class="sidebar-link"
+                    th:classappend="${activeSection} == 'solicitudes' ? ' is-active' : ''">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M4 4h16v16H4z"/><path d="M9 8h6M9 12h6M9 16h4"/>
+                    </svg>
+                    <span>Solicitudes</span>
+                </a>
             </nav>
 
             <div class="sidebar-footer">

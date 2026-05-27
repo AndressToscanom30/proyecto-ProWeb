@@ -60,4 +60,12 @@ public class SolicitudService {
         solicitud.setFechaResolucion(LocalDateTime.now());
         return solicitudRepository.save(solicitud);
     }
+
+    public long contarTotal() {
+        return solicitudRepository.count();
+    }
+
+    public long contarPorEstado(EstadoSolicitud estado) {
+        return solicitudRepository.countByEstado(estado);
+    }
 }
