@@ -93,6 +93,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/contribuyente/**").hasRole("CONTRIBUYENTE")
                         .requestMatchers("/portal/**").hasRole("CONTRIBUYENTE")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        // ── Mensajes internos: cualquier usuario autenticado ──
+                        .requestMatchers("/api/mensajes/**").authenticated()
                         // Resto de la API REST queda como estaba antes: público.
                         .requestMatchers("/api/**").permitAll()
                         .anyRequest().authenticated())
