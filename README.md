@@ -20,18 +20,18 @@
 
 ## Tabla de Contenidos
 
-- [Descripción General](#-descripción-general)
-- [Arquitectura del Proyecto](#-arquitectura-del-proyecto)
-- [Stack Tecnológico](#-stack-tecnológico)
-- [Módulos del Sistema](#-módulos-del-sistema)
-- [Modelo de Datos](#-modelo-de-datos)
-- [Roles y Permisos](#-roles-y-permisos)
-- [API REST — Endpoints](#-api-rest--endpoints)
-- [Interfaz de Usuario](#-interfaz-de-usuario)
-- [Configuración y Ejecución](#-configuración-y-ejecución)
-- [Testing](#-testing)
-- [Estructura del Proyecto](#-estructura-del-proyecto)
-- [Autores](#-autores)
+- [Descripción General](#descripción-general)
+- [Arquitectura del Proyecto](#arquitectura-del-proyecto)
+- [Stack Tecnológico](#stack-tecnológico)
+- [Módulos del Sistema](#módulos-del-sistema)
+- [Modelo de Datos](#modelo-de-datos)
+- [Roles y Permisos](#roles-y-permisos)
+- [API REST — Endpoints](#api-rest--endpoints)
+- [Interfaz de Usuario](#interfaz-de-usuario)
+- [Configuración y Ejecución](#configuración-y-ejecución)
+- [Testing](#testing)
+- [Estructura del Proyecto](#estructura-del-proyecto)
+- [Autores](#autores)
 
 ---
 
