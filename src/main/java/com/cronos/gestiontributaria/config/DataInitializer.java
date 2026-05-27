@@ -65,5 +65,19 @@ public class DataInitializer implements CommandLineRunner {
             userRepository.save(contribuyente);
             System.out.println(">>> CONTRIBUYENTE por defecto creado: contribuyente@cronos.com / test1234");
         }
+
+        // Usuario ADMIN para el panel de solicitudes (Módulo 3).
+        boolean hasAdmin = userRepository.findByEmail("admin@cronos.com").isPresent();
+        if (!hasAdmin) {
+            User admin = new User();
+            admin.setName("Administrador");
+            admin.setEmail("admin@cronos.com");
+            admin.setPasswordHash(passwordEncoder.encode("admin123"));
+            admin.setActive(true);
+            admin.setRole(new Role("ROLE_ADMIN", "Administrador", new ArrayList<>()));
+            admin.setNotifications(new ArrayList<>());
+            userRepository.save(admin);
+            System.out.println(">>> ADMIN por defecto creado: admin@cronos.com / admin123");
+        }
     }
 }
