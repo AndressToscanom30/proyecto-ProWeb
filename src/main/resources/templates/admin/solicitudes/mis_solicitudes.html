@@ -27,25 +27,25 @@
                     </div>
                 </div>
                 
-                <form class="form-stack" id="form-solicitud" style="margin-top: 1rem;">
-                    <div class="form-group">
-                        <label for="tipo">Tipo de Solicitud</label>
-                        <select id="tipo" name="tipo" class="form-control" required>
+                <form class="auth-form" id="form-solicitud" style="margin-top: 1.5rem; padding-bottom: 1rem;">
+                    <label class="field-group">
+                        <span class="field-label">Tipo de Solicitud</span>
+                        <select id="tipo" name="tipo" class="text-input" required>
                             <option value="">Seleccione el tipo...</option>
                             <option th:each="t : ${tipos}" th:value="${t.name()}" th:text="${t.valor}"></option>
                         </select>
+                    </label>
+                    
+                    <label class="field-group">
+                        <span class="field-label">Descripción</span>
+                        <textarea id="descripcion" name="descripcion" class="text-input" rows="4" required placeholder="Describe los detalles de tu solicitud..."></textarea>
+                    </label>
+                    
+                    <div style="margin-top: 1.5rem;">
+                        <button type="button" class="primary-action" onclick="crearSolicitud()" style="width: 100%;">Radicar Solicitud</button>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="descripcion">Descripción</label>
-                        <textarea id="descripcion" name="descripcion" class="form-control" rows="4" required></textarea>
-                    </div>
-                    
-                    <div class="form-actions" style="margin-top: 1rem;">
-                        <button type="button" class="primary-action" onclick="crearSolicitud()">Radicar Solicitud</button>
-                    </div>
-                    
-                    <div id="solicitud-alert" style="display:none; margin-top: 1rem; padding: 1rem; border-radius: 4px;" class="tone-success">
+                    <div id="solicitud-alert" style="display:none; margin-top: 1rem;" class="alert-line alert-success">
                         Solicitud radicada con éxito.
                     </div>
                 </form>
