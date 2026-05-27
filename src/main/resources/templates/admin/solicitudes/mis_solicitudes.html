@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mis Solicitudes | Cronos</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}" />
+</head>
+<body th:replace="~{fragments/layout :: shell('Mis Solicitudes', 'Gestión de tus solicitudes', 'mis-solicitudes', ~{::content})}">
+    <section th:fragment="content" class="page-stack">
+
+        <section class="page-hero">
+            <div>
+                <p class="eyebrow">Gestión</p>
+                <h2>Mis Solicitudes</h2>
+                <p>Crea nuevas solicitudes de soporte, información o acceso y haz seguimiento a su estado.</p>
+            </div>
+        </section>
+
+        <section class="grid-2">
+            <!-- Formulario de creación -->
+            <article class="panel-card">
+                <div class="panel-header">
+                    <div>
+                        <p class="eyebrow">Nueva</p>
+                        <h3>Radicar solicitud</h3>
+                    </div>
+                </div>
+                
+                <form class="form-stack" id="form-solicitud" style="margin-top: 1rem;">
+                    <div class="form-group">
+                        <label for="tipo">Tipo de Solicitud</label>
+                        <select id="tipo" name="tipo" class="form-control" required>
+                            <option value="">Seleccione el tipo...</option>
+                            <option th:each="t : ${tipos}" th:value="${t.name()}" th:text="${t.valor}"></option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="descripcion">Descripción</label>
+                        <textarea id="descripcion" name="descripcion" class="form-control" rows="4" required></textarea>
+                    </div>
+                    
+                    <div class="form-actions" style="margin-top: 1rem;">
+                        <button type="button" class="primary-action" onclick="crearSolicitud()">Radicar Solicitud</button>
+                    </div>
+                    
+                    <div id="solicitud-alert" style="display:none; margin-top: 1rem; padding: 1rem; border-radius: 4px;" class="tone-success">
+                        Solicitud radicada con éxito.
+                    </div>
+                </form>
+            </article>
+
+            <!-- Lista de mis solicitudes -->
+            <article class="panel-card table-panel">
+                <div class="panel-header">
+                    <div>
+                        <p class="eyebrow">Historial</p>
+                        <h3>Mis Solicitudes</h3>
+                    </div>
+                </div>
+
+                <div class="table-wrap" th:if="${not #lists.isEmpty(solicitudes)}">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Tipo</th>
+                                <th>Estado</th>
+                                <th>Fecha</th>
+                                <th>Observación</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="sol : ${solicitudes}">
+                                <td>
+                                    <span class="pill tone-neutral" th:text="${sol.tipo}">SOPORTE</span>
+                                    <div style="font-size: 0.8rem; color: #6c757d; margin-top: 4px;" th:text="${sol.descripcion}">Desc</div>
+                                </td>
+                                <td>
+                                    <span class="status-pill tone-warning" th:if="${sol.estado.name() == 'PENDIENTE'}">PENDIENTE</span>
+                                    <span class="status-pill tone-success" th:if="${sol.estado.name() == 'APROBADA'}">APROBADA</span>
+                                    <span class="status-pill tone-danger" th:if="${sol.estado.name() == 'RECHAZADA'}">RECHAZADA</span>
+                                </td>
+                                <td th:text="${#temporals.format(sol.fechaCreacion, 'dd/MM/yyyy HH:mm')}">Fecha</td>
+                                <td th:text="${sol.observacion != null ? sol.observacion : '—'}">Obs</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="empty-state compact" th:if="${#lists.isEmpty(solicitudes)}">
+                    <p>No tienes solicitudes registradas.</p>
+                </div>
+            </article>
+        </section>
+
+        <!-- Scripts para manejar el API REST desde la UI -->
+        <script>
+            function crearSolicitud() {
+                const form = document.getElementById('form-solicitud');
+                if(!form.checkValidity()) {
+                    form.reportValidity();
+                    return;
+                }
+                
+                const data = {
+                    tipo: document.getElementById('tipo').value,
+                    descripcion: document.getElementById('descripcion').value
+                };
+                
+                fetch('/api/solicitudes', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                }).then(res => {
+                    if(res.ok) {
+                        const alert = document.getElementById('solicitud-alert');
+                        alert.style.display = 'block';
+                        form.reset();
+                        setTimeout(() => window.location.reload(), 1500);
+                    } else {
+                        alert('Error al radicar la solicitud');
+                    }
+                });
+            }
+        </script>
+    </section>
+</body>
+</html>
