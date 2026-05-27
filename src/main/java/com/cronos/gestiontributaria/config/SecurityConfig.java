@@ -95,6 +95,9 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         // ── Mensajes internos: cualquier usuario autenticado ──
                         .requestMatchers("/api/mensajes/**").authenticated()
+                        // ── Solicitudes: listado total solo ADMIN, resto autenticado ──
+                        .requestMatchers(HttpMethod.GET, "/api/solicitudes").hasRole("ADMIN")
+                        .requestMatchers("/api/solicitudes/**").authenticated()
                         // Resto de la API REST queda como estaba antes: público.
                         .requestMatchers("/api/**").permitAll()
                         .anyRequest().authenticated())
