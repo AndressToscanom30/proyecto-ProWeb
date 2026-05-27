@@ -92,6 +92,7 @@ public class SecurityConfig {
                         // Portal del contribuyente.
                         .requestMatchers("/api/contribuyente/**").hasRole("CONTRIBUYENTE")
                         .requestMatchers("/portal/**").hasRole("CONTRIBUYENTE")
+                        .requestMatchers("/admin/solicitudes/**").hasRole("ADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         // ── Mensajes internos: cualquier usuario autenticado ──
                         .requestMatchers("/api/mensajes/**").authenticated()

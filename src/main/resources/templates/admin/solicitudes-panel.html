@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout('Panel de Solicitudes', ~{::main-content})}">
+<body>
+<main th:fragment="main-content">
+
+  <!-- BLOQUE DE ESTILOS PROPIOS DEL PANEL -->
+  <style>
+    .panel-indicadores {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    .indicador-card {
+      flex: 1;
+      min-width: 140px;
+      padding: 1.25rem 1.5rem;
+      border-radius: 8px;
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      text-align: center;
+    }
+    .indicador-card .numero {
+      font-size: 2rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .indicador-card .etiqueta {
+      font-size: 0.8rem;
+      margin-top: 0.4rem;
+      color: #6c757d;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .indicador-total   { border-top: 4px solid #0d6efd; }
+    .indicador-total .numero { color: #0d6efd; }
+    .indicador-pendiente { border-top: 4px solid #ffc107; }
+    .indicador-pendiente .numero { color: #856404; }
+    .indicador-aprobada  { border-top: 4px solid #198754; }
+    .indicador-aprobada .numero  { color: #198754; }
+    .indicador-rechazada { border-top: 4px solid #dc3545; }
+    .indicador-rechazada .numero { color: #dc3545; }
+
+    .solicitudes-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    .solicitudes-table th {
+      background: #343a40; color: #fff;
+      padding: 0.6rem 0.8rem; text-align: left;
+    }
+    .solicitudes-table td { padding: 0.6rem 0.8rem; border-bottom: 1px solid #dee2e6; }
+    .solicitudes-table tr:hover td { background: #f1f3f5; }
+
+    .badge-estado {
+      display: inline-block;
+      padding: 0.25em 0.6em;
+      border-radius: 4px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .badge-PENDIENTE  { background: #fff3cd; color: #856404; }
+    .badge-APROBADA   { background: #d1e7dd; color: #0f5132; }
+    .badge-RECHAZADA  { background: #f8d7da; color: #842029; }
+  </style>
+
+  <!-- TÍTULO -->
+  <h2 class="eyebrow" style="margin-bottom:1.5rem;">Panel de Solicitudes</h2>
+
+  <!-- INDICADORES -->
+  <div class="panel-indicadores">
+    <div class="indicador-card indicador-total">
+      <div class="numero" th:text="${totalGeneral}">0</div>
+      <div class="etiqueta">Total</div>
+    </div>
+    <div class="indicador-card indicador-pendiente">
+      <div class="numero" th:text="${totalPendientes}">0</div>
+      <div class="etiqueta">Pendientes</div>
+    </div>
+    <div class="indicador-card indicador-aprobada">
+      <div class="numero" th:text="${totalAprobadas}">0</div>
+      <div class="etiqueta">Aprobadas</div>
+    </div>
+    <div class="indicador-card indicador-rechazada">
+      <div class="numero" th:text="${totalRechazadas}">0</div>
+      <div class="etiqueta">Rechazadas</div>
+    </div>
+  </div>
+
+  <!-- TABLA DE SOLICITUDES -->
+  <div style="overflow-x:auto;">
+    <table class="solicitudes-table">
+      <thead>
+        <tr>
+          <th>Solicitante</th>
+          <th>Tipo</th>
+          <th>Estado</th>
+          <th>Fecha creación</th>
+          <th>Observación</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="s : ${solicitudes}">
+          <td th:text="${s.solicitanteEmail}">usuario@ejemplo.com</td>
+          <td th:text="${s.tipo}">SOPORTE</td>
+          <td>
+            <span class="badge-estado"
+                  th:classappend="'badge-' + ${s.estado}"
+                  th:text="${s.estado}">PENDIENTE</span>
+          </td>
+          <td th:text="${#temporals.format(s.fechaCreacion, 'dd/MM/yyyy HH:mm')}">01/01/2026</td>
+          <td th:text="${s.observacion != null ? s.observacion : '—'}">—</td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(solicitudes)}">
+          <td colspan="5" style="text-align:center; color:#6c757d; padding:1.5rem;">
+            No hay solicitudes registradas.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</main>
+</body>
+</html>
